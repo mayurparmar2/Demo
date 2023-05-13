@@ -1,0 +1,67 @@
+buildscript {
+//ext.kotlin_version = '1.7.0'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+      //  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:7.0.3'
+
+        //=> UnsupportedOperationException("M
+        //=> System.loadLibrary("");
+
+
+        /* new_string Comments */
+
+        //=> \/\*([\s\S]*?\*\/)
+        //=> \/\/.*
+
+        /* Replace */
+
+        // From =>  setVisibility(0);   => setVisibility(View.VISIBLE);
+        // From =>  setVisibility(8);  =>setVisibility(View.GONE);
+        // From =>     =>
+        // From =>     =>
+        // From =>     =>
+        // From =>     =>
+        // From =>     =>
+        // From =>     =>
+        // From =>     =>
+        // From =>  16973940   => android.R.style.Theme_Holo_Light_Dialog_MinWidth
+
+
+        // chack is exist From => getResources().getIdentifier(draw, "id", "your_package_name");
+        // permission From use a package =>  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES  />
+        // signingReport =>  google : signingReport
+        // getUriForFile =>  Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
+
+
+
+
+
+//  E:\MyDemo\Demo\app\src\main\java\com\demo\example\manager
+//      sed -i "s/private/new_string/g" *
+//      rm *.bak
+
+
+//        Drawable d = getResources().getDrawable(android.R.drawable.drawable);
+        /*set Drawable Tint Color */
+//        Drawable setting = DrawableCompat.wrap(getResources().getDrawable(R.drawable.setting));
+//        DrawableCompat.setTint(home, ContextCompat.getColor(context, R.color.white));
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+        maven { url 'https://maven.google.com' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

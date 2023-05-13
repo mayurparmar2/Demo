@@ -1,0 +1,10 @@
+<resources>
+
+
+    <string name="app_name">Name To Ringtone</string>
+    <string name="version">Version</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="storage_permission_is_required_to_save_the_photo_and_videos_from_social_media_nplease_allow">This Permission is required to download the photos &amp; videos from Social Media.\nplease grant permission</string>
+
+
+</resources>
