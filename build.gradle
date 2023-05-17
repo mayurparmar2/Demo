@@ -14,6 +14,7 @@ buildscript {
 
         /* new_string Comments */
 
+         //=> <string name="common_google_play_([^"]+)">([^<]+)</string>
         //=> \/\*([\s\S]*?\*\/)
         //=> \/\/.*
 
