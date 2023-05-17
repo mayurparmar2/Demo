@@ -14,9 +14,10 @@ buildscript {
 
         /* new_string Comments */
 
-         //=> <string name="common_google_play_([^"]+)">([^<]+)</string>
-        //=> \/\*([\s\S]*?\*\/)
-        //=> \/\/.*
+         //Select all tag=    <(\w+)([^>]*)>(.*?)<\/\1>
+         //Select specific val=    <(\w+)\s+[^>]*name="common_google_play_[^"]*"[^>]*>(.*?)<\/\1>
+        //=>                  \/\*([\s\S]*?\*\/)
+        //=>                  \/\/.*
 
         /* Replace */
 
