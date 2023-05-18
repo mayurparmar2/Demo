@@ -42,9 +42,11 @@ buildscript {
 
 
 
-//  E:\MyDemo\Demo\app\src\main\java\com\demo\example\manager
-//      sed -i "s/private/new_string/g" *
-//      rm *.bak
+// Rename:=>
+      // mv app/src/main/res/drawable/old_drawable.png app/src/main/res/drawable/new_drawable.png
+      // Get-ChildItem -Recurse -Filter "*.java" | ForEach-Object { (Get-Content $_.FullName) -replace 'old_drawable', 'new_drawable' | Set-Content $_.FullName }
+      
+      
 
 
 //        Drawable d = getResources().getDrawable(android.R.drawable.drawable);
