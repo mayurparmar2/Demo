@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# StepCounter
 # Function to recursively search and delete files starting with 'abc'
 delete_files() {
   local dir="$1"
@@ -8,7 +9,26 @@ delete_files() {
   if [[ -d "$dir" ]]; then
     # Iterate through the contents of the directory
     for item in "$dir"/*; do
-      if [[ -f "$item" && "$item" == "$dir"/abc* ]]; then
+      if [[ -f "$item" && "$item" == "$dir"/abc_* 
+          || "$item" == "$dir"/design_* 
+          || "$item" == "$dir"/common_google*
+          || "$item" == "$dir"/m3_*
+          || "$item" == "$dir"/material_*
+          || "$item" == "$dir"/mtrl_*
+          || "$item" == "$dir"/test_*
+          || "$item" == "$dir"/btn_*
+          || "$item" == "$dir"/admob_*
+          || "$item" == "$dir"/avd_*
+          || "$item" == "$dir"/ic_m3_chip*
+          || "$item" == "$dir"/res_*
+          || "$item" == "$dir"/test_*
+          || "$item" == "$dir"/notification_*
+          || "$item" == "$dir"/custom_dialog*
+          || "$item" == "$dir"/browser_*
+          || "$item" == "$dir"/select_*
+          || "$item" == "$dir"/text_view_*
+
+        ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
         rm "$item"
@@ -25,6 +45,6 @@ delete_files() {
 echo "Enter the file name to delete: "
 read directory
 
-mydi="C:/Users/Mayur/Desktop/MyProjects/$directory/app/src/main/res"
+mydi="C:/AndroidProject/$directory/app/src/main/res"
 # Call the function to delete files starting with 'abc'
 delete_files "$mydi"
