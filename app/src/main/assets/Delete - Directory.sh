@@ -6,13 +6,19 @@ mydi="C:/AndroidProject/$directory/app/src/main/res"
 
 # List of directories to delete
 directorieslist=(
-  "C:/AndroidProject/$directory/app/src/main/res/drawable"
   "C:/AndroidProject/$directory/app/src/main/res/anim"
   "C:/AndroidProject/$directory/app/src/main/res/color"
   "C:/AndroidProject/$directory/app/src/main/res/font"
   "C:/AndroidProject/$directory/app/src/main/res/layout"
   "C:/AndroidProject/$directory/app/src/main/res/menu"
+  "C:/AndroidProject/$directory/app/src/main/res/xml"
   "C:/AndroidProject/$directory/app/src/main/res/values"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable-hdpi"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable-mdpi"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable-xhdpi"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable-xxhdpi"
+  "C:/AndroidProject/$directory/app/src/main/res/drawable-xxxhdpi"
   "C:/AndroidProject/$directory/app/src/main/res/mipmap-hdpi"
   "C:/AndroidProject/$directory/app/src/main/res/mipmap-mdpi"
   "C:/AndroidProject/$directory/app/src/main/res/mipmap-xhdpi"
@@ -34,6 +40,9 @@ for dir in "$mydi"/*; do
         echo "Directory not found: $dir"
     fi
 done
+
+
+
 
 
 
