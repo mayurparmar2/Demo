@@ -1,1 +1,2 @@
+\<RelativeLayout\n        android\:id\=\"\@\+id\/adView\"\n        android\:layout_width\=\"wrap_content\"\n        android\:layout_height\=\"wrap_content\" \/\>
 

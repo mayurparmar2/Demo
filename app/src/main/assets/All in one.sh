@@ -197,7 +197,6 @@ for file in "$regexDir"/*; do
     sed -Ei "s/$pattern35/$replacement/g" "$file"
     sed -Ei "s/android:tint=/app:tint=/g" "$file"
     sed -Ei 's/Of="0"/Of="parent"/g' "$file"
-    Of="parent"
   fi
 done
 
