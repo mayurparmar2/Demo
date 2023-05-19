@@ -27,7 +27,12 @@ delete_files() {
           || "$item" == "$dir"/browser_*
           || "$item" == "$dir"/select_*
           || "$item" == "$dir"/text_view_*
-
+          || "$item" == "$dir"/bools*
+          || "$item" == "$dir"/integers*
+          || "$item" == "$dir"/plurals*
+          || "$item" == "$dir"/public*
+          || "$item" == "$dir"/standalone_*
+          || "$item" == "$dir"/splits0*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
