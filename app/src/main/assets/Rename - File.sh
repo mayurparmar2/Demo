@@ -2,17 +2,17 @@
 
 # # Directory path containing files to rename
 # directory="/path/to/directory"
-
+#
 # # Iterate through the files in the directory
 # for file in "$directory"/*; do
 #   if [[ -f "$file" ]]; then
 #     # Extract the current file name and extension
 #     filename=$(basename "$file")
 #     extension="${filename##*.}"
-    
+#
 #     # Generate the new file name
 #     new_filename="new_file_name.${extension}"
-    
+#
 #     # Rename the file
 #     mv "$file" "$directory/$new_filename"
 #     echo "Renamed file: $filename to $new_filename"
