@@ -24,7 +24,6 @@ else
     echo "First Tag name not found."
 fi
 
-
 # Check if the attribute is present in the root tag
 if grep -q 'xmlns:app="http://schemas.android.com/apk/res-auto"' "$xml_file"; then
     echo "Attribute already exists in the root tag."

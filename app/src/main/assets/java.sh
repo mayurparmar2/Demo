@@ -3,16 +3,17 @@
 
 # "Enter the path of the directory containing the files: " ProjectName
 echo "Enter the path of the directory containing the files: "
-read ProjectName
+read PakageName
 
 # search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
-
+rPakageName="import $PakageName.R"
 
 search_path="C:/AndroidProject/StepConter/app/src/main/java"
 # Find all Java files in the specified path and its subdirectories
 java_files=$(find "$search_path" -type f -name '*.java')
 # Iterate over each Java file and perform the replacement
 for file in $java_files; do
+    sed -i "s/$rPakageName/import com.demo.example.R;/g" "$file"
     sed -i 's/getVisibility() != 0/getVisibility() != View.VISIBLE/g' "$file"
     sed -i 's/setScrollBarStyle(33554432)/setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY)/g' "$file"
     sed -i 's/? 8 : 0/? View.GONE : View.VISIBLE/g' "$file"

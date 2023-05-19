@@ -87,7 +87,8 @@ delete_files() {
           || "$item" == "$dir"/material_*
           || "$item" == "$dir"/mtrl_*
           || "$item" == "$dir"/test_*
-          || "$item" == "$dir"/btn_*
+          || "$item" == "$dir"/btn_radio_to*
+          || "$item" == "$dir"/btn_checkbox_to*
           || "$item" == "$dir"/admob_*
           || "$item" == "$dir"/avd_*
           || "$item" == "$dir"/ic_m3_chip*
@@ -106,6 +107,10 @@ delete_files() {
           || "$item" == "$dir"/splits0*
           || "$item" == "$dir"/support_simple_*
           || "$item" == "$dir"/drawables*
+          || "$item" == "$dir"/dp_example*
+          || "$item" == "$dir"/sdp_example*
+          || "$item" == "$dir"/ic_mtrl_c*
+          || "$item" == "$dir"/tooltip_frame*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
