@@ -33,6 +33,7 @@ delete_files() {
           || "$item" == "$dir"/public*
           || "$item" == "$dir"/standalone_*
           || "$item" == "$dir"/splits0*
+          || "$item" == "$dir"/support_simple_*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
