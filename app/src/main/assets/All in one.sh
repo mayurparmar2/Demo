@@ -3,6 +3,8 @@
 # "Enter the path of the directory containing the files: " ProjectName
 echo "Enter the path of the directory containing the files: "
 read ProjectName
+
+
 mydi="C:/AndroidProject/$ProjectName/app/src/main/res"
 
 # Copy the file
@@ -69,6 +71,7 @@ for dir in "$mydi"/*; do
     fi
 done
 
+
 # Function to recursively search and delete files starting with 'abc'
 delete_files() {
   local dir="$1"
@@ -102,6 +105,7 @@ delete_files() {
           || "$item" == "$dir"/standalone_*
           || "$item" == "$dir"/splits0*
           || "$item" == "$dir"/support_simple_*
+          || "$item" == "$dir"/drawables*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
@@ -115,6 +119,7 @@ delete_files() {
 }
 delete_files "$mydi"
 
+regexDir="C:/AndroidProject/$ProjectName/app/src/main/res/values"
 pattern1='<(\w+)\s+[^>]*name="common_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern2='<(\w+)\s+[^>]*name="m3_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern3='<(\w+)\s+[^>]*name="bright_[^"]*"[^>]*>(.*?)<\/\1>'
@@ -141,12 +146,21 @@ pattern23='<(\w+)\s+[^>]*name="offline_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern24='<(\w+)\s+[^>]*name="path_password[^"]*"[^>]*>(.*?)<\/\1>'
 pattern25='<(\w+)\s+[^>]*name="offline_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern26='<(\w+)\s+[^>]*name="fab_transformation[^"]*"[^>]*>(.*?)<\/\1>'
+pattern27='<(\w+)\s+[^>]*name="notification_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern28='<(\w+)\s+[^>]*name="highlighted_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern29='<(\w+)\s+[^>]*name="button_material[^"]*"[^>]*>(.*?)<\/\1>'
+pattern30='<(\w+)\s+[^>]*name="background_material[^"]*"[^>]*>(.*?)<\/\1>'
+pattern31='<(\w+)\s+[^>]*name="background_floating[^"]*"[^>]*>(.*?)<\/\1>'
+pattern32='<(\w+)\s+[^>]*name="highlighted_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern33='<(\w+)\s+[^>]*name="firebase_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern34='<(\w+)\s+[^>]*name="google_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern35='<(\w+)\s+[^>]*name="default_web[^"]*"[^>]*>(.*?)<\/\1>'
 replacement=''
 # Loop through all files in the directory
-for file in "$mydi"/*; do
+for file in "$regexDir"/*; do
   if [[ -f "$file" ]]; then
     # Execute the sed command on each file
-#     sed -i s/replacement/000000/g "$file"
+    # sed -i s/replacement/000000/g "$file"
     sed -Ei "s/$pattern1/$replacement/g" "$file"
     sed -Ei "s/$pattern2/$replacement/g" "$file"
     sed -Ei "s/$pattern3/$replacement/g" "$file"
@@ -172,11 +186,20 @@ for file in "$mydi"/*; do
     sed -Ei "s/$pattern24/$replacement/g" "$file"
     sed -Ei "s/$pattern25/$replacement/g" "$file"
     sed -Ei "s/$pattern26/$replacement/g" "$file"
+    sed -Ei "s/$pattern27/$replacement/g" "$file"
+    sed -Ei "s/$pattern28/$replacement/g" "$file"
+    sed -Ei "s/$pattern29/$replacement/g" "$file"
+    sed -Ei "s/$pattern30/$replacement/g" "$file"
+    sed -Ei "s/$pattern31/$replacement/g" "$file"
+    sed -Ei "s/$pattern32/$replacement/g" "$file"
+    sed -Ei "s/$pattern33/$replacement/g" "$file"
+    sed -Ei "s/$pattern34/$replacement/g" "$file"
+    sed -Ei "s/$pattern35/$replacement/g" "$file"
+    sed -Ei "s/android:tint=/app:tint=/g" "$file"
+    sed -Ei 's/Of="0"/Of="parent"/g' "$file"
+    Of="parent"
   fi
 done
-
-
-
 
 
 
