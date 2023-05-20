@@ -9,7 +9,7 @@ mydi="C:/AndroidProject/Test/Demo-master/app/src/main/res"
 
 # Output file name
 output_file="directory_names.txt"
-
+java_xml_path="C:/AndroidProject/Test/Demo-master/app/src/main"
 directorieslist=(
   "C:/AndroidProject/Test/Demo-master/app/src/main/res/values"
 )
@@ -18,7 +18,6 @@ directorieslist=(
 for dir in "$mydi"/*; do
   # Check if directory exists
   if [[ -d "$dir" ]]; then
-
     if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
       echo "Skipping directory: $dir"
     else
@@ -33,26 +32,21 @@ for dir in "$mydi"/*; do
 
           extension="${current_name_ext##*.}"
           # Generate a random string
-          random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
 
+          random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
           # Ensure the string doesn't start with a number or uppercase letter
           while [[ "$random_string" =~ ^[0-9A-Z] ]]; do
             random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
           done
-          # Iterate over each XML file in the directory
-          for search_dir in "$mydi"/*; do
-            # Check if the file is a regular file
-            if [[ -d "$search_dir" ]]; then
-              for search_file in "$search_dir"/*.xml; do
-                # Check if the file is a regular file
-                if [[ -f "$search_file" ]]; then
-                  echo "bir_name =>:$bir_name,file_name_without_extension =>:$file_name_without_extension, random_string =>:$random_string,output_file =>:$output_file\"" >>"$output_file"
-                  sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$search_file"
-                fi
-              done
-            fi
-          done
 
+          list_xml_java=$(find "$java_xml_path" -type f \( -name "*.xml" -o -name "*.java" \))
+          # Iterate over the files using a for loop
+          for fileJava in $list_xml_java; do
+            # Print the file path
+             sed -Ei "s/R\.$bir_name\.$file_name_without_extension/R.$bir_name.$random_string/g" "$fileJava"
+             sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$fileJava"
+          done
+          mv "$file" "$dir/$random_string.$extension"
         fi
       done
     fi
@@ -60,3 +54,4 @@ for dir in "$mydi"/*; do
     echo "Directory not found: $dir"
   fi
 done
+
