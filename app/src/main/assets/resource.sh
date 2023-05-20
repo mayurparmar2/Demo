@@ -1,17 +1,17 @@
 #!/bin/bash
 
+
+## Output file name
+#output_file="directory_names.txt"
 # "Enter the path of the directory containing the files: " ProjectName
-#echo "Enter the path of the directory containing the files: "
-#read ProjectName
+echo "Enter the path of the directory containing the files: "
+read ProjectName
 
-mydi="C:/AndroidProject/Test/Demo-master/app/src/main/res"
-#$mydi="C:/AndroidProject"
+mydi="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
+java_xml_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
 
-# Output file name
-output_file="directory_names.txt"
-java_xml_path="C:/AndroidProject/Test/Demo-master/app/src/main"
 directorieslist=(
-  "C:/AndroidProject/Test/Demo-master/app/src/main/res/values"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values"
 )
 
 # Loop through the directories
@@ -54,4 +54,3 @@ for dir in "$mydi"/*; do
     echo "Directory not found: $dir"
   fi
 done
-

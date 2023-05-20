@@ -86,10 +86,8 @@ delete_files() {
           || "$item" == "$dir"/common_google*
           || "$item" == "$dir"/m3_*
           || "$item" == "$dir"/material_*
-          || "$item" == "$dir"/mtrl_*
           || "$item" == "$dir"/test_*
           || "$item" == "$dir"/btn_radio_to*
-          || "$item" == "$dir"/btn_checkbox_to*
           || "$item" == "$dir"/admob_*
           || "$item" == "$dir"/avd_*
           || "$item" == "$dir"/ic_m3_chip*
@@ -110,7 +108,6 @@ delete_files() {
           || "$item" == "$dir"/drawables*
           || "$item" == "$dir"/dp_example*
           || "$item" == "$dir"/sdp_example*
-          || "$item" == "$dir"/ic_mtrl_*
           || "$item" == "$dir"/tooltip_frame*
           || "$item" == "$dir"/fragment_fast_out_*
           || "$item" == "$dir"/checkbox_themeable*
@@ -118,6 +115,10 @@ delete_files() {
           || "$item" == "$dir"/switch_thumb_*
           || "$item" == "$dir"/navigation_empty_*
           || "$item" == "$dir"/firebase_common*
+          || "$item" == "$dir"/mtrl_*
+          || "$item" == "$dir"/*_mtrl_*
+          || "$item" == "$dir"/*_mtrl
+          || "$item" == "$dir"/btn_checkbox_*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
@@ -167,6 +168,8 @@ pattern32='<(\w+)\s+[^>]*name="highlighted_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern33='<(\w+)\s+[^>]*name="firebase_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern34='<(\w+)\s+[^>]*name="google_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern35='<(\w+)\s+[^>]*name="default_web[^"]*"[^>]*>(.*?)<\/\1>'
+pattern36='<(\w+)\s+[^>]*name="test_mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
 replacement=''
 # Loop through all files in the directory
 for file in "$regexDir"/*; do
@@ -207,6 +210,8 @@ for file in "$regexDir"/*; do
     sed -Ei "s/$pattern33/$replacement/g" "$file"
     sed -Ei "s/$pattern34/$replacement/g" "$file"
     sed -Ei "s/$pattern35/$replacement/g" "$file"
+    sed -Ei "s/$pattern36/$replacement/g" "$file"
+    sed -Ei "s/$pattern37/$replacement/g" "$file"
     sed -Ei "s/android:tint=/app:tint=/g" "$file"
     sed -Ei 's/Of="0"/Of="parent"/g' "$file"
   fi
