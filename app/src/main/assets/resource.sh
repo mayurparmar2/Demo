@@ -4,14 +4,14 @@
 #echo "Enter the path of the directory containing the files: "
 #read ProjectName
 
-mydi="C:/AndroidProject/Demo-master/app/src/main/res"
+mydi="C:/AndroidProject/Test/Demo-master/app/src/main/res"
 #$mydi="C:/AndroidProject"
 
 # Output file name
 output_file="directory_names.txt"
 
 directorieslist=(
-  "C:/AndroidProject/Demo-master/app/src/main/res/values"
+  "C:/AndroidProject/Test/Demo-master/app/src/main/res/values"
 )
 
 # Loop through the directories
@@ -19,77 +19,44 @@ for dir in "$mydi"/*; do
   # Check if directory exists
   if [[ -d "$dir" ]]; then
 
-    bir_name="$(basename "$dir")"
     if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
       echo "Skipping directory: $dir"
     else
-
+      bir_name="$(basename "$dir")"
       for file in "$dir"/*; do
         # Check if the file is a directory
         if [[ -f "$file" ]]; then
           # Print file name
-          file_name=$(basename "$file")
-          file_name_without_extension="${file_name%.*}"
-          echo "$bir_name\\$(basename "$file_name_without_extension")\"" >>"$output_file"
+          current_name_ext=$(basename "$file")
+          file_name_without_extension="${current_name_ext%.*}"
+          # file_name_without_extension="${file_name%.*}"
+
+          extension="${current_name_ext##*.}"
+          # Generate a random string
+          random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
+
+          # Ensure the string doesn't start with a number or uppercase letter
+          while [[ "$random_string" =~ ^[0-9A-Z] ]]; do
+            random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
+          done
+          # Iterate over each XML file in the directory
+          for search_dir in "$mydi"/*; do
+            # Check if the file is a regular file
+            if [[ -d "$search_dir" ]]; then
+              for search_file in "$search_dir"/*.xml; do
+                # Check if the file is a regular file
+                if [[ -f "$search_file" ]]; then
+                  echo "bir_name =>:$bir_name,file_name_without_extension =>:$file_name_without_extension, random_string =>:$random_string,output_file =>:$output_file\"" >>"$output_file"
+                  sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$search_file"
+                fi
+              done
+            fi
+          done
+
         fi
       done
-      #      echo "Directory found Name:$bir_name\"" >>"$output_file"
-      #      echo "Directory found Name: $dir"
-      #      echo "Directory found Name:$(basename "$dir")\"" >>"$output_file"
     fi
   else
     echo "Directory not found: $dir"
   fi
 done
-
-# Iterate over each file in the directory
-#for file in "$mydi"/*; do
-#    # Extract the directory name without the path using basename
-#    basename=$(basename "$(dirname "$file")")
-#    dir_name="$(basename "$dir")"
-#    # Print the directory name
-#    echo "basename :$basename"
-#    echo "dir_name :$dir_name"
-#done
-#
-## Loop through the directories
-
-#  # Loop through the directories
-#  for dir in "$mydi"/*; do
-#    # Check if directory exists
-#    if [[ -d "$dir" ]]; then
-#     # Print the directory name with double quotes
-#
-#      dir_name="$(basename "$dir")"
-#
-#      echo "Directory not found:$dir\"" >> "$output_file"
-#    # Append the directory name to the output file
-#
-#
-#    else
-#    fi
-#  done
-
-#
-#
-#for dir in "$mydi"/*; do
-#  dir_name="$(basename "$dir")"
-#  #   Check if directory exists
-#  if [[ -d "$dir" ]]; then
-#    directoryNaem="$dir"
-#    for item in "$dir"/*; do
-#      # Check if the directory exists in the directorieslist array
-#      if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
-#        echo "Skipping directory: $dir"
-#      else
-#        if [[ -f "$item" ]]; then
-#          echo "$directoryNaem\\$item"
-#          # echo "\"C:/Users/Mayur/Desktop/MyProjects/\$directory/app/src/main/res/$dir_name\"" >> "$output_file"
-#        fi
-#        #        rm -r "$dir"
-#      fi
-#    done
-#  else
-#    echo "Directory not found: $dir"
-#  fi
-#done
