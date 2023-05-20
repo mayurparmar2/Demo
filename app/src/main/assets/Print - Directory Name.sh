@@ -3,7 +3,7 @@
 
 
 directory="C:/Users/Mayur/Desktop/MyProjects/Demo-master/app/src/main/res"
-   
+
 # Output file name
 output_file="directory_names.txt"
 

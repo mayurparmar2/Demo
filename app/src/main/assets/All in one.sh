@@ -110,8 +110,14 @@ delete_files() {
           || "$item" == "$dir"/drawables*
           || "$item" == "$dir"/dp_example*
           || "$item" == "$dir"/sdp_example*
-          || "$item" == "$dir"/ic_mtrl_c*
+          || "$item" == "$dir"/ic_mtrl_*
           || "$item" == "$dir"/tooltip_frame*
+          || "$item" == "$dir"/fragment_fast_out_*
+          || "$item" == "$dir"/checkbox_themeable*
+          || "$item" == "$dir"/radiobutton_themeable*
+          || "$item" == "$dir"/switch_thumb_*
+          || "$item" == "$dir"/navigation_empty_*
+          || "$item" == "$dir"/firebase_common*
         ]]; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
