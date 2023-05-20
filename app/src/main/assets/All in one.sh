@@ -42,6 +42,7 @@ directorieslist=(
   "C:/AndroidProject/$ProjectName/app/src/main/res/layout"
   "C:/AndroidProject/$ProjectName/app/src/main/res/menu"
   "C:/AndroidProject/$ProjectName/app/src/main/res/xml"
+  "C:/AndroidProject/$ProjectName/app/src/main/res/raw"
   "C:/AndroidProject/$ProjectName/app/src/main/res/values"
   "C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
   "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-hdpi"

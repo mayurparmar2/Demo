@@ -12,6 +12,7 @@ directorieslist=(
   "C:/AndroidProject/$directory/app/src/main/res/layout"
   "C:/AndroidProject/$directory/app/src/main/res/menu"
   "C:/AndroidProject/$directory/app/src/main/res/xml"
+  "C:/AndroidProject/$directory/app/src/main/res/raw"
   "C:/AndroidProject/$directory/app/src/main/res/values"
   "C:/AndroidProject/$directory/app/src/main/res/drawable"
   "C:/AndroidProject/$directory/app/src/main/res/drawable-hdpi"

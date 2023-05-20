@@ -1,64 +1,43 @@
 #!/bin/bash
-# StepConter
+# WifiAutoConnect
 
 # "Enter the path of the directory containing the files: " ProjectName
-echo "Enter the path of the directory containing the files: "
+echo "Enter the PakageName: "
 read PakageName
 
-# search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
-rPakageName="import $PakageName.R"
+echo "Enter the ProjectName: "
+read ProjectName
 
-search_path="C:/AndroidProject/StepConter/app/src/main/java"
+#search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+#rPakageName="import $PakageName.R;"
+
+search_path="C:/AndroidProject/WifiAutoConnect/app/src/main/java"
 # Find all Java files in the specified path and its subdirectories
 java_files=$(find "$search_path" -type f -name '*.java')
 # Iterate over each Java file and perform the replacement
 for file in $java_files; do
-    sed -i "s/$rPakageName/import com.demo.example.R;/g" "$file"
-    sed -i 's/getVisibility() != 0/getVisibility() != View.VISIBLE/g' "$file"
-    sed -i 's/setScrollBarStyle(33554432)/setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY)/g' "$file"
-    sed -i 's/? 8 : 0/? View.GONE : View.VISIBLE/g' "$file"
-    sed -i 's/import com.google.android.gms.ads.appopen.AppOpenAd;//g' "$file"
-    sed -i 's/import com.google.firebase.iid.FirebaseInstanceId;//g' "$file"
-    sed -i 's/import com.google.firebase.iid.InstanceIdResult;//g' "$file"
-    sed -i 's/import com.google.android.gms.tasks.Task;//g' "$file"
-    sed -i 's/import com.google.android.gms.tasks.OnCompleteListener;//g' "$file"
-    sed -i 's/import com.google.android.gms.tasks.OnCompleteListener;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.GoogleMap;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.OnMapReadyCallback;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.OnMapReadyCallback;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.SupportMapFragment;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.SupportMapFragment;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.LatLng;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.LatLng;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.MarkerOptions;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.MarkerOptions;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.PolylineOptions;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.model.PolylineOptions;//g' "$file"
-    sed -i 's/import com.google.android.gms.maps.CameraUpdateFactory;//g' "$file"
-    sed -i 's/import androidx.constraintlayout.solver.widgets.analyzer.BasicMeasure;//g' "$file"
-    sed -i 's/import com.google.firebase.messaging.FirebaseMessagingService;//g' "$file"
-    sed -i 's/import import com.google.firebase.messaging.RemoteMessage;//g' "$file"
-    sed -i 's/import com.google.ads.consent.ConsentInfoUpdateListener;//g' "$file"
-    sed -i 's/import com.google.ads.consent.ConsentInformation;//g' "$file"
-    sed -i 's/import com.google.ads.consent.ConsentStatus;//g' "$file"
-    sed -i 's/import com.google.ads.mediation.admob.AdMobAdapter;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdListener;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.interstitial.InterstitialAd;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.LoadAdError;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdView;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdSize;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdRequest;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdListener;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.FullScreenContentCallback;//g' "$file"
-    sed -i 's/import com.google.android.gms.ads.AdError;//g' "$file"
-    sed -i 's/import androidx.lifecycle.ProcessLifecycleOwner;//g' "$file"
-    sed -i 's/import com.google.firebase.FirebaseApp;//g' "$file"
-    sed -i 's/import androidx.multidex.MultiDexApplication;//g' "$file"
-    sed -i 's/import androidx.multidex.MultiDex;//g' "$file"
-    sed -i 's/setVisibility(0)/setVisibility(View.VISIBLE)/g' "$file"
-    sed -i 's/setVisibility(4)/setVisibility(View.INVISIBLE)/g' "$file"
-    sed -i 's/setVisibility(8)/setVisibility(View.GONE)/g' "$file"
+    sed -i "s/e = e.*?;//g" "$file"
+    sed -i "s/import com\.google\.firebase[^;]*;//g" "$file"
+    sed -i "s/import com\.google\.ads[^;]*;//g" "$file"
+    sed -i "s/import com\.google\.android\.gms\.common[^;]*;//g" "$file"
+    sed -i "s/import com\.google\.android\.ads[^;]*;//g" "$file"
+    sed -i "s/import androidx\.constraintlayout\.solver[^;]*;//g" "$file"
+    sed -i "s/import androidx\.lifecycle\.ProcessLifecycleOwner[^;]*;//g" "$file"
+    sed -i "s/import androidx\.multidex[^;]*;//g" "$file"
+    sed -i "s/import kotlinx\.coroutines[^;]*;//g" "$file"
+done
+#    public void onRequestPermissionsResult\(int i\, String\[\] strArr\, int\[\] iArr\) \{\n        super\.onRequestPermissionsResult\(i\, strArr\, iArr\)\;
+
+
+#    sed -i "s/$rPakageName/import com.demo.example.R;/g" "$file"
+#    sed -i 's/0).show();/Toast.LENGTH_SHORT).show();/g' "$file"
+#    sed -i 's/1).show();/Toast.LENGTH_LONG).show();/g' "$file"
+#    sed -i 's/getVisibility() != 0/getVisibility() != View.VISIBLE/g' "$file"
+#    sed -i 's/setScrollBarStyle(33554432)/setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY)/g' "$file"
+#    sed -i 's/? 8 : 0/? View.GONE : View.VISIBLE/g' "$file"
+#    sed -i 's/setVisibility(0)/setVisibility(View.VISIBLE)/g' "$file"
+#    sed -i 's/setVisibility(4)/setVisibility(View.INVISIBLE)/g' "$file"
+#    sed -i 's/setVisibility(8)/setVisibility(View.GONE)/g' "$file"
     sed -i 's/getSystemService("power")/getSystemService(Context.POWER_SERVICE)/g' "$file"
     sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
     sed -i 's/getSystemService("powerstats")/getSystemService(Context.POWER_STATS_SERVICE)/g' "$file"
@@ -90,6 +69,8 @@ for file in $java_files; do
     sed -i 's/getSystemService("camera")/getSystemService(Context.CAMERA_SERVICE)/g' "$file"
     sed -i 's/getSystemService("sensor")/getSystemService(Context.SENSOR_SERVICE)/g' "$file"
     sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
+    sed -i 's/getSystemService("location")/getSystemService(Context.LOCATION_SERVICE)/g' "$file"
+    sed -i 's/getSystemService("clipboard")/getSystemService(Context.CLIPBOARD_SERVICE)/g' "$file"
     sed -i 's/67108864/Intent.FLAG_ACTIVITY_CLEAR_TOP/g' "$file"
     sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
 done
