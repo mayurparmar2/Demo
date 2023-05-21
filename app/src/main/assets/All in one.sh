@@ -170,6 +170,7 @@ pattern34='<(\w+)\s+[^>]*name="google_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern35='<(\w+)\s+[^>]*name="default_web[^"]*"[^>]*>(.*?)<\/\1>'
 pattern36='<(\w+)\s+[^>]*name="test_mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
+pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
 replacement=''
 # Loop through all files in the directory
 for file in "$regexDir"/*; do
@@ -220,5 +221,5 @@ done
 
 
 
-
+Of="0"
 

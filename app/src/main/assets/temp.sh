@@ -1,36 +1,42 @@
 #!/bin/bash
-# StepConter
+# WifiAutoConnect
 
-echo "Enter the path of the directory containing the files: "
-read ProjectName
+# "Enter the path of the directory containing the files: " ProjectName
+#echo "Enter the PakageName: "
+#read PakageName
+#
+#echo "Enter the ProjectName: "
+#read ProjectName
 
+#search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+#rPakageName="import $PakageName.R;"
 
-xml_file="C:/AndroidProject/$ProjectName/app/src/main/res/layout/activity_main.xml"
+PakageName='auto.move.to.sd.card.quick.transfer'
+ProjectName='AutoMoveSdcard'
+#search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+#java_files=$(find "$search_path" -type f -name '*.java')
+#
+#for file in $java_files; do
+#  sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
+#done
 
+search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+java_files=$(find "$search_path" -type f -name '*.java')
 
-# Read the XML content from the file
-xml_content=$(cat "$xml_file")
+total_files=$(echo "$java_files" | wc -l)
+replace_files=0
 
-# Extract the second tag name using regex
-if [[ $xml_content =~ \<([^\s>]+) ]]; then
-    first_tag="${BASH_REMATCH[1]}"
-    if [[ $xml_content =~ \<([^\s>]+) ]]; then
-        second_tag="${BASH_REMATCH[1]}"
-        echo "Second Tag name: $second_tag"
-    else
-        echo "Second Tag name not found."
-    fi
-else
-    echo "First Tag name not found."
-fi
+for file in $java_files; do
+  sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
+  ((replace_files++))
 
-# Check if the attribute is present in the root tag
-if grep -q 'xmlns:app="http://schemas.android.com/apk/res-auto"' "$xml_file"; then
-    echo "Attribute already exists in the root tag."
-else
-    # Add the attribute to the root tag
-    sed -i '2i\<root_tag_name xmlns:app="http://schemas.android.com/apk/res-auto">' "$xml_file"
-    echo "Attribute added to the root tag."
-fi
+  # Calculate the percentage of files processed
+  percentage=$((replace_files * 100 / total_files))
+  echo "Progress: $percentage% ($replace_files/$total_files files)"
+done
+
+echo "Total files: $total_files"
+echo "Files replaced: $replace_files"
+echo "Percentage processed: $percentage%"
 
 
