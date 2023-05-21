@@ -23,11 +23,14 @@ for file in $java_files; do
   ((processed_dirs++))
   sed -i "s/import $PakageName.R;/import com.demo.example.R;/g" "$file"
   sed -i "s/e = e.*?;//g" "$file"
+  sed -i "s/import com\.android\.billingclient[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.common[^;]*;//g" "$file"
   sed -i "s/import com\.google\.firebase[^;]*;//g" "$file"
   sed -i "s/import com\.google\.ads[^;]*;//g" "$file"
   sed -i "s/import com\.google\.android\.gms\.common[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.android\.gms\.ads[^;]*;//g" "$file"
   sed -i "s/import com\.google\.android\.ads[^;]*;//g" "$file"
-  sed -i "s/import androidx\.constraintlayout\.solver[^;]*;//g" "$file"
+  sed -i "s/import androidx\.constraintlayout[^;]*;//g" "$file"
   sed -i "s/import androidx\.lifecycle\.ProcessLifecycleOwner[^;]*;//g" "$file"
   sed -i "s/import androidx\.multidex[^;]*;//g" "$file"
   sed -i "s/import kotlinx\.coroutines[^;]*;//g" "$file"
@@ -79,13 +82,20 @@ for file in $java_files; do
   sed -i 's/getSystemService("clipboard")/getSystemService(Context.CLIPBOARD_SERVICE)/g' "$file"
   sed -i 's/67108864/Intent.FLAG_ACTIVITY_CLEAR_TOP/g' "$file"
   sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
+  sed -i 's/33554432/PendingIntent.FLAG_MUTABLE/g' "$file"
+  sed -i 's/addFlags(1)/addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)/g' "$file"
+  sed -i 's/addFlags(2)/addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)/g' "$file"
+  sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
+  sed -i 's/NotificationCompat\.CATEGORY_ALARM/Context\.ALARM_SERVICE/g' "$file"
+
 
   class_name=$(grep -m 1 "class " "$file" | sed -n 's/.*class \([^ ]*\).*/\1/p')
+  holdername=$(cat "$file" | grep -o -P "(?<=extends\sRecyclerView.Adapter<)\w+(?=>)")
+#  echo "Class holdername: $holdername"
   # Check if the class name is found
-  if [[ -n $class_name ]]; then
-    sed -i "s/extends RecyclerView.Adapter<ViewHolder>/extends RecyclerView.Adapter<$class_name.ViewHolder>/g" "$file"
-#    echo "Class name: $class_name"
-  else
+  if [[ -n $class_name && $holdername ]]; then
+    sed -i "s/extends RecyclerView.Adapter<$holdername>/extends RecyclerView.Adapter<$class_name.$holdername>/g" "$file"
+#  else
 #    echo "Class name not found."
   fi
   ((replace_files++))
@@ -93,5 +103,3 @@ for file in $java_files; do
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
 done
-
-
