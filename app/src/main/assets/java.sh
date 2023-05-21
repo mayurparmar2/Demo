@@ -22,7 +22,7 @@ delete_file_list=(
   "R.java"
   "BuildConfig.java"
 )
-
+percentage=0
 for file in $java_files; do
   ((processed_dirs++))
   sed -i "s/import $PakageName.R;/import com.demo.example.R;/g" "$file"

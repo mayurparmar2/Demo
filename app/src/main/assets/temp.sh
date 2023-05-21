@@ -1,37 +1,23 @@
 #!/bin/bash
 
-
-ProjectName='AutoMoveSdcard'
-java_file_path="C:/AndroidProject/$ProjectName/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
+#ProjectName='AutoMoveSdcard'
 
 
-#notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
-notification_channel=$(cat "$java_file_path" | grep -o -P "new NotificationChannel\(([^)]+)\)")
-regex="new NotificationChannel\(([^,]+),\s*([^,]+),\s*([^)]+)\)"
-echo "notification_channel : $notification_channel"
-echo "regex : $regex"
-if [[ $notification_channel =~ $regex ]]; then
-  parameter1=${BASH_REMATCH[1]}
-  parameter2=${BASH_REMATCH[2]}
-  parameter3=${BASH_REMATCH[3]}
+set +H  # Disable history expansion
 
-    parameter1=${parameter1//[[:space:]]/}
-    parameter2=${parameter2//[[:space:]]/}
-    parameter3=${parameter3//[[:space:]]/}
-#  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
-  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
-  echo "Parameter 1: $parameter1"
-  echo "Parameter 2: $parameter2"
-  echo "Parameter 3: $parameter3"
-  echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
+manifest="C:/AndroidProject/AutoMoveSdcard/app/src/main/AndroidManifest.xml"
+style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
+
+style_name="style2"
+xml_file="C:/AndroidProject/AutoMoveSdcard/app/src/main/res/values/styles.xml"
+ if [[ -f "$xml_file" ]]; then
+    echo "style.xml file is found"
 fi
-
-
-
-
-
+sed -i "/<style name=\"style1\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+echo "Theme theme_name => '$style_name'"
 #------------------------------------------------
-
+#sed -i "/<style name=\"style2\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+#sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
 #ProjectName='AutoMoveSdcard'
 #java_file_path="C:/AndroidProject/$ProjectName/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
 ##notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
