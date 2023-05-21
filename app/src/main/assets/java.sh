@@ -23,7 +23,6 @@ delete_file_list=(
   "BuildConfig.java"
 )
 
-
 for file in $java_files; do
   ((processed_dirs++))
   sed -i "s/import $PakageName.R;/import com.demo.example.R;/g" "$file"
@@ -94,26 +93,36 @@ for file in $java_files; do
   sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
   sed -i 's/NotificationCompat\.CATEGORY_ALARM/Context\.ALARM_SERVICE/g' "$file"
 
-
   class_name=$(grep -m 1 "class " "$file" | sed -n 's/.*class \([^ ]*\).*/\1/p')
   holdername=$(cat "$file" | grep -o -P "(?<=extends\sRecyclerView.Adapter<)\w+(?=>)")
-#  echo "Class holdername: $holdername"
+  #  echo "Class holdername: $holdername"
   # Check if the class name is found
   if [[ -n $class_name && $holdername ]]; then
     sed -i "s/extends RecyclerView.Adapter<$holdername>/extends RecyclerView.Adapter<$class_name.$holdername>/g" "$file"
   fi
 
-   # Delete unnecessary files
-   name_with_ext=$(basename "$file")
-   if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
-      rm "$item"
-   fi
+  #notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
+  notification_channel=$(cat "$file" | grep -o -P "new NotificationChannel\(([^)]+)\)")
+  regex="new NotificationChannel\(([^,]+),\s*([^,]+),\s*([^)]+)\)"
+  if [[ $notification_channel =~ $regex ]]; then
+    parameter1=${BASH_REMATCH[1]}
+    parameter2=${BASH_REMATCH[2]}
+    parameter3=${BASH_REMATCH[3]}
+    parameter1=${parameter1//[[:space:]]/}
+    parameter2=${parameter2//[[:space:]]/}
+    parameter3=${parameter3//[[:space:]]/}
+    #  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
+#    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
+  fi
+
+  # Delete unnecessary files
+  name_with_ext=$(basename "$file")
+  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+    rm "$item"
+  fi
   ((replace_files++))
   # Calculate the percentage of files processed
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
 done
-
-
-
-
