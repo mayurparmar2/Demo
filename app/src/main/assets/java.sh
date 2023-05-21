@@ -15,9 +15,14 @@ PakageName='auto.move.to.sd.card.quick.transfer'
 ProjectName='AutoMoveSdcard'
 search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
 java_files=$(find "$search_path" -type f -name '*.java')
-
 total_files=$(echo "$java_files" | wc -l)
 replace_files=0
+
+delete_file_list=(
+  "R.java"
+  "BuildConfig.java"
+)
+
 
 for file in $java_files; do
   ((processed_dirs++))
@@ -80,6 +85,7 @@ for file in $java_files; do
   sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
   sed -i 's/getSystemService("location")/getSystemService(Context.LOCATION_SERVICE)/g' "$file"
   sed -i 's/getSystemService("clipboard")/getSystemService(Context.CLIPBOARD_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("storage")/getSystemService(Context.STORAGE_SERVICE)/g' "$file"
   sed -i 's/67108864/Intent.FLAG_ACTIVITY_CLEAR_TOP/g' "$file"
   sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
   sed -i 's/33554432/PendingIntent.FLAG_MUTABLE/g' "$file"
@@ -95,11 +101,19 @@ for file in $java_files; do
   # Check if the class name is found
   if [[ -n $class_name && $holdername ]]; then
     sed -i "s/extends RecyclerView.Adapter<$holdername>/extends RecyclerView.Adapter<$class_name.$holdername>/g" "$file"
-#  else
-#    echo "Class name not found."
   fi
+
+   # Delete unnecessary files
+   name_with_ext=$(basename "$file")
+   if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+      rm "$item"
+   fi
   ((replace_files++))
   # Calculate the percentage of files processed
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
 done
+
+
+
+
