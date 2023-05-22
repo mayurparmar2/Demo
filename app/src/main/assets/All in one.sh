@@ -4,7 +4,6 @@
 echo "Enter the path of the directory containing the files: "
 read ProjectName
 
-
 mydi="C:/AndroidProject/$ProjectName/app/src/main/res"
 
 # Copy the file
@@ -32,8 +31,6 @@ sed -i 's/<attr/<!--<attr/g; s/<\/attr>/<\/attr>-->/g' "$attrsFile"
 
 echo "Styles in $attrsFile have been commented out."
 
-
-
 # List of directories to delete
 directorieslist=(
   "C:/AndroidProject/$ProjectName/app/src/main/res/anim"
@@ -56,70 +53,75 @@ directorieslist=(
   "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxhdpi"
   "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
 )
-# Loop through the directories
-for dir in "$mydi"/*; do
-    # Check if directory exists
-    if [[ -d "$dir" ]]; then
-        # Check if the directory exists in the directorieslist array
-        if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
-            echo "Skipping directory: $dir"
-        else
-            echo "Deleting directory: $dir"
-            rm -r "$dir"
-        fi
-    else
-        echo "Directory not found: $dir"
-    fi
-done
 
+directory_count=$(find $mydi -type d | wc -l)
+replace_files=0
+for dir in "$mydi"/*; do
+  # Check if directory exists
+  if [[ -d "$dir" ]]; then
+    if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
+      echo "Skipping directory: $dir"
+    else
+      rm -r "$dir"
+    fi
+    ((replace_files++))
+    # Calculate the percentage of files processed
+    percentage=$((replace_files * 100 / directory_count))
+    echo "Deleting Directory Progress: $percentage% ($replace_files/$directory_count Directory)"
+  else
+    echo "Directory not found: $dir"
+  fi
+done
 
 # Function to recursively search and delete files starting with 'abc'
 delete_files() {
   local dir="$1"
+  file_count=$(find $dir -type f -name "*.xml" | grep -c ".*")
+  replace_files=0
 
   # Check if the directory exists
   if [[ -d "$dir" ]]; then
     # Iterate through the contents of the directory
     for item in "$dir"/*; do
-      if [[ -f "$item" && "$item" == "$dir"/abc_*
-          || "$item" == "$dir"/design_*
-          || "$item" == "$dir"/common_google*
-          || "$item" == "$dir"/m3_*
-          || "$item" == "$dir"/material_*
-          || "$item" == "$dir"/test_*
-          || "$item" == "$dir"/btn_radio_to*
-          || "$item" == "$dir"/admob_*
-          || "$item" == "$dir"/avd_*
-          || "$item" == "$dir"/ic_m3_chip*
-          || "$item" == "$dir"/res_*
-          || "$item" == "$dir"/test_*
-          || "$item" == "$dir"/notification_*
-          || "$item" == "$dir"/custom_dialog*
-          || "$item" == "$dir"/browser_*
-          || "$item" == "$dir"/select_*
-          || "$item" == "$dir"/text_view_*
-          || "$item" == "$dir"/bools*
-          || "$item" == "$dir"/integers*
-          || "$item" == "$dir"/plurals*
-          || "$item" == "$dir"/public*
-          || "$item" == "$dir"/standalone_*
-          || "$item" == "$dir"/splits0*
-          || "$item" == "$dir"/support_simple_*
-          || "$item" == "$dir"/drawables*
-          || "$item" == "$dir"/dp_example*
-          || "$item" == "$dir"/sdp_example*
-          || "$item" == "$dir"/tooltip_frame*
-          || "$item" == "$dir"/fragment_fast_out_*
-          || "$item" == "$dir"/checkbox_themeable*
-          || "$item" == "$dir"/radiobutton_themeable*
-          || "$item" == "$dir"/switch_thumb_*
-          || "$item" == "$dir"/navigation_empty_*
-          || "$item" == "$dir"/firebase_common*
-          || "$item" == "$dir"/mtrl_*
-          || "$item" == "$dir"/*_mtrl_*
-          || "$item" == "$dir"/*_mtrl
-          || "$item" == "$dir"/btn_checkbox_*
-        ]]; then
+      if [[ -f "$item" && "$item" == "$dir"/abc_* ||
+        "$item" == "$dir"/design_* ||
+        "$item" == "$dir"/common_google* ||
+        "$item" == "$dir"/m3_* ||
+        "$item" == "$dir"/material_* ||
+        "$item" == "$dir"/test_* ||
+        "$item" == "$dir"/btn_radio_to* ||
+        "$item" == "$dir"/admob_* ||
+        "$item" == "$dir"/avd_* ||
+        "$item" == "$dir"/ic_m3_chip* ||
+        "$item" == "$dir"/res_* ||
+        "$item" == "$dir"/test_* ||
+        "$item" == "$dir"/notification_* ||
+        "$item" == "$dir"/custom_dialog* ||
+        "$item" == "$dir"/browser_* ||
+        "$item" == "$dir"/select_* ||
+        "$item" == "$dir"/text_view_* ||
+        "$item" == "$dir"/bools* ||
+        "$item" == "$dir"/integers* ||
+        "$item" == "$dir"/plurals* ||
+        "$item" == "$dir"/public* ||
+        "$item" == "$dir"/standalone_* ||
+        "$item" == "$dir"/splits0* ||
+        "$item" == "$dir"/support_simple_* ||
+        "$item" == "$dir"/drawables* ||
+        "$item" == "$dir"/dp_example* ||
+        "$item" == "$dir"/sdp_example* ||
+        "$item" == "$dir"/tooltip_frame* ||
+        "$item" == "$dir"/fragment_fast_out_* ||
+        "$item" == "$dir"/checkbox_themeable* ||
+        "$item" == "$dir"/radiobutton_themeable* ||
+        "$item" == "$dir"/switch_thumb_* ||
+        "$item" == "$dir"/navigation_empty_* ||
+        "$item" == "$dir"/firebase_common* ||
+        "$item" == "$dir"/mtrl_* ||
+        "$item" == "$dir"/*_mtrl_* ||
+        "$item" == "$dir"/*_mtrl ||
+        "$item" == "$dir"/btn_checkbox_* ]] \
+        ; then
         # Delete the file starting with 'abc'
         echo "Deleting file: $item"
         rm "$item"
@@ -127,6 +129,10 @@ delete_files() {
         # Recursively call the function for nested directories
         delete_files "$item"
       fi
+      ((replace_files++))
+      # Calculate the percentage of files processed
+      percentage=$((replace_files * 100 / file_count))
+      echo "Deleting file Progress: $percentage% ($replace_files/$file_count files)"
     done
   fi
 }
@@ -172,6 +178,9 @@ pattern36='<(\w+)\s+[^>]*name="test_mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
 pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
 replacement=''
+
+file_count=$(find $regexDir -type f -name "*.xml" | grep -c ".*")
+replace_files=0
 # Loop through all files in the directory
 for file in "$regexDir"/*; do
   if [[ -f "$file" ]]; then
@@ -216,10 +225,8 @@ for file in "$regexDir"/*; do
     sed -Ei "s/android:tint=/app:tint=/g" "$file"
     sed -Ei 's/Of="0"/Of="parent"/g' "$file"
   fi
+  ((replace_files++))
+  # Calculate the percentage of files processed
+  percentage=$((replace_files * 100 / file_count))
+  echo "replace file Progress: $percentage% ($replace_files/$file_count replaced)"
 done
-
-
-
-
-Of="0"
-

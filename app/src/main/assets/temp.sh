@@ -5,19 +5,22 @@
 
 set +H  # Disable history expansion
 
-manifest="C:/AndroidProject/AutoMoveSdcard/app/src/main/AndroidManifest.xml"
+manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
 style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
 
-style_name="style2"
-xml_file="C:/AndroidProject/AutoMoveSdcard/app/src/main/res/values/styles.xml"
+style_name="AppTheme"
+
+xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
  if [[ -f "$xml_file" ]]; then
     echo "style.xml file is found"
 fi
-sed -i "/<style name=\"style1\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+
+sed -i "/<style name=\"$style_name\"/,/<\/style>/ s/^<!--\([^!]*\)-->$/\1/" "$xml_file"
 echo "Theme theme_name => '$style_name'"
+
+
 #------------------------------------------------
-#sed -i "/<style name=\"style2\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
-#sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
 #ProjectName='AutoMoveSdcard'
 #java_file_path="C:/AndroidProject/$ProjectName/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
 ##notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
