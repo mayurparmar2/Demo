@@ -1,16 +1,95 @@
 #!/bin/bash
+fun_random_string() {
+  random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
+  # Ensure the string doesn't start with a number or uppercase letter
+  while [[ "$random_string" =~ ^[0-9A-Z] ]]; do
+    random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
+  done
+  echo "$random_string"
+}
 
-
-
-
-
-java_file_path="C:/AndroidProject/StepConter/app/src/main"
-#file_list=$(grep -r --include='*.java' "R.style." "$java_file_path" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
-file_list=$(grep -r --include='*.java' -l "R.style." "$java_file_path")
-# Print the list of R.style. references
-echo "$file_list" > stylesFile.xml
-
+java_file_path="C:/AndroidProject/VideoDownloader/app/src/main/res/layout"
+main_path="C:/AndroidProject/VideoDownloader/app/src/main"
+directory="C:/AndroidProject/VideoDownloader/app/src/main/res"
+directorieslist=(
+  "C:/AndroidProject/VideoDownloader/app/src/main/res/values"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-hdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-mdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xhdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxhdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxxhdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-hdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-mdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xhdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxhdpi"
+  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
+)
+directory_count=$(find $directory -type d | wc -l)
+replace_files=0
+for dir in "$directory"/*; do
+  if [[ "${directorieslist[@]}" =~ "$dir" ]]; then
+    echo "Skipping directory: $dir"
+  else
+    bir_name="$(basename "$dir")"
+    IFS='-' read -ra parts <<<"$bir_name"
+    if [ "${#parts[@]}" -gt 1 ]; then
+      bir_name="${parts[0]}"
+    fi
+    random_string=$(fun_random_string)
+    for file in "$dir"/*; do
+      current_name_ext=$(basename "$file")
+      extension="${current_name_ext##*.}"
+      file_name_without_extension="${current_name_ext%.*}"
+      if [[ -f "$file" ]]; then
+        str="R.$bir_name.$file_name_without_extension"
+        #         echo "R.$bir_name.$file_name_without_extension => $file" >> stylesFile.xml
+        list_java=$(grep -r --include='*.java' -l "$str" "$main_path")
+        for itemJava in $list_java; do
+          search_pattern="R.$bir_name.$file_name_without_extension"
+          replace_text="R.$bir_name.$random_string"
+          find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
+        done
+        str="@$bir_name/$file_name_without_extension"
+        list_xml=$(grep -r --include='*.xml' -l "$str" "$main_path")
+        for itemXml in $list_xml; do
+          #          search_pattern="@$bir_name/$file_name_without_extension"
+          #          replace_text="@$bir_name/$random_string"
+          #          find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
+          sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
+        done
+        mv "$file" "$dir/$random_string.$extension"
+        #        echo "R.$bir_name.$file_name_without_extension" >> stylesFile.xml
+      fi
+    done
+    ((replace_files++))
+    percentage=$((replace_files * 100 / directory_count))
+    echo "Deleting Directory Progress: $percentage% ($replace_files/$directory_count Directory)"
+  fi
+done
+#directory="C:/AndroidProject/VideoDownloader/app/src/main/java/com/demo/videodownloader/activity/Downloader_WebBrowserList_Activity.java"
+#search_pattern="R.layout.activity_web_browser_list"
+#replace_text="R.layout.dvmfsphrpa"
+#find "$directory" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
+#for file in "$java_file_path"/*; do
+#  if [[ -f "$file" ]]; then
+#    current_name_ext=$(basename "$file")
+#    file_name_without_extension="${current_name_ext%.*}"
+#    echo "$file_name_without_extension"
+#    list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
+#    echo "$list_java => $file_name_without_extension" >>stylesFile.xml
+#    for itemJava in $list_java; do
+#      sed -i "s/R\.layout\.$file_name_without_extension/R\.layout\.new_$file_name_without_extension/g" "$itemJava"
+#    done
+#  fi
+#done
 #
+##file_list=$(grep -r --include='*.java' "R.style." "$java_file_path" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
+#file_list=$(grep -r --include='*.java' -l "R.style." "$java_file_path")
+## Print the list of R.style. references
+#echo "$file_list" >stylesFile.xml
+#
+##
 ## Search for Java files and extract R.style. references
 ##file_list=$(grep -r "R.style." "$java_file_path" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
 #reference=$(grep -oP 'R.style\.[a-zA-Z_][a-zA-Z0-9_]*' $java_file_path)
@@ -20,20 +99,6 @@ echo "$file_list" > stylesFile.xml
 #modified_string=$(echo "$name" | sed 's/\_/\./g')
 #echo "$modified_string"
 #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #
 #
@@ -77,8 +142,6 @@ echo "$file_list" > stylesFile.xml
 #sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
 #sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
 #
-
-
 
 #dir="C:/AndroidProject/StepConter/app/src/main"
 #list_xml_java=$(find "$dir" -type f \( -name "*.xml" -o -name "*.java" \))
