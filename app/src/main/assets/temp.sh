@@ -2,15 +2,83 @@
 
 
 xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-#xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-style_list=("AppTheme" "Base.AlertDialog.AppCompat")
+style_list=()
+manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
+style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
+style_list+=("$style_name")
+echo "${style_list[@]}"
 commented_string=$(cat "$xml_file" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-
 echo -e "$commented_string" > "$xml_file"
 sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$xml_file"
 sed -i 's/<!--<resources>-->/<resources>/' "$xml_file"
-updated_string=$(cat "$xml_file" | sed 's/<!--<\/resources>-->/<\/resources>/')
-echo -e "$updated_string" > "$xml_file"
+sed -i 's/<!--<\/resources>-->/<\/resources>/' "$xml_file"
+
+
+
+# Function to recursively search and delete files starting with 'abc'
+delete_files() {
+  local dir="$1"
+  file_count=$(find $dir -type f -name "*.xml" | grep -c ".*")
+  replace_files=0
+
+  # Check if the directory exists
+  if [[ -d "$dir" ]]; then
+    # Iterate through the contents of the directory
+    for item in "$dir"/*; do
+
+      if [[ -f "$item" && "$item" == "$dir"/abc_* ||
+        "$item" == "$dir"/design_* ||
+        "$item" == "$dir"/common_google* ||
+        "$item" == "$dir"/m3_* ||
+        "$item" == "$dir"/material_* ||
+        "$item" == "$dir"/test_* ||
+        "$item" == "$dir"/btn_radio_to* ||
+        "$item" == "$dir"/admob_* ||
+        "$item" == "$dir"/avd_* ||
+        "$item" == "$dir"/ic_m3_chip* ||
+        "$item" == "$dir"/res_* ||
+        "$item" == "$dir"/test_* ||
+        "$item" == "$dir"/notification_* ||
+        "$item" == "$dir"/custom_dialog* ||
+        "$item" == "$dir"/browser_* ||
+        "$item" == "$dir"/select_* ||
+        "$item" == "$dir"/text_view_* ||
+        "$item" == "$dir"/bools* ||
+        "$item" == "$dir"/integers* ||
+        "$item" == "$dir"/plurals* ||
+        "$item" == "$dir"/public* ||
+        "$item" == "$dir"/standalone_* ||
+        "$item" == "$dir"/splits0* ||
+        "$item" == "$dir"/support_simple_* ||
+        "$item" == "$dir"/drawables* ||
+        "$item" == "$dir"/dp_example* ||
+        "$item" == "$dir"/sdp_example* ||
+        "$item" == "$dir"/tooltip_frame* ||
+        "$item" == "$dir"/fragment_fast_out_* ||
+        "$item" == "$dir"/checkbox_themeable* ||
+        "$item" == "$dir"/radiobutton_themeable* ||
+        "$item" == "$dir"/switch_thumb_* ||
+        "$item" == "$dir"/navigation_empty_* ||
+        "$item" == "$dir"/firebase_common* ||
+        "$item" == "$dir"/mtrl_* ||
+        "$item" == "$dir"/*_mtrl_* ||
+        "$item" == "$dir"/*_mtrl ||
+        "$item" == "$dir"/btn_checkbox_* ]] \
+        ; then
+        # Delete the file starting with 'abc'
+#        echo "Deleting file: $item"
+        rm "$item"
+      elif [[ -d "$item" ]]; then
+        # Recursively call the function for nested directories
+        delete_files "$item"
+      fi
+      ((replace_files++))
+      # Calculate the percentage of files processed
+      percentage=$((replace_files * 100 / file_count))
+      echo "Deleting file Progress: $percentage% ($replace_files/$file_count files)"
+    done
+  fi
+}
 
 #----------------------commented_styles sucess--------------------------
 #file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"

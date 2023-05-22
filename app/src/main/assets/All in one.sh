@@ -21,9 +21,19 @@ attrsFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/attrs.xml"
 # cp "$attrsFile" "$attrsFile.bak"
 
 # Comment out all styles
-sed -i 's/<style/<!--<style/g; s/<\/style>/<\/style>-->/g' "$stylesFile"
+style_list=()
+manifest="C:/AndroidProject/$ProjectName/app/src/main/AndroidManifest.xml"
+style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
+style_list+=("$style_name")
+echo "${style_list[@]}"
+commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+echo "$commented_string" > "$stylesFile"
+sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
+sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
+sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
 
-echo "Styles in $stylesFile have been commented out."
+#sed -i 's/<style/<!--<style/g; s/<\/style>/<\/style>-->/g' "$stylesFile"
+#echo "Styles in $stylesFile have been commented out."
 
 # Comment out all attrs
 sed -i 's/<attr/<!--<attr/g; s/<\/attr>/<\/attr>-->/g' "$attrsFile"
@@ -76,9 +86,7 @@ done
 # Function to recursively search and delete files starting with 'abc'
 delete_files() {
   local dir="$1"
-  file_count=$(find $dir -type f -name "*.xml" | grep -c ".*")
-  replace_files=0
-
+  delete_files_total=$(find $dir -type f -name "*.xml" | grep -c ".*")
   # Check if the directory exists
   if [[ -d "$dir" ]]; then
     # Iterate through the contents of the directory
@@ -123,16 +131,13 @@ delete_files() {
         "$item" == "$dir"/btn_checkbox_* ]] \
         ; then
         # Delete the file starting with 'abc'
-        echo "Deleting file: $item"
+        ((delete_files_count++))
+        echo "Deleting file:  ($delete_files_count/$delete_files_total Directory)"
         rm "$item"
       elif [[ -d "$item" ]]; then
         # Recursively call the function for nested directories
         delete_files "$item"
       fi
-      ((replace_files++))
-      # Calculate the percentage of files processed
-      percentage=$((replace_files * 100 / file_count))
-      echo "Deleting file Progress: $percentage% ($replace_files/$file_count files)"
     done
   fi
 }
