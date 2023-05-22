@@ -1,85 +1,93 @@
 #!/bin/bash
 
 
-xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-style_list=()
-manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
-style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
-style_list+=("$style_name")
-echo "${style_list[@]}"
-commented_string=$(cat "$xml_file" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-echo -e "$commented_string" > "$xml_file"
-sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$xml_file"
-sed -i 's/<!--<resources>-->/<resources>/' "$xml_file"
-sed -i 's/<!--<\/resources>-->/<\/resources>/' "$xml_file"
-
-
-
-# Function to recursively search and delete files starting with 'abc'
-delete_files() {
-  local dir="$1"
-  file_count=$(find $dir -type f -name "*.xml" | grep -c ".*")
-  replace_files=0
-
-  # Check if the directory exists
-  if [[ -d "$dir" ]]; then
-    # Iterate through the contents of the directory
-    for item in "$dir"/*; do
-
-      if [[ -f "$item" && "$item" == "$dir"/abc_* ||
-        "$item" == "$dir"/design_* ||
-        "$item" == "$dir"/common_google* ||
-        "$item" == "$dir"/m3_* ||
-        "$item" == "$dir"/material_* ||
-        "$item" == "$dir"/test_* ||
-        "$item" == "$dir"/btn_radio_to* ||
-        "$item" == "$dir"/admob_* ||
-        "$item" == "$dir"/avd_* ||
-        "$item" == "$dir"/ic_m3_chip* ||
-        "$item" == "$dir"/res_* ||
-        "$item" == "$dir"/test_* ||
-        "$item" == "$dir"/notification_* ||
-        "$item" == "$dir"/custom_dialog* ||
-        "$item" == "$dir"/browser_* ||
-        "$item" == "$dir"/select_* ||
-        "$item" == "$dir"/text_view_* ||
-        "$item" == "$dir"/bools* ||
-        "$item" == "$dir"/integers* ||
-        "$item" == "$dir"/plurals* ||
-        "$item" == "$dir"/public* ||
-        "$item" == "$dir"/standalone_* ||
-        "$item" == "$dir"/splits0* ||
-        "$item" == "$dir"/support_simple_* ||
-        "$item" == "$dir"/drawables* ||
-        "$item" == "$dir"/dp_example* ||
-        "$item" == "$dir"/sdp_example* ||
-        "$item" == "$dir"/tooltip_frame* ||
-        "$item" == "$dir"/fragment_fast_out_* ||
-        "$item" == "$dir"/checkbox_themeable* ||
-        "$item" == "$dir"/radiobutton_themeable* ||
-        "$item" == "$dir"/switch_thumb_* ||
-        "$item" == "$dir"/navigation_empty_* ||
-        "$item" == "$dir"/firebase_common* ||
-        "$item" == "$dir"/mtrl_* ||
-        "$item" == "$dir"/*_mtrl_* ||
-        "$item" == "$dir"/*_mtrl ||
-        "$item" == "$dir"/btn_checkbox_* ]] \
-        ; then
-        # Delete the file starting with 'abc'
-#        echo "Deleting file: $item"
-        rm "$item"
-      elif [[ -d "$item" ]]; then
-        # Recursively call the function for nested directories
-        delete_files "$item"
-      fi
-      ((replace_files++))
-      # Calculate the percentage of files processed
-      percentage=$((replace_files * 100 / file_count))
-      echo "Deleting file Progress: $percentage% ($replace_files/$file_count files)"
-    done
+dirAll="C:/AndroidProject/StepConter/app/src/main"
+list_xml_java=$(find "$dirAll" -type f \( -name "*.xml" -o -name "*.java" \))
+my_style_list=()
+for fileXmlJava in $list_xml_java; do
+  # Print the file path
+  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+  # Check if the string is not empty
+  if [[ -n "$style_name" ]]; then
+     is_duplicate=0
+     # Check if the string is equal to any existing element in the list
+     for item in "${my_style_list[@]}"; do
+       if [[ "$item" == "$style_name" ]]; then
+         # Set the flag if the string is a duplicate
+         is_duplicate=1
+         break
+       fi
+     done
+     # Add the string to the list if it is not a duplicate
+     if [[ $is_duplicate -eq 0 ]]; then
+       echo "$style_name"
+       item_str=${style_name//[[:space:]]/}
+#       modified_string=$(echo "$item_str" | sed 's/\./\\./g')
+       my_style_list+=("$item_str")
+     fi
   fi
-}
+done
+# Comment out all styles
+stylesFile="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${my_style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+echo -e "$commented_string" > "$stylesFile"
+sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
+sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
+sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
 
+
+
+
+#dir="C:/AndroidProject/StepConter/app/src/main"
+#list_xml_java=$(find "$dir" -type f \( -name "*.xml" -o -name "*.java" \))
+#my_style_list=()
+#for fileXmlJava in $list_xml_java; do
+#  # Print the file path
+#  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+#  # Check if the string is not empty
+#  if [[ -n "$style_name" ]]; then
+#     is_duplicate=0
+#     # Check if the string is equal to any existing element in the list
+#     for item in "${my_style_list[@]}"; do
+#       if [[ "$item" == "$style_name" ]]; then
+#         # Set the flag if the string is a duplicate
+#         is_duplicate=1
+#         break
+#       fi
+#     done
+#     # Add the string to the list if it is not a duplicate
+#     if [[ $is_duplicate -eq 0 ]]; then
+#       echo "$style_name"
+##       my_style_list+=("$style_name")
+#     fi
+#  fi
+#done
+
+#----------------------commented_styles sucess--------------------------
+#dir="C:/AndroidProject/StepConter/app/src/main"
+#list_xml_java=$(find "$dir" -type f \( -name "*.xml" -o -name "*.java" \))
+#my_style_list=()
+#for fileXmlJava in $list_xml_java; do
+#  # Print the file path
+#  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+## Check if the string is not empty
+#  if [[ -n "$style_name" ]]; then
+#    echo "$style_name"
+#    my_style_list+=("$style_name")
+#  fi
+#done
+#----------------------commented_styles sucess--------------------------
+#xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+#style_list=()
+#manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
+#style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
+#style_list+=("$style_name")
+#echo "${style_list[@]}"
+#commented_string=$(cat "$xml_file" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+#echo -e "$commented_string" > "$xml_file"
+#sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$xml_file"
+#sed -i 's/<!--<resources>-->/<resources>/' "$xml_file"
+#sed -i 's/<!--<\/resources>-->/<\/resources>/' "$xml_file"
 #----------------------commented_styles sucess--------------------------
 #file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
 #commented_string=$(cat "$file" | awk '/<style name="AppTheme"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
@@ -102,7 +110,7 @@ delete_files() {
 #sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
 #------------------------------------------------
 #ProjectName='AutoMoveSdcard'
-#java_file_path="C:/AndroidProject/$ProjectName/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
+#java_file_path="C:/AndroidProject/StepConter/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
 ##notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
 #notification_channel=$(cat "$java_file_path" | grep -o -P "new NotificationChannel\(([^)]+)\)")
 #regex="new NotificationChannel\(([^,]+),\s*([^,]+),\s*([^)]+)\)"
@@ -163,6 +171,3 @@ delete_files() {
 #echo "Files replaced: $replace_files"
 #echo "Percentage processed: $percentage%"
 #
-
-
-

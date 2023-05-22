@@ -13,27 +13,7 @@ cp "$sourceFile" "$destinationDir"
 echo "File copied successfully."
 
 # Comment the file
-stylesFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/styles.xml"
 attrsFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/attrs.xml"
-
-# Backup the original styles.xml file
-# cp "$stylesFile" "$stylesFile.bak"
-# cp "$attrsFile" "$attrsFile.bak"
-
-# Comment out all styles
-style_list=()
-manifest="C:/AndroidProject/$ProjectName/app/src/main/AndroidManifest.xml"
-style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
-style_list+=("$style_name")
-echo "${style_list[@]}"
-commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-echo "$commented_string" > "$stylesFile"
-sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
-sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
-sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
-
-#sed -i 's/<style/<!--<style/g; s/<\/style>/<\/style>-->/g' "$stylesFile"
-#echo "Styles in $stylesFile have been commented out."
 
 # Comment out all attrs
 sed -i 's/<attr/<!--<attr/g; s/<\/attr>/<\/attr>-->/g' "$attrsFile"
@@ -235,3 +215,38 @@ for file in "$regexDir"/*; do
   percentage=$((replace_files * 100 / file_count))
   echo "replace file Progress: $percentage% ($replace_files/$file_count replaced)"
 done
+
+
+dirAll="C:/AndroidProject/$ProjectName/app/src/main"
+list_xml_java=$(find "$dirAll" -type f \( -name "*.xml" -o -name "*.java" \))
+my_style_list=()
+for fileXmlJava in $list_xml_java; do
+  # Print the file path
+  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+  # Check if the string is not empty
+  if [[ -n "$style_name" ]]; then
+     is_duplicate=0
+     # Check if the string is equal to any existing element in the list
+     for item in "${my_style_list[@]}"; do
+       if [[ "$item" == "$style_name" ]]; then
+         # Set the flag if the string is a duplicate
+         is_duplicate=1
+         break
+       fi
+     done
+     # Add the string to the list if it is not a duplicate
+     if [[ $is_duplicate -eq 0 ]]; then
+       echo "$style_name"
+       item_str=${style_name//[[:space:]]/}
+#       modified_string=$(echo "$item_str" | sed 's/\./\\./g')
+       my_style_list+=("$item_str")
+     fi
+  fi
+done
+# Comment out all styles
+stylesFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/styles.xml"
+commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${my_style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+echo -e "$commented_string" > "$stylesFile"
+sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
+sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
+sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
