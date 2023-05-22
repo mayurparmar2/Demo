@@ -1,26 +1,59 @@
 #!/bin/bash
 
-#ProjectName='AutoMoveSdcard'
 
+#!/bin/bash
 
-set +H  # Disable history expansion
-
-manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
-style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
-
-style_name="AppTheme"
-
+# XML file path
 xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
- if [[ -f "$xml_file" ]]; then
-    echo "style.xml file is found"
-fi
 
-sed -i "/<style name=\"$style_name\"/,/<\/style>/ s/^<!--\([^!]*\)-->$/\1/" "$xml_file"
-echo "Theme theme_name => '$style_name'"
+string='<style name="Animation.MaterialComponents.BottomSheetDialog" parent="@style/Animation.AppCompat.Dialog">
+    <item name="android:windowEnterAnimation">@anim/mtrl_bottom_sheet_slide_in</item>
+    <item name="android:windowExitAnimation">@anim/mtrl_bottom_sheet_slide_out</item>
+</style>
+<style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="colorControlNormal">#ffffff</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+</style>
+<style name="Base.AlertDialog.AppCompat" parent="@android:style/Widget">
+    <item name="android:layout">@layout/abc_alert_dialog_material</item>
+    <item name="buttonIconDimen">@dimen/abc_alert_dialog_button_dimen</item>
+    <item name="listItemLayout">@layout/select_dialog_item_material</item>
+    <item name="listLayout">@layout/abc_select_dialog_material</item>
+    <item name="multiChoiceItemLayout">@layout/select_dialog_multichoice_material</item>
+    <item name="singleChoiceItemLayout">@layout/select_dialog_singlechoice_material</item>
+</style>'
+
+commented_string=$(echo "$string" | awk '/<style name="AppTheme"|<style name="Base.AlertDialog.AppCompat"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+
+echo "$commented_string" > commented_styles.txt
 
 
+
+
+
+#----------------------commented_styles sucess--------------------------
+#file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+#commented_string=$(cat "$file" | awk '/<style name="AppTheme"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+#
+#echo "$commented_string" > "$file"
+#echo "$commented_string" > commented_styles.xml
 #------------------------------------------------
-sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+#set +H  # Disable history expansion
+#manifest="C:/AndroidProject/StepConter/app/src/main/AndroidManifest.xml"
+#style_name=$(grep -oP 'android:theme="@style/\K[^"]+' $manifest)
+#echo "Theme theme_name => '$style_name'"
+#style_name="AppTheme"
+#file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+# if [[ -f "$file" ]]; then
+#    echo "style.xml file is found"
+#fi
+#echo "Theme theme_name => '$style_name'"
+#------------------------------------------------
+#sed -i "/<style name=\"$style_name\"/,/<\/style>/ s/^<!--\([^!]*\)-->$/\1/" "$xml_file"
+#sed -i "/<style name=\"$style_name\">/,/<\/style>/ s/^<!--\(.*\)-->/\1/" "$xml_file"
+#------------------------------------------------
 #ProjectName='AutoMoveSdcard'
 #java_file_path="C:/AndroidProject/$ProjectName/app/src/main/java/auto/move/to/sd/card/quick/transfer/utils/NotifiactionUtilsMove.java"
 ##notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
