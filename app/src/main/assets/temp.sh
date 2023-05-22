@@ -1,40 +1,82 @@
 #!/bin/bash
 
 
-dirAll="C:/AndroidProject/StepConter/app/src/main"
-list_xml_java=$(find "$dirAll" -type f \( -name "*.xml" -o -name "*.java" \))
-my_style_list=()
-for fileXmlJava in $list_xml_java; do
-  # Print the file path
-  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
-  # Check if the string is not empty
-  if [[ -n "$style_name" ]]; then
-     is_duplicate=0
-     # Check if the string is equal to any existing element in the list
-     for item in "${my_style_list[@]}"; do
-       if [[ "$item" == "$style_name" ]]; then
-         # Set the flag if the string is a duplicate
-         is_duplicate=1
-         break
-       fi
-     done
-     # Add the string to the list if it is not a duplicate
-     if [[ $is_duplicate -eq 0 ]]; then
-       echo "$style_name"
-       item_str=${style_name//[[:space:]]/}
-#       modified_string=$(echo "$item_str" | sed 's/\./\\./g')
-       my_style_list+=("$item_str")
-     fi
-  fi
-done
-# Comment out all styles
-stylesFile="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${my_style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-echo -e "$commented_string" > "$stylesFile"
-sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
-sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
-sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
 
+
+
+java_file_path="C:/AndroidProject/StepConter/app/src/main"
+#file_list=$(grep -r --include='*.java' "R.style." "$java_file_path" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
+file_list=$(grep -r --include='*.java' -l "R.style." "$java_file_path")
+# Print the list of R.style. references
+echo "$file_list" > stylesFile.xml
+
+#
+## Search for Java files and extract R.style. references
+##file_list=$(grep -r "R.style." "$java_file_path" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
+#reference=$(grep -oP 'R.style\.[a-zA-Z_][a-zA-Z0-9_]*' $java_file_path)
+## Print the list of R.style. references
+#
+#name="${reference##*.}"
+#modified_string=$(echo "$name" | sed 's/\_/\./g')
+#echo "$modified_string"
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+#
+#dirAll="C:/AndroidProject/StepConter/app/src/main"
+#list_xml_java=$(find "$dirAll" -type f \( -name "*.xml" -o -name "*.java" \))
+#my_style_list=()
+#for fileXmlJava in $list_xml_java; do
+#  # Print the file path
+#  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+#  if [ -z "$style_name" ]; then
+#    reference=$(grep -oP 'R.style\.[a-zA-Z_][a-zA-Z0-9_]*' $java_file_path)
+#    name="${reference##*.}"
+#    style_name=$(echo "$name" | sed 's/\_/\./g')
+#    echo "Java: $style_name"
+#  fi
+#  # Check if the string is not empty
+#  if [[ -n "$style_name" ]]; then
+#     is_duplicate=0
+#     # Check if the string is equal to any existing element in the list
+#     for item in "${my_style_list[@]}"; do
+#       if [[ "$item" == "$style_name" ]]; then
+#         # Set the flag if the string is a duplicate
+#         is_duplicate=1
+#         break
+#       fi
+#     done
+#     # Add the string to the list if it is not a duplicate
+#     if [[ $is_duplicate -eq 0 ]]; then
+#       echo "$style_name"
+#       item_str=${style_name//[[:space:]]/}
+##       modified_string=$(echo "$item_str" | sed 's/\./\\./g')
+#       my_style_list+=("$item_str")
+#     fi
+#  fi
+#done
+## Comment out all styles
+#stylesFile="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+#commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${my_style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+#echo -e "$commented_string" > "$stylesFile"
+#sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
+#sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
+#sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
+#
 
 
 
@@ -63,6 +105,12 @@ sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
 #  fi
 #done
 
+#----------------------Search for Java files and extract R.style. references--------------------------
+#directory="/path/to/directory"
+## Search for Java files and extract R.style. references
+#file_list=$(grep -r --include='*.java' "R.style." "$directory" | grep -o "R.style\.[a-zA-Z_][a-zA-Z0-9_]*")
+## Print the list of R.style. references
+#echo "$file_list"
 #----------------------commented_styles sucess--------------------------
 #dir="C:/AndroidProject/StepConter/app/src/main"
 #list_xml_java=$(find "$dir" -type f \( -name "*.xml" -o -name "*.java" \))

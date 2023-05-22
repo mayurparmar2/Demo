@@ -17,7 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     public int[] tabIcons = {
             R.drawable.icon200,
-            R.drawable.settings_icon
+            R.drawable.settings_icon,
+            R.style.Base_TextAppearance_MaterialComponents_Headline6,
     };
 
 

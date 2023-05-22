@@ -223,6 +223,7 @@ my_style_list=()
 for fileXmlJava in $list_xml_java; do
   # Print the file path
   style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+
   # Check if the string is not empty
   if [[ -n "$style_name" ]]; then
      is_duplicate=0
