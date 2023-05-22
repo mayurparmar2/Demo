@@ -1,41 +1,16 @@
 #!/bin/bash
 
 
-string='<style name="Animation.MaterialComponents.BottomSheetDialog" parent="@style/Animation.AppCompat.Dialog">
-    <item name="android:windowEnterAnimation">@anim/mtrl_bottom_sheet_slide_in</item>
-    <item name="android:windowExitAnimation">@anim/mtrl_bottom_sheet_slide_out</item>
-</style>
-<style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="colorControlNormal">#ffffff</item>
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-</style>
-<style name="Base.AlertDialog.AppCompat" parent="@android:style/Widget">
-    <item name="android:layout">@layout/abc_alert_dialog_material</item>
-    <item name="buttonIconDimen">@dimen/abc_alert_dialog_button_dimen</item>
-    <item name="listItemLayout">@layout/select_dialog_item_material</item>
-    <item name="listLayout">@layout/abc_select_dialog_material</item>
-    <item name="multiChoiceItemLayout">@layout/select_dialog_multichoice_material</item>
-    <item name="singleChoiceItemLayout">@layout/select_dialog_singlechoice_material</item>
-</style>'
-
-style_list=("AppTheme" "Base.AlertDialog.AppCompat")
-
-commented_string=$(echo "$string" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-
-echo "$commented_string" > commented_styles.xml
-
-
+xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
 #xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-#
-#commented_string=$(echo "$string" | awk '/<style name="AppTheme"|<style name="Base.AlertDialog.AppCompat"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-#
-#echo "$commented_string" > commented_styles.txt
+style_list=("AppTheme" "Base.AlertDialog.AppCompat")
+commented_string=$(cat "$xml_file" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
 
-
-
-
+echo -e "$commented_string" > "$xml_file"
+sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$xml_file"
+sed -i 's/<!--<resources>-->/<resources>/' "$xml_file"
+updated_string=$(cat "$xml_file" | sed 's/<!--<\/resources>-->/<\/resources>/')
+echo -e "$updated_string" > "$xml_file"
 
 #----------------------commented_styles sucess--------------------------
 #file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
