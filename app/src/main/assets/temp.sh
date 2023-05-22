@@ -1,11 +1,6 @@
 #!/bin/bash
 
 
-#!/bin/bash
-
-# XML file path
-xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
-
 string='<style name="Animation.MaterialComponents.BottomSheetDialog" parent="@style/Animation.AppCompat.Dialog">
     <item name="android:windowEnterAnimation">@anim/mtrl_bottom_sheet_slide_in</item>
     <item name="android:windowExitAnimation">@anim/mtrl_bottom_sheet_slide_out</item>
@@ -25,9 +20,18 @@ string='<style name="Animation.MaterialComponents.BottomSheetDialog" parent="@st
     <item name="singleChoiceItemLayout">@layout/select_dialog_singlechoice_material</item>
 </style>'
 
-commented_string=$(echo "$string" | awk '/<style name="AppTheme"|<style name="Base.AlertDialog.AppCompat"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+style_list=("AppTheme" "Base.AlertDialog.AppCompat")
 
-echo "$commented_string" > commented_styles.txt
+commented_string=$(echo "$string" | awk '/<style name="'"$(IFS="|"; echo "${style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+
+echo "$commented_string" > commented_styles.xml
+
+
+#xml_file="C:/AndroidProject/StepConter/app/src/main/res/values/styles.xml"
+#
+#commented_string=$(echo "$string" | awk '/<style name="AppTheme"|<style name="Base.AlertDialog.AppCompat"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
+#
+#echo "$commented_string" > commented_styles.txt
 
 
 
