@@ -86,12 +86,12 @@ for file in $java_files; do
   sed -i 's/getSystemService("storage")/getSystemService(Context.STORAGE_SERVICE)/g' "$file"
   sed -i 's/67108864/Intent.FLAG_ACTIVITY_CLEAR_TOP/g' "$file"
   sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
+  sed -i 's/134217728/PendingIntent.FLAG_UPDATE_CURRENT/g' "$file"
   sed -i 's/33554432/PendingIntent.FLAG_MUTABLE/g' "$file"
   sed -i 's/addFlags(1)/addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)/g' "$file"
   sed -i 's/addFlags(2)/addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)/g' "$file"
   sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
   sed -i 's/NotificationCompat\.CATEGORY_ALARM/Context\.ALARM_SERVICE/g' "$file"
-
 
   class_name=$(grep -m 1 "class " "$file" | sed -n 's/.*class \([^ ]*\).*/\1/p')
   holdername=$(cat "$file" | grep -o -P "(?<=extends\sRecyclerView.Adapter<)\w+(?=>)")
@@ -100,8 +100,7 @@ for file in $java_files; do
   if [[ -n $class_name && $holdername ]]; then
     sed -i "s/extends RecyclerView.Adapter<$holdername>/extends RecyclerView.Adapter<$class_name.$holdername>/g" "$file"
   fi
-
-  #notification_channel="new NotificationChannel(Ostr3423, Mst4242r2, 2)"
+  #----------------------notification_channel--------------------------
   notification_channel=$(cat "$file" | grep -o -P "new NotificationChannel\(([^)]+)\)")
   regex="new NotificationChannel\(([^,]+),\s*([^,]+),\s*([^)]+)\)"
   if [[ $notification_channel =~ $regex ]]; then
@@ -132,17 +131,18 @@ for file in $java_files; do
         sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
         sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
      done
-#----------------------Toast.makeText--------------------------
-
+#---------------------- Delete unnecessary files--------------------------
 #  # Delete unnecessary files
 #  name_with_ext=$(basename "$file")
 #  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
 #    rm "$item"
 #  fi
+#--------------------- Calculate the percentage of files processed-------------------------
   ((replace_files++))
   # Calculate the percentage of files processed
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
+#--------------------- Calculate the percentage of files processed-------------------------
 done
 
 
