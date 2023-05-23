@@ -1,24 +1,24 @@
 #!/bin/bash
 
 
+file_list=()  # Initialize an empty array to store the file list
 
-directory="C:/Users/Mayur/Desktop/MyProjects/Demo-master/app/src/main/res"
+# Add files to the list
+file1="/path/to/file1.txt"
+file2="/path/to/file2.txt"
+file2="/path/to/file2.txt"
 
-# Output file name
-output_file="directory_names.txt"
+# Check if file1 is not already in the list before adding it
+if [[ ! " ${file_list[@]} " =~ " ${file1} " ]]; then
+    file_list+=("$file1")
+fi
 
-# Loop through the directories
-for dir in "$directory"/*; do
-  # Check if directory exists
-  if [[ -d "$dir" ]]; then
-   # Print the directory name with double quotes
-    echo "\"$(basename "$dir")\""
+# Check if file2 is not already in the list before adding it
+if [[ ! " ${file_list[@]} " =~ " ${file2} " ]]; then
+    file_list+=("$file2")
+fi
 
-    dir_name="$(basename "$dir")"
-  # Append the directory name to the output file
-  echo "\"C:/Users/Mayur/Desktop/MyProjects/\$directory/app/src/main/res/$dir_name\"" >> "$output_file"
-
-  else
-    echo "Directory not found: $dir"
-  fi
+# Print the file list
+for file in "${file_list[@]}"; do
+    echo "$file"
 done

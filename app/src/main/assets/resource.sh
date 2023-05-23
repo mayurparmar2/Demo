@@ -91,7 +91,6 @@ for dir in "$mydi"/*; do
           #             sed -Ei "s/R\.$bir_name\.$file_name_without_extension/R.$bir_name.$random_string/g" "$fileJava"
           #             sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$fileJava"
           #          done
-
           mv "$file" "$dir/$random_string.$extension"
         fi
       done
