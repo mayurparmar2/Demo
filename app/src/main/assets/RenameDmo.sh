@@ -35,9 +35,6 @@ list_and_print_files() {
   file_list+=("$filename")
 }
 
-
-
-
 replace_java_files() {
   main_path="$1"
   bir_name="$2"
@@ -49,8 +46,16 @@ replace_java_files() {
     replace_text="R.$bir_name.$random_string"
     find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
   done
-}
+#
+#  list_xml=$(grep -r --include='*.xml' -l "@$bir_name/$file_name_without_extension" "$main_path")
+#  for itemXml in $list_xml; do
+#    search_pattern="@$bir_name/$file_name_without_extension[[:alnum:]_]*"
+#    replace_text="@$bir_name/$random_string"
+#    find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
+#    #            sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
+#  done
 
+}
 
 for dir in "$directory"/*; do
   directory_count=$(find $dir -type d | wc -l)
@@ -70,18 +75,15 @@ for dir in "$directory"/*; do
         file_name_without_extension="${current_name_ext%.*}"
         random_string=$(fun_random_string)
         if [[ -f "$file" ]]; then
-            replace_java_files "$main_path" "$bir_name" "$file_name_without_extension" "$random_string"
-#          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
+          replace_java_files "$main_path" "$bir_name" "$file_name_without_extension" "$random_string"
+          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
         fi
       done
     fi
   fi
 done
 
-
-
-
-echo "Hello, this is a sample text" | sed -e 's/\b\([a-zA-Z]*pattern[a-zA-Z]*\)\b/replacement/g'
+#echo "Hello, this is a sample text" | sed -e 's/\b\([a-zA-Z]*pattern[a-zA-Z]*\)\b/replacement/g'
 
 #list_and_print_files "$main_path" "new_weather2" "weather123"
 #list_and_print_files "$main_path" "new_weather2" "weather456"
