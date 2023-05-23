@@ -2,17 +2,17 @@
 # WifiAutoConnect
 
 # "Enter the path of the directory containing the files: " ProjectName
-#echo "Enter the PakageName: "
-#read PakageName
+echo "Enter the PakageName: "
+read PakageName
 #
-#echo "Enter the ProjectName: "
-#read ProjectName
+echo "Enter the ProjectName: "
+read ProjectName
 
 #search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
 #rPakageName="import $PakageName.R;"
-
-PakageName='auto.move.to.sd.card.quick.transfer'
-ProjectName='AutoMoveSdcard'
+#
+#PakageName='auto.move.to.sd.card.quick.transfer'
+#ProjectName='AutoMoveSdcard'
 search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
 java_files=$(find "$search_path" -type f -name '*.java')
 total_files=$(echo "$java_files" | wc -l)
@@ -115,14 +115,35 @@ for file in $java_files; do
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
 #    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
   fi
+  #----------------------Toast.makeText--------------------------
+    matches=()
+     while IFS= read -r line; do
+         matches+=("$line")
+     done < <(grep -o 'Toast\.makeText([^;]*);' "$file")
+     for match in "${matches[@]}"; do
+         echo "$match"
+         # Remove leading and trailing whitespace
+         string=$(echo "$match" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+         # Extract parameters
+         IFS=',' read -r -a params <<< "${string#Toast.makeText(}"
+         context=$(echo "${params[0]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+         message=$(echo "${params[1]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    #     duration=$(echo "${params[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/)//')
+        sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
+        sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
+     done
+#----------------------Toast.makeText--------------------------
 
-  # Delete unnecessary files
-  name_with_ext=$(basename "$file")
-  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
-    rm "$item"
-  fi
+#  # Delete unnecessary files
+#  name_with_ext=$(basename "$file")
+#  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+#    rm "$item"
+#  fi
   ((replace_files++))
   # Calculate the percentage of files processed
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
 done
+
+
+

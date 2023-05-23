@@ -1,72 +1,53 @@
 #!/bin/bash
-fun_random_string() {
-  random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
-  # Ensure the string doesn't start with a number or uppercase letter
-  while [[ "$random_string" =~ ^[0-9A-Z] ]]; do
-    random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
-  done
-  echo "$random_string"
-}
 
-java_file_path="C:/AndroidProject/VideoDownloader/app/src/main/res/layout"
-main_path="C:/AndroidProject/VideoDownloader/app/src/main"
-directory="C:/AndroidProject/VideoDownloader/app/src/main/res"
-directorieslist=(
-  "C:/AndroidProject/VideoDownloader/app/src/main/res/values"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-hdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-mdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xhdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxhdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxxhdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-hdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-mdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xhdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxhdpi"
-  #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
-)
-directory_count=$(find $directory -type d | wc -l)
-replace_files=0
-for dir in "$directory"/*; do
-  if [[ "${directorieslist[@]}" =~ "$dir" ]]; then
-    echo "Skipping directory: $dir"
-  else
-    bir_name="$(basename "$dir")"
-    IFS='-' read -ra parts <<<"$bir_name"
-    if [ "${#parts[@]}" -gt 1 ]; then
-      bir_name="${parts[0]}"
-    fi
-    random_string=$(fun_random_string)
-    for file in "$dir"/*; do
-      current_name_ext=$(basename "$file")
-      extension="${current_name_ext##*.}"
-      file_name_without_extension="${current_name_ext%.*}"
-      if [[ -f "$file" ]]; then
-        str="R.$bir_name.$file_name_without_extension"
-        #         echo "R.$bir_name.$file_name_without_extension => $file" >> stylesFile.xml
-        list_java=$(grep -r --include='*.java' -l "$str" "$main_path")
-        for itemJava in $list_java; do
-          search_pattern="R.$bir_name.$file_name_without_extension"
-          replace_text="R.$bir_name.$random_string"
-          find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
-        done
-        str="@$bir_name/$file_name_without_extension"
-        list_xml=$(grep -r --include='*.xml' -l "$str" "$main_path")
-        for itemXml in $list_xml; do
-          #          search_pattern="@$bir_name/$file_name_without_extension"
-          #          replace_text="@$bir_name/$random_string"
-          #          find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
-          sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
-        done
-        mv "$file" "$dir/$random_string.$extension"
-        #        echo "R.$bir_name.$file_name_without_extension" >> stylesFile.xml
-      fi
-    done
-    ((replace_files++))
-    percentage=$((replace_files * 100 / directory_count))
-    echo "Deleting Directory Progress: $percentage% ($replace_files/$directory_count Directory)"
-  fi
-done
+
+
+
+
+#main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
+#for dir in "$mydi"/*; do
+#  directory_count=$(find $dir -type d | wc -l)
+#  # Check if directory exists
+#  if [[ -d "$dir" ]]; then
+#    if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
+#      echo "Skipping directory: $dir"
+#    else
+#      bir_name="$(basename "$dir")"
+#      IFS='-' read -ra parts <<<"$bir_name"
+#      if [ "${#parts[@]}" -gt 1 ]; then
+#        bir_name="${parts[0]}"
+#      fi
+#      list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+#    fi
+#  fi
+#
+#done
+
+#---------------------Toast.makeText-------------------------
+#file="C:/AndroidProject/StepCounter/app/src/main/java/pedometer/stepcounter/appcompany/BMI_Calculator_Activity.java"
+#matches=()
+# while IFS= read -r line; do
+#     matches+=("$line")
+# done < <(grep -o 'Toast\.makeText([^;]*);' "$file")
+# for match in "${matches[@]}"; do
+#     echo "$match"
+#     # Remove leading and trailing whitespace
+#     string=$(echo "$match" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+#     # Extract parameters
+#     IFS=',' read -r -a params <<< "${string#Toast.makeText(}"
+#     context=$(echo "${params[0]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+#     message=$(echo "${params[1]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+##     duration=$(echo "${params[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/)//')
+#    sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
+#    sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
+# done
+
+#----------------------Toast.makeText--------------------------
+#directory="C:/AndroidProject/Test/VideoDownloader/app/src/main/res"
+#pattern="*btn*"
+#file_list=$(find "$directory" -type f -name "$pattern")
+#echo "$file_list"
+
 #directory="C:/AndroidProject/VideoDownloader/app/src/main/java/com/demo/videodownloader/activity/Downloader_WebBrowserList_Activity.java"
 #search_pattern="R.layout.activity_web_browser_list"
 #replace_text="R.layout.dvmfsphrpa"
