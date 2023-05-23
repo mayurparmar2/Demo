@@ -24,8 +24,6 @@ directorieslist=(
   #  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
 )
 
-replaced_Dir=0
-percentage1=0
 # Loop through the directories
 for dir in "$mydi"/*; do
   directory_count=$(find $dir -type d | wc -l)
@@ -56,48 +54,33 @@ for dir in "$mydi"/*; do
             random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
           done
 
-          replaced_file=0
-          percentage=0
           list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
-          list_java_count=$(echo "$list_java" | wc -l)
-          replaced_file=0
           for itemJava in $list_java; do
             search_pattern="R.$bir_name.$file_name_without_extension"
             replace_text="R.$bir_name.$random_string"
             find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
             #            sed -i "s/R\.$bir_name\.$file_name_without_extension/R\.$bir_name\.$random_string/g" "$itemJava"
-            ((replaced_file++))
-            percentage=$((replaced_file * 100 / list_java_count))
             echo "Search Java file Progress: $percentage% ($replaced_file/$list_java_count Directory)"
           done
 
           list_xml=$(grep -r --include='*.xml' -l "@$bir_name/$file_name_without_extension" "$main_path")
-          list_xml_count=$(echo "$list_xml" | wc -l)
-          percentage=0
-          replaced_file=0
           for itemXml in $list_xml; do
             search_pattern="@$bir_name/$file_name_without_extension"
             replace_text="@$bir_name/$random_string"
             find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
             #            sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
-            ((replaced_file++))
-            percentage=$((replaced_file * 100 / list_xml_count))
-            echo "Search xml file Progress: $percentage% ($replaced_file/$list_xml_count Directory)"
           done
-          #          list_xml_java=$(find "$java_xml_path" -type f \( -name "*.xml" -o -name "*.java" \))
-          #          # Iterate over the files using a for loop
-          #          for fileJava in $list_xml_java; do
-          #            # Print the file path
-          #             sed -Ei "s/R\.$bir_name\.$file_name_without_extension/R.$bir_name.$random_string/g" "$fileJava"
-          #             sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$fileJava"
-          #          done
+#                    list_xml_java=$(find "$java_xml_path" -type f \( -name "*.xml" -o -name "*.java" \))
+#                    # Iterate over the files using a for loop
+#                    for fileJava in $list_xml_java; do
+#                      # Print the file path
+#                       sed -Ei "s/R\.$bir_name\.$file_name_without_extension/R.$bir_name.$random_string/g" "$fileJava"
+#                       sed -Ei "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$fileJava"
+#                    done
           mv "$file" "$dir/$random_string.$extension"
         fi
       done
     fi
-    ((replaced_Dir++))
-    percentage1=$((replaced_Dir * 100 / directory_count))
-    echo "Deleting Directory Progress: $percentage1% ($replaced_Dir/$directory_count Directory)"
   else
     echo "Directory not found: $dir"
   fi

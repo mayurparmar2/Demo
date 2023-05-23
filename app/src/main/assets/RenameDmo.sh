@@ -34,6 +34,24 @@ list_and_print_files() {
   done
   file_list+=("$filename")
 }
+
+
+
+
+replace_java_files() {
+  main_path="$1"
+  bir_name="$2"
+  file_name_without_extension="$3"
+  random_string="$4"
+  list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+  for itemJava in $list_java; do
+    search_pattern="R.$bir_name.$file_name_without_extension[[:alnum:]_]*"
+    replace_text="R.$bir_name.$random_string"
+    find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
+  done
+}
+
+
 for dir in "$directory"/*; do
   directory_count=$(find $dir -type d | wc -l)
   # Check if directory exists
@@ -52,24 +70,18 @@ for dir in "$directory"/*; do
         file_name_without_extension="${current_name_ext%.*}"
         random_string=$(fun_random_string)
         if [[ -f "$file" ]]; then
-          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
-#          file_same_list=$(find "$directory" -type f -name "*$file_name_without_extension*")
-#          for itemSame in $file_same_list; do
-#            #            if [[ ! " ${file_list[@]} " =~ " ${itemSame} " ]]; then
-#            #              rename="$directory/$(basename "$dir")/$random_string.$extension"
-#            echo "$itemSame" >>stylesFile.xml
-#            #              mv "$itemSame" "$rename"
-#            #              file_list+=("$rename")
-#            #            fi
-#          done
-          #          echo "$file_list"
+            replace_java_files "$main_path" "$bir_name" "$file_name_without_extension" "$random_string"
+#          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
         fi
       done
-      #      list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
     fi
   fi
 done
 
+
+
+
+echo "Hello, this is a sample text" | sed -e 's/\b\([a-zA-Z]*pattern[a-zA-Z]*\)\b/replacement/g'
 
 #list_and_print_files "$main_path" "new_weather2" "weather123"
 #list_and_print_files "$main_path" "new_weather2" "weather456"
