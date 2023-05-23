@@ -2,18 +2,18 @@
 
 file_list=()
 declare -a file_list
-java_file_path="C:/AndroidProject/VideoDownloader/app/src/main/res/layout"
-directory="C:/AndroidProject/VideoDownloader/app/src/main/res"
-main_path="C:/AndroidProject/VideoDownloader/app/src/main"
+java_file_path="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/layout"
+directory="C:/AndroidProject/Test/VideoDownloader/app/src/main/res"
+main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
 directorieslist=(
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values"
 )
 
 fun_random_string() {
-  random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
+  random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 5 | head -n 1)
   # Ensure the string doesn't start with a number or uppercase letter
   while [[ "$random_string" =~ ^[0-9A-Z] ]]; do
-    random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
+    random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 5 | head -n 1)
   done
   echo "$random_string"
 }
@@ -42,8 +42,8 @@ replace_java_files() {
   random_string="$4"
   list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
   for itemJava in $list_java; do
-    search_pattern="R.$bir_name.$file_name_without_extension[[:alnum:]_]*"
-    replace_text="R.$bir_name.$random_string"
+    search_pattern="R\.$bir_name\.$file_name_without_extension\([^_]\)"
+    replace_text="R\.$bir_name\.$file_name_without_extension$random_string"
     find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
   done
 #
@@ -83,7 +83,10 @@ for dir in "$directory"/*; do
   fi
 done
 
-#echo "Hello, this is a sample text" | sed -e 's/\b\([a-zA-Z]*pattern[a-zA-Z]*\)\b/replacement/g'
+#echo "activity_web_browser_list" | sed -e "s/R\.layout\.[a-zA-Z]*\([^_]\)/R.layout.random_string\1/g"
+#echo "R.layout.activity_web_browser_list" | sed -e "s/R\.layout\.activity_web_browser*\([^_]\)/R.layout.random_string\1/g"
+
+#sed -i "s/R\.layout\.[a-zA-Z]*\([^_]\)/R.layout.random_string\1/g" WebBrowserList_Activity.java WebBrowser_Activity.java
 
 #list_and_print_files "$main_path" "new_weather2" "weather123"
 #list_and_print_files "$main_path" "new_weather2" "weather456"
