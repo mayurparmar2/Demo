@@ -17,12 +17,12 @@ search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
 java_files=$(find "$search_path" -type f -name '*.java')
 total_files=$(echo "$java_files" | wc -l)
 replace_files=0
+percentage=0
 
 delete_file_list=(
   "R.java"
   "BuildConfig.java"
 )
-percentage=0
 for file in $java_files; do
   sed -i "s/import $PakageName.R;/import com.demo.example.R;/g" "$file"
   sed -i "s/e = e.*?;//g" "$file"
