@@ -1,16 +1,18 @@
 #!/bin/bash
+echo "Enter the path of the directory containing the files: "
+read ProjectName
 
 renamed_directory=0
 percentage=0
-directory="C:/AndroidProject/Test/VideoDownloader/app/src/main/res"
-main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
+directory="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
+main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
 directorieslist=(
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/arrays.xml"
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/attrs.xml"
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/colors.xml"
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/dimens.xml"
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/strings.xml"
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/arrays.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/attrs.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/colors.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/dimens.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/strings.xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
 )
 fun_random_string() {
   random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
@@ -39,9 +41,11 @@ replace_java_files() {
   for itemXml in $list_xml; do
     sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
   done
-  main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
+  main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
   list_xml=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
   for itemXml in $list_xml; do
+    pattern="@$bir_name/$file_name_without_extension"
+    replacement="@$bir_name/$random_string"
     sed -i "s,>$pattern<,>$replacement<,g" "$itemXml"
   done
 }
@@ -103,10 +107,14 @@ done
 
 #"s/R\.$bir_name\.$file_name_without_extension\([^_]\)/R.$bir_name.$random_string\1/g"
 #R.drawable.direct_download
-#itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
+#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
 #bir_name="drawable"
 #file_name_without_extension="background_bottom_sheet"
-#
+#  main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
+#  list_xml=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
+#  for itemXml in $list_xml; do
+#    sed -i "s,>$pattern<,>$replacement<,g" "$itemXml"
+#  done
 #
 #bir_name="drawable"
 #file_name_without_extension="background_bottom_sheet"
@@ -157,7 +165,7 @@ done
 #
 #sed -i "s/$pattern/$riplace\1/g" "$itemJava"
 #
-#itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
+#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
 #bir_name="drawable"
 #file_name_without_extension="background"
 #random_string="new_background_bottom_sheet"
@@ -181,22 +189,22 @@ done
 #for itemXml2 in $list_xml2; do
 #  sed -i "s/\>\(@$bir_name\/\)$file_name_without_extension\</\>\1$random_string\</g" "$itemXml2"
 #done
+
+#sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
+#C:\AndroidProject\Test\$ProjectName\app\src\main\java\com\demo\videodownloader\adapter
+#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
+#sed -i '0,/itemsof/{s/\R\.layout\.itemsof_whatsapp_statuses_view\b/random_string/}' "$itemJava"
+#sed -i '0,/items/{s/\bitems\b/random_string/}' filename
 #
-##sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
-##C:\AndroidProject\Test\VideoDownloader\app\src\main\java\com\demo\videodownloader\adapter
-##itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
-##sed -i '0,/itemsof/{s/\R\.layout\.itemsof_whatsapp_statuses_view\b/random_string/}' "$itemJava"
-##sed -i '0,/items/{s/\bitems\b/random_string/}' filename
-##
-##sed -i "s/R\.layout\.items/R.layout.random_string/g" "$itemJava"
-##
-##echo "R.layout.R.layout.random_string_whatsapp_statuses_view" | sed -e "s/R\.layout\.activity_web_browser[^_[:alnum:][:space:]]*/R.layout.random_string/g"
+#sed -i "s/R\.layout\.items/R.layout.random_string/g" "$itemJava"
 #
-##
-##
-##
-##
-##echo "R.drawable.direct_download" | sed -E "s/R\.layout\.activity_web_browser\([^_]\)/R.layout.random_string\1/g"
+#echo "R.layout.R.layout.random_string_whatsapp_statuses_view" | sed -e "s/R\.layout\.activity_web_browser[^_[:alnum:][:space:]]*/R.layout.random_string/g"
+
+#
+#
+#
+#
+#echo "R.drawable.direct_download" | sed -E "s/R\.layout\.activity_web_browser\([^_]\)/R.layout.random_string\1/g"
 #
 #
 #echo "R.layout.activity_web_browser_list" | sed -e "s/R\.layout\.activity_web_browser\([^_]\)/R.layout.random_string\1/g"
