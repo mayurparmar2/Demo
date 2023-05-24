@@ -101,18 +101,68 @@ done
 #itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
 
 itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
+#sed -i '0,/@drawable\/background/s//@drawable\/bottom/' "$itemJava"
+sed -i 's/@drawable\/background/@drawable\/bottom/1' "$itemJava"
+
+updated_string=$(echo "$string" | sed 's/@drawable\/bottom_sheet/@layout\/bottom/1')
+
+
+string='<style name="AppModalStyle" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet</item>
+ <item name="android:background">@drawable/bottom_sheet2</item>
+    </style>'
+
+
+echo "$updated_string"
+
+
+bir_name="drawable"
+file_name_without_extension="background_bottom_sheet"
+random_string="new_background_bottom_sheet"
+#pattern="\@$bir_name\/$file_name_without_extension"
+#riplace="\@$bir_name\/$random_string"
+# Perform the replacement (only the first occurrence)
+updated_content=$(cat "$itemJava" | sed '0,/@'$bir_name'\/'file_name_without_extension'/s//@'$bir_name'\/'random_string'/')
+# Write the updated content to a temporary file
+echo "$updated_content" > "$itemJava"
+
+
+sed -i '0,/@'$bir_name'\/'file_name_without_extension'/s//@'$bir_name'\/'random_string'/' "$itemJava"
+
+
+string='<style name="AppModalStyle" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet</item>
+ <item name="android:background">@drawable/bottom_sheet2</item>
+    </style>'
+
+sed -i '0,/@drawable\/bottom_sheet/s//@layout\/bottom/' "$string"
+
+echo "$string"
+
+
+string='<style name="AppModalStyle" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet</item>
+ <item name="android:background">@drawable/bottom_sheet2</item>
+    </style>'
+
+
+echo "$updated_string"
+
+
+sed -i "s/$pattern/$riplace\1/g" "$itemJava"
+
+itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
 bir_name="drawable"
 file_name_without_extension="background"
 random_string="new_background_bottom_sheet"
 pattern="\@$bir_name\/$file_name_without_extension"
 riplace="\@$bir_name\/$random_string"
-sed -i '0,/'$pattern'/{s/'$pattern'/'$riplace'/}' "$itemJava"
+sed -i '0,/'$pattern' /{s/'$pattern'/'$riplace'/}' "$itemJava"
 
-/@drawable/background_bottom_sheet
+#/@drawable/background_bottom_sheet
 pattern="\@drawable\/background[^<]"
 riplace="\@drawable\/sdsd_bottom_sheet"
 sed -i "s/$pattern/$riplace/g" "$itemJava"
-
 sed -i 's/\>\@drawable\/background_bottom_sheet\</\>\@drawable\/new_background_bottom_sheet\</g' "$itemJava"
 
 sed -i 's/\>\@drawable\/background_bottom_sheet\</\>\_qthqroejrd\>/' "$itemJava"
@@ -125,6 +175,9 @@ list_xml2=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_exte
 for itemXml2 in $list_xml2; do
   sed -i "s/\>\(@$bir_name\/\)$file_name_without_extension\</\>\1$random_string\</g" "$itemXml2"
 done
+
+
+
 
 #sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
 #C:\AndroidProject\Test\VideoDownloader\app\src\main\java\com\demo\videodownloader\adapter

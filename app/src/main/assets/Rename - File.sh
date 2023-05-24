@@ -1,11 +1,6 @@
-#!/bin/bash
-WebBrowserList_Activity.java
-public class WebBrowserList_Activity{
-  setContentView(R.layout.activity_web_browser_list);
-}
-WebBrowser_Activity.java
-public class WebBrowser_Activity{
-  setContentView(R.layout.activity_web_browser);
-}
+<item>@drawable/background_bottom_sheet_bottom_sheet</item><item>@drawable/background_bottom_sheet_bottom_sheet</item><item>@drawable/background</item>
+how to replace '@drawable/background' to new '@drawable/new_background' without selecting half word using bash
 
-how to replace 'R.layout.?' to new 'R.layout.random_string' without selecting half word using bash
+itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
+sed -i 's/\@drawable\/background\([^_[:alnum:]\)/\@drawable\/sdsd/g' "$itemJava"
+
