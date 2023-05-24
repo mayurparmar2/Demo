@@ -1,14 +1,16 @@
 #!/bin/bash
 
-file_list=()
-declare -a file_list
 renamed_directory=0
 percentage=0
-java_file_path="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/layout"
 directory="C:/AndroidProject/Test/VideoDownloader/app/src/main/res"
 main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
 directorieslist=(
-  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/arrays.xml"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/attrs.xml"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/colors.xml"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/dimens.xml"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/strings.xml"
+  "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
 )
 
 fun_random_string() {
@@ -20,33 +22,6 @@ fun_random_string() {
   echo "$random_string"
 }
 
-
-list_and_print_files() {
-  directory="$1"
-  filename="$2"
-  new_filename="$3"
-  # Use find command to search for files with similar names
-  files=$(find "$directory" -name "${filename}.*")
-  for file in $files; do
-    #      path="${paths[$i]}"
-    if [[ " ${file_list[@]} " =~ " $file " ]]; then
-      echo "Skipping file: $file"
-    else
-      new_file="${file/$filename/$new_filename}"
-      mv "$file" "$new_file"
-      file_list+=("$new_file")
-#      echo "Renamed file $file to $new_file"
-    fi
-  done
-}
-
-#basename="drawable"
-#old_name="facebookmain"
-#new_name="new_facebookmain"
-# list_xml=$(grep -r --include='*.xml' -l '"@"'$bir_name'"/"'$file_name_without_extension'""' "$main_path")
-
-#echo 'app:srcCompat="@drawable/facebookmain"' | sed -e "s/\"\(@$basename\/\)$old_name\"/\"\1$new_name\"/g"
-
 replace_java_files() {
   main_path="$1"
   bir_name="$2"
@@ -54,27 +29,23 @@ replace_java_files() {
   random_string="$4"
   list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
   for itemJava in $list_java; do
-    #    search_pattern="R\.$bir_name\.$file_name_without_extension\([^_]\)"
-    #    replace_text="R\.$bir_name\.$random_string"
-    #    find "$itemJava" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
-    sed -i "s/R\.$bir_name\.$file_name_without_extension\([^_]\)/R.$bir_name.$random_string\1/g" "$itemJava"
+    pattern="R.$bir_name.$file_name_without_extension"
+    riplace="R.$bir_name.$random_string"
+    sed -i -e "s/\b$pattern\b/$riplace/g" "$itemJava"
+#    echo "$string1 $string2" | sed -e "s/\b$string1\b/random_string/g"
+#    sed -i '0,/'$file_name_without_extension'/{s/\R\.'$bir_name'\.'$file_name_without_extension'\b/R\.'$bir_name'\.'$random_string'/}' "$itemJava"
+    #    sed -i "s/R\.$bir_name\.$file_name_without_extension\([^_[:alnum:][:space:]]*\)/R.$bir_name.$random_string\1/g" "$itemJava"
   done
-
   list_xml=$(grep -r --include='*.xml' -l '"@'$bir_name'/'$file_name_without_extension'"' "$main_path")
   for itemXml in $list_xml; do
-    #    search_pattern="\@$bir_name\/$file_name_without_extension[^_]"
-    #    replace_text="\@$bir_name\/$random_string"
-    #    find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
-
-    #    basename="drawable"
-    #    old_name="facebookmain"
-    #    new_name="new_facebookmain"
+    string1="items"
+    string2="items_whatsapp_statuses_view_2"
     sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
-
-    #    sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
-    #     sed -i "s/\@$bir_name\/$file_name_without_extension\([^_]\)/\@$bir_name\/$random_string\1/g"  "$itemXml"
-    #            sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
   done
+#  list_xml2=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
+#  for itemXml2 in $list_xml2; do
+#    sed -i "s/\>\(@$bir_name\/\)$file_name_without_extension\</\>\1$random_string\</g" "$itemXml2"
+#  done
 }
 
 for dir in "$directory"/*; do
@@ -82,37 +53,81 @@ for dir in "$directory"/*; do
   total_files=$(echo "$src_files" | wc -l)
   # Check if directory exists
   if [[ -d "$dir" ]]; then
-    if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
-      echo "Skipping directory: $dir"
-    else
-      bir_name="$(basename "$dir")"
-      IFS='-' read -ra parts <<<"$bir_name"
-      if [ "${#parts[@]}" -gt 1 ]; then
-        bir_name="${parts[0]}"
-      fi
-      for file in "$dir"/*; do
+    bir_name="$(basename "$dir")"
+    IFS='-' read -ra parts <<<"$bir_name"
+    if [ "${#parts[@]}" -gt 1 ]; then
+      bir_name="${parts[0]}"
+    fi
+    for file in "$dir"/*; do
+      if [[ " ${directorieslist[@]} " =~ " $file " ]]; then
+        echo "Skipping file: $dir"
+      else
         current_name_ext=$(basename "$file")
         extension="${current_name_ext##*.}"
         file_name_without_extension="${current_name_ext%.*}"
         random_string=''$file_name_without_extension'_'$(fun_random_string)''
         if [[ -f "$file" ]]; then
           replace_java_files "$main_path" "$bir_name" "$file_name_without_extension" "$random_string"
-          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
+          #          new_file="${file/$file_name_without_extension/$random_string}"
+          mv "$file" "$dir/$random_string.$extension"
+          #          mv "$file" "$new_file"
+          #          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
         fi
-
         #--------------------- Calculate the percentage of files processed-------------------------
         ((renamed_directory++))
         # Calculate the percentage of files processed
         percentage=$((renamed_directory * 100 / total_files))
         echo "Progress: $percentage% ($renamed_directory/$total_files files)"
         #--------------------- Calculate the percentage of files processed-------------------------
-      done
-    fi
+      fi
+    done
   fi
-
 done
 
-#echo "activity_web_browser_list" | sed -e "s/R\.layout\.[a-zA-Z]*\([^_]\)/R.layout.random_string\1/g"
+#declare -a file_list
+#declare -a my_java_list
+#declare -a my_xml_list
+#list_and_print_files() {
+#  directory="$1"
+#  filename="$2"
+#  new_filename="$3"
+#  # Use find command to search for files with similar names
+#  files=$(find "$directory" -name "${filename}.*")
+#  for file in $files; do
+#    #      path="${paths[$i]}"
+#    if [[ " ${file_list[@]} " =~ " $file " ]]; then
+#      echo "Skipping file: $file"
+#    else
+#      new_file="${file/$filename/$new_filename}"
+#      mv "$file" "$new_file"
+#      file_list+=("$new_file")
+#      #      echo "Renamed file $file to $new_file"
+#    fi
+#  done
+#}
+
+#"s/R\.$bir_name\.$file_name_without_extension\([^_]\)/R.$bir_name.$random_string\1/g"
+#R.drawable.direct_download
+#itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
+#sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
+#C:\AndroidProject\Test\VideoDownloader\app\src\main\java\com\demo\videodownloader\adapter
+#itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
+#sed -i '0,/itemsof/{s/\R\.layout\.itemsof_whatsapp_statuses_view\b/random_string/}' "$itemJava"
+#sed -i '0,/items/{s/\bitems\b/random_string/}' filename
+#
+#sed -i "s/R\.layout\.items/R.layout.random_string/g" "$itemJava"
+#
+#echo "R.layout.R.layout.random_string_whatsapp_statuses_view" | sed -e "s/R\.layout\.activity_web_browser[^_[:alnum:][:space:]]*/R.layout.random_string/g"
+
+#
+#
+#
+#
+#echo "R.drawable.direct_download" | sed -E "s/R\.layout\.activity_web_browser\([^_]\)/R.layout.random_string\1/g"
+#
+#
+#echo "R.layout.activity_web_browser_list" | sed -e "s/R\.layout\.activity_web_browser\([^_]\)/R.layout.random_string\1/g"
+
 #echo "R.layout.activity_web_browser_list" | sed -e "s/R\.layout\.activity_web_browser*\([^_]\)/R.layout.random_string\1/g"
 
 #sed -i "s/R\.layout\.[a-zA-Z]*\([^_]\)/R.layout.random_string\1/g" WebBrowserList_Activity.java WebBrowser_Activity.java
