@@ -4,7 +4,6 @@ file_list=()
 declare -a file_list
 renamed_directory=0
 percentage=0
-
 java_file_path="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/layout"
 directory="C:/AndroidProject/Test/VideoDownloader/app/src/main/res"
 main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
@@ -20,6 +19,8 @@ fun_random_string() {
   done
   echo "$random_string"
 }
+
+
 list_and_print_files() {
   directory="$1"
   filename="$2"
@@ -27,15 +28,16 @@ list_and_print_files() {
   # Use find command to search for files with similar names
   files=$(find "$directory" -name "${filename}.*")
   for file in $files; do
-    if [[ " ${file_list[*]} " == *" $file "* ]]; then
-      #      echo "File '$file' is already renamed."
-      break
+    #      path="${paths[$i]}"
+    if [[ " ${file_list[@]} " =~ " $file " ]]; then
+      echo "Skipping file: $file"
+    else
+      new_file="${file/$filename/$new_filename}"
+      mv "$file" "$new_file"
+      file_list+=("$new_file")
+#      echo "Renamed file $file to $new_file"
     fi
-    new_file="${file/$filename/$new_filename}"
-    mv "$file" "$new_file"
-    #    echo "Renamed file: $new_file"
   done
-  file_list+=("$filename")
 }
 
 #basename="drawable"
@@ -44,8 +46,6 @@ list_and_print_files() {
 # list_xml=$(grep -r --include='*.xml' -l '"@"'$bir_name'"/"'$file_name_without_extension'""' "$main_path")
 
 #echo 'app:srcCompat="@drawable/facebookmain"' | sed -e "s/\"\(@$basename\/\)$old_name\"/\"\1$new_name\"/g"
-
-
 
 replace_java_files() {
   main_path="$1"
@@ -66,12 +66,12 @@ replace_java_files() {
     #    replace_text="\@$bir_name\/$random_string"
     #    find "$itemXml" -type f -exec sed -i 's/'"$search_pattern"'/'"$replace_text"'/g' {} +
 
-#    basename="drawable"
-#    old_name="facebookmain"
-#    new_name="new_facebookmain"
+    #    basename="drawable"
+    #    old_name="facebookmain"
+    #    new_name="new_facebookmain"
     sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
 
-#    sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
+    #    sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
     #     sed -i "s/\@$bir_name\/$file_name_without_extension\([^_]\)/\@$bir_name\/$random_string\1/g"  "$itemXml"
     #            sed -i "s/@$bir_name\/$file_name_without_extension/@$bir_name\/$random_string/g" "$itemXml"
   done
