@@ -2,29 +2,29 @@
 
 read -p "Enter the path of the directory containing the files: " directory
 
-mydi="C:/AndroidProject/$directory/app/src/main/res"
+mydi="C:/AndroidProject/Test/$directory/app/src/main/res"
 
 # List of directories to delete
 directorieslist=(
-  "C:/AndroidProject/$directory/app/src/main/res/anim"
-  "C:/AndroidProject/$directory/app/src/main/res/color"
-  "C:/AndroidProject/$directory/app/src/main/res/font"
-  "C:/AndroidProject/$directory/app/src/main/res/layout"
-  "C:/AndroidProject/$directory/app/src/main/res/menu"
-  "C:/AndroidProject/$directory/app/src/main/res/xml"
-  "C:/AndroidProject/$directory/app/src/main/res/raw"
-  "C:/AndroidProject/$directory/app/src/main/res/values"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable-hdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable-mdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable-xhdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable-xxhdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/drawable-xxxhdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/mipmap-hdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/mipmap-mdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/mipmap-xhdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/mipmap-xxhdpi"
-  "C:/AndroidProject/$directory/app/src/main/res/mipmap-xxxhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/anim"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/color"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/font"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/layout"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/menu"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/xml"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/raw"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/values"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable-hdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable-mdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable-xhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable-xxhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/drawable-xxxhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/mipmap-hdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/mipmap-mdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/mipmap-xhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/mipmap-xxhdpi"
+  "C:/AndroidProject/Test/$directory/app/src/main/res/mipmap-xxxhdpi"
 )
 # Loop through the directories
 for dir in "$mydi"/*; do

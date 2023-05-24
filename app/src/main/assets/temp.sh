@@ -1,26 +1,52 @@
 #!/bin/bash
 
+#echo "Enter the path of the directory containing the files: "
+#read ProjectName
+ProjectName="Demo-master"
+directory="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
+main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
+check_lists_empty() {
+  local list1=("$1") # Convert first list argument to an array
+  local list2=("$2") # Convert second list argument to an array
+  if [ "${#list1[@]}" -eq 0 ] && [ "${#list2[@]}" -eq 0 ]; then
+    return 0 # One or both lists are empty
+  else
+    return 1 # Both lists are not empty
+  fi
+}
 
-
-
-
-main_path="C:/AndroidProject/Test/VideoDownloader/app/src/main"
-for dir in "$mydi"/*; do
-  directory_count=$(find $dir -type d | wc -l)
+for dir in "$directory"/*; do
+  src_files=$(find "$directory" -type f -name '*.*')
+  total_files=$(echo "$src_files" | wc -l)
   # Check if directory exists
   if [[ -d "$dir" ]]; then
-    if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
-      echo "Skipping directory: $dir"
-    else
-      bir_name="$(basename "$dir")"
-      IFS='-' read -ra parts <<<"$bir_name"
-      if [ "${#parts[@]}" -gt 1 ]; then
-        bir_name="${parts[0]}"
-      fi
-      list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+    bir_name="$(basename "$dir")"
+    IFS='-' read -ra parts <<<"$bir_name"
+    if [ "${#parts[@]}" -gt 1 ]; then
+      bir_name="${parts[0]}"
     fi
+    for file in "$dir"/*; do
+        current_name_ext=$(basename "$file")
+        extension="${current_name_ext##*.}"
+        file_name_without_extension="${current_name_ext%.*}"
+#        random_string=''$file_name_without_extension'_'$(fun_random_string)''
+        if [[ -f "$file" ]]; then
+          list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+          list_xml=$(grep -r --include='*.xml' -l '@'$bir_name'/'$file_name_without_extension'' "$main_path")
+          if check_lists_empty "${my_list1[@]}" "${my_list2[@]}"; then
+            echo "$file"
+            rm "$file"
+          fi
+          #          mv "$file" "$dir/$random_string.$extension"
+        fi
+      #--------------------- Calculate the percentage of files processed-------------------------
+      ((renamed_directory++))
+      # Calculate the percentage of files processed
+      percentage=$((renamed_directory * 100 / total_files))
+      echo "Progress: $percentage% ($renamed_directory/$total_files files)"
+      #--------------------- Calculate the percentage of files processed-------------------------
+    done
   fi
-
 done
 
 #---------------------Toast.makeText-------------------------
