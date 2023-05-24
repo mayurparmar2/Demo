@@ -12,7 +12,6 @@ directorieslist=(
   "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/strings.xml"
   "C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
 )
-
 fun_random_string() {
   random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
   # Ensure the string doesn't start with a number or uppercase letter
@@ -32,20 +31,14 @@ replace_java_files() {
     pattern="R.$bir_name.$file_name_without_extension"
     riplace="R.$bir_name.$random_string"
     sed -i -e "s/\b$pattern\b/$riplace/g" "$itemJava"
-#    echo "$string1 $string2" | sed -e "s/\b$string1\b/random_string/g"
-#    sed -i '0,/'$file_name_without_extension'/{s/\R\.'$bir_name'\.'$file_name_without_extension'\b/R\.'$bir_name'\.'$random_string'/}' "$itemJava"
+    #    echo "$string1 $string2" | sed -e "s/\b$string1\b/random_string/g"
+    #    sed -i '0,/'$file_name_without_extension'/{s/\R\.'$bir_name'\.'$file_name_without_extension'\b/R\.'$bir_name'\.'$random_string'/}' "$itemJava"
     #    sed -i "s/R\.$bir_name\.$file_name_without_extension\([^_[:alnum:][:space:]]*\)/R.$bir_name.$random_string\1/g" "$itemJava"
   done
   list_xml=$(grep -r --include='*.xml' -l '"@'$bir_name'/'$file_name_without_extension'"' "$main_path")
   for itemXml in $list_xml; do
-    string1="items"
-    string2="items_whatsapp_statuses_view_2"
     sed -i "s/\"\(@$bir_name\/\)$file_name_without_extension\"/\"\1$random_string\"/g" "$itemXml"
   done
-#  list_xml2=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
-#  for itemXml2 in $list_xml2; do
-#    sed -i "s/\>\(@$bir_name\/\)$file_name_without_extension\</\>\1$random_string\</g" "$itemXml2"
-#  done
 }
 
 for dir in "$directory"/*; do
@@ -68,18 +61,15 @@ for dir in "$directory"/*; do
         random_string=''$file_name_without_extension'_'$(fun_random_string)''
         if [[ -f "$file" ]]; then
           replace_java_files "$main_path" "$bir_name" "$file_name_without_extension" "$random_string"
-          #          new_file="${file/$file_name_without_extension/$random_string}"
           mv "$file" "$dir/$random_string.$extension"
-          #          mv "$file" "$new_file"
-          #          list_and_print_files "$main_path" "$file_name_without_extension" "$random_string"
         fi
-        #--------------------- Calculate the percentage of files processed-------------------------
-        ((renamed_directory++))
-        # Calculate the percentage of files processed
-        percentage=$((renamed_directory * 100 / total_files))
-        echo "Progress: $percentage% ($renamed_directory/$total_files files)"
-        #--------------------- Calculate the percentage of files processed-------------------------
       fi
+      #--------------------- Calculate the percentage of files processed-------------------------
+      ((renamed_directory++))
+      # Calculate the percentage of files processed
+      percentage=$((renamed_directory * 100 / total_files))
+      echo "Progress: $percentage% ($renamed_directory/$total_files files)"
+      #--------------------- Calculate the percentage of files processed-------------------------
     done
   fi
 done
@@ -109,6 +99,33 @@ done
 #"s/R\.$bir_name\.$file_name_without_extension\([^_]\)/R.$bir_name.$random_string\1/g"
 #R.drawable.direct_download
 #itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
+
+itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/res/values/styles.xml"
+bir_name="drawable"
+file_name_without_extension="background"
+random_string="new_background_bottom_sheet"
+pattern="\@$bir_name\/$file_name_without_extension"
+riplace="\@$bir_name\/$random_string"
+sed -i '0,/'$pattern'/{s/'$pattern'/'$riplace'/}' "$itemJava"
+
+/@drawable/background_bottom_sheet
+pattern="\@drawable\/background[^<]"
+riplace="\@drawable\/sdsd_bottom_sheet"
+sed -i "s/$pattern/$riplace/g" "$itemJava"
+
+sed -i 's/\>\@drawable\/background_bottom_sheet\</\>\@drawable\/new_background_bottom_sheet\</g' "$itemJava"
+
+sed -i 's/\>\@drawable\/background_bottom_sheet\</\>\_qthqroejrd\>/' "$itemJava"
+
+pattern="\>\@drawable\/background_bottom_sheet\<"
+riplace="\>\@drawable\/_qthqroejrd\<"
+sed -i "s/$pattern/$riplace/g" "$itemJava"
+
+list_xml2=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
+for itemXml2 in $list_xml2; do
+  sed -i "s/\>\(@$bir_name\/\)$file_name_without_extension\</\>\1$random_string\</g" "$itemXml2"
+done
+
 #sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
 #C:\AndroidProject\Test\VideoDownloader\app\src\main\java\com\demo\videodownloader\adapter
 #itemJava="C:/AndroidProject/Test/VideoDownloader/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
