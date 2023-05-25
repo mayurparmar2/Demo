@@ -1,7 +1,7 @@
 #!/bin/bash
 #echo "Enter the path of the directory containing the files: "
 #read ProjectName
-ProjectName="HomeWorkout"
+ProjectName="VideoDownloader"
 renamed_directory=0
 percentage=0
 directory="C:/AndroidProject/Test/$ProjectName/app/src/main/java"
@@ -27,15 +27,21 @@ replace_java_files() {
   random_string="$1"
   file_name_without_extension="$2"
   main_path="$3"
+  main_file="$4"
+
+  str="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+  list_java2=$(grep -r --include='*.java' -l "\bimport $str.$file_name_without_extension;\b" "$main_path")
+  for itemJava2 in $list_java2; do
+    sed -i -e "s/import $str.$file_name_without_extension;/import $str.$random_string;/g" "$itemJava2"
+  done
+
   list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
   for itemJava in $list_java; do
     #    echo "$itemJava"
-     sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
-
-     str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
-     sed -i -e "s/import $str.$file_name_without_extension;/import $str.$random_string;/g" "$itemJava"
-#     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
-#    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+    sed -i -e 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+#    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+    #     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
+    #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 }
 
@@ -47,10 +53,10 @@ for file in $src_files; do
   file_name_without_extension="${current_name_ext%.*}"
   random_string=''$file_name_without_extension'_'$(fun_random_string)''
   if [[ -f "$file" ]]; then
-    replace_java_files "$random_string" "$file_name_without_extension" "$directory"
+    replace_java_files "$random_string" "$file_name_without_extension" "$directory" "$file"
     new_file="${file/$file_name_without_extension/$random_string}"
     mv "$file" "$new_file"
-#    mv "$file" "$dir/$random_string.$extension"
+    #    mv "$file" "$dir/$random_string.$extension"
   fi
   #--------------------- Calculate the percentage of files processed-------------------------
   ((renamed_directory++))
@@ -61,10 +67,11 @@ for file in $src_files; do
 
 done
 
-itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
-str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
-echo "$str"
-sed -i -e "s/import $str.$file_name_without_extension;/import $str.$random_string;/g" "$itemJava"
+#itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+#
+#sed -i -e "s/import $str.App;/import $str.new;/g" "$itemJava"
+#echo "$str"
 
 #str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
 #sed -i -e "s/import com.demo.App.example;/import com.demo.App.examplenew;/g" "$itemJava"
