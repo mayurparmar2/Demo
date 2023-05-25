@@ -30,7 +30,8 @@ replace_java_files() {
   list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
   for itemJava in $list_java; do
     #    echo "$itemJava"
-    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+     sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+#    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 }
 
@@ -55,6 +56,115 @@ for file in $src_files; do
   #--------------------- Calculate the percentage of files processed-------------------------
 
 done
+
+
+#!/bin/bash
+
+
+
+
+
+echo "import android.app.Application.a121;
+import com.demo.App.example.a122;
+import com.demo.example.App.a123;
+import android.content.Context.a124;" | grep -o '[^ ]*;' | awk -F'[ .;]' '{print $(NF-1)}'
+
+echo "import android.app.Application;
+import com.demo.App.example;
+import com.demo.example.App;
+import android.content.Context;" | grep -o '*[^ ]' | awk -F'[;]' '{print $(NF-1)}'
+
+#/import [^;]*;/!
+import android.app;
+import com.demo.App;
+import com.demo.example;
+import android.content;
+
+
+
+
+echo "import android.app.Application;
+import com.demo.App.example;
+import com.demo.example.App;
+import android.content.Context;" | grep -oE '[^;]+'
+
+echo "import android.app.Application.;
+      import com.demo.App.example;
+      import com.demo.example.App;
+      import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[.]' '{print $(NF-1)}'
+
+
+itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+substring=$(cat "$itemJava" | sed -e 's/import [^;]*Application;\.//')
+echo "$substring"
+
+string="import 'com.demo.App.example'"
+last_word=$(echo "$string" | cut -d ' ' -f -2)
+echo "$last_word"
+import com.demo.App
+
+string="import 'com.demo.App.example'"
+last_word=$(echo "$string" | awk '{print $NF}')
+echo "$last_word"
+
+
+import com.demo.App
+
+import com.demo.App
+
+
+
+
+last_import=$(tac $itemJava | grep -P "import [^;]*Application;")
+sed -i -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g' "$itemJava"
+
+
+ sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+ echo 'import android.app.Application;
+       import com.demo.App.example;
+       import com.demo.example.App;
+       import android.content.Context;
+       public class NewClassName extends Application {
+           private final String TAG = "NewClassName";
+       }' | sed -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g'
+
+
+ echo '"import android.app.Application.content;
+ import com.demo.App.example.content;
+ import com.demo.example.App.content;' | sed 's/\(.*\)\.[^.]*$/\1/'
+
+
+echo "import com.demo.example.App; import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[ .]' '{print $(NF-1)}'
+
+
+sed -i -e '/s/\(.*\)\.[^.]*$/\1/! s/\bApp\b/NewClassName/g' YourFile.java
+
+
+
+
+last_import=$(tac $YourDirectory | grep -m 1 -oP "import .*?\K\w+")
+echo "$last_import"
+
+last_import=$(tac $YourDirectory | grep -P "import [^;]*Application;")
+echo "$last_import"
+grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/^import .*20;$/! s/\bApp\b/NewClassName/g'
+
+
+
+sed -i '/import .*1;/! s/\bApp\b/NewClassName/g' "$YourDirectory"
+
+grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/import [^;]*;/! s/\bApp\b/NewClassName/g'
+
+#
+#
+#grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/^import com.App.demo;$/! s/App/NewClassName/g'
+#
+#
+#grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i 's/\([^a-zA-Z0-9_]\|^\)App\([^a-zA-Z0-9_]\|$\)/\1NewClassName\2/g'
+#
+#grep -rl --exclude-dir=dirToExclude "public class App" YourDirectory | xargs awk '!/import com.demo.App.example/{print}' | xargs sed -i 's/\([^a-zA-Z0-9_]\|^\)App\([^a-zA-Z0-9_]\|$\)/\1NewClassName\2/g'
+#
+#grep -rIl --exclude-dir=dirToExclude "import com.demo.App.example;" $YourDirectory | xargs sed -i 's/\([^a-zA-Z0-9_]\|^\)App\([^a-zA-Z0-9_]\|$\)/\1NewClassName\2/g'
 
 #for dir in "$directory"/*; do
 #  src_files=$(find "$directory" -type f -name '*.*')
