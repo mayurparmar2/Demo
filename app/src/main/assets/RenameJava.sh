@@ -31,6 +31,8 @@ replace_java_files() {
   for itemJava in $list_java; do
     #    echo "$itemJava"
      sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+
+     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
 #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 }
@@ -58,102 +60,129 @@ for file in $src_files; do
 done
 
 
-#!/bin/bash
-
-
-
-
-
-echo "import android.app.Application.a121;
-import com.demo.App.example.a122;
-import com.demo.example.App.a123;
-import android.content.Context.a124;" | grep -o '[^ ]*;' | awk -F'[ .;]' '{print $(NF-1)}'
-
-echo "import android.app.Application;
-import com.demo.App.example;
-import com.demo.example.App;
-import android.content.Context;" | grep -o '*[^ ]' | awk -F'[;]' '{print $(NF-1)}'
-
-#/import [^;]*;/!
-import android.app;
-import com.demo.App;
-import com.demo.example;
-import android.content;
-
-
-
-
-echo "import android.app.Application;
-import com.demo.App.example;
-import com.demo.example.App;
-import android.content.Context;" | grep -oE '[^;]+'
-
-echo "import android.app.Application.;
-      import com.demo.App.example;
-      import com.demo.example.App;
-      import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[.]' '{print $(NF-1)}'
-
-
 itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
-substring=$(cat "$itemJava" | sed -e 's/import [^;]*Application;\.//')
-echo "$substring"
+str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+echo "$str"
 
-string="import 'com.demo.App.example'"
-last_word=$(echo "$string" | cut -d ' ' -f -2)
-echo "$last_word"
-import com.demo.App
-
-string="import 'com.demo.App.example'"
-last_word=$(echo "$string" | awk '{print $NF}')
-echo "$last_word"
+echo "$(echo "$str" | sed 's|/|.|g')"
 
 
-import com.demo.App
-
-import com.demo.App
-
-
+path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+echo "${path%/*}"
+echo "$(basename "$path")"
 
 
-last_import=$(tac $itemJava | grep -P "import [^;]*Application;")
-sed -i -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g' "$itemJava"
-
-
- sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
- echo 'import android.app.Application;
-       import com.demo.App.example;
-       import com.demo.example.App;
-       import android.content.Context;
-       public class NewClassName extends Application {
-           private final String TAG = "NewClassName";
-       }' | sed -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g'
-
-
- echo '"import android.app.Application.content;
- import com.demo.App.example.content;
- import com.demo.example.App.content;' | sed 's/\(.*\)\.[^.]*$/\1/'
-
-
-echo "import com.demo.example.App; import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[ .]' '{print $(NF-1)}'
-
-
-sed -i -e '/s/\(.*\)\.[^.]*$/\1/! s/\bApp\b/NewClassName/g' YourFile.java
-
-
-
-
-last_import=$(tac $YourDirectory | grep -m 1 -oP "import .*?\K\w+")
-echo "$last_import"
-
-last_import=$(tac $YourDirectory | grep -P "import [^;]*Application;")
-echo "$last_import"
-grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/^import .*20;$/! s/\bApp\b/NewClassName/g'
-
-
-
-sed -i '/import .*1;/! s/\bApp\b/NewClassName/g' "$YourDirectory"
-
-grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/import [^;]*;/! s/\bApp\b/NewClassName/g'
+path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+package=$(echo "$path" | sed 's/\//./g')
+package2=$(echo "$package" | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\.\///')
+echo "$package2"
+C:.AndroidProject.GitHubDemo.app.src.main.java.
+ | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\///'
+#
+##!/bin/bash
+#str="import android.app.Application;
+#    import com.demo.App.example;
+#    import com.demo.example.App;
+#    import android.content.Context;"
+#
+#name=$(echo "$str" | sed -e "s/\.App;/\.newAppApp;/g")
+#echo "$name"
+#
+#
+#
+#com.demo.exercise_app.Utils.CustomSharedPreference
+#
+#
+#echo "import android.app.Application.a121;
+#import com.demo.App.example.a122;
+#import com.demo.example.App.a123;
+#import android.content.Context.a124;" | grep -o '[^ ]*;' | awk -F'[ .;]' '{print $(NF-1)}'
+#
+#echo "import android.app.Application;
+#import com.demo.App.example;
+#import com.demo.example.App;
+#import android.content.Context;" | grep -o '*[^ ]' | awk -F'[;]' '{print $(NF-1)}'
+#
+##/import [^;]*;/!
+#import android.app;
+#import com.demo.App;
+#import com.demo.example;
+#import android.content;
+#
+#
+#
+#
+#echo "import android.app.Application;
+#import com.demo.App.example;
+#import com.demo.example.App;
+#import android.content.Context;" | grep -oE '[^;]+'
+#
+#echo "import android.app.Application.;
+#      import com.demo.App.example;
+#      import com.demo.example.App;
+#      import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[.]' '{print $(NF-1)}'
+#
+#
+#itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#substring=$(cat "$itemJava" | sed -e 's/import [^;]*Application;\.//')
+#echo "$substring"
+#
+#string="import 'com.demo.App.example'"
+#last_word=$(echo "$string" | cut -d ' ' -f -2)
+#echo "$last_word"
+#import com.demo.App
+#
+#string="import 'com.demo.App.example'"
+#last_word=$(echo "$string" | awk '{print $NF}')
+#echo "$last_word"
+#
+#
+#import com.demo.App
+#
+#import com.demo.App
+#
+#
+#
+#
+#last_import=$(tac $itemJava | grep -P "import [^;]*Application;")
+#sed -i -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g' "$itemJava"
+#
+#
+# sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+# echo 'import android.app.Application;
+#       import com.demo.App.example;
+#       import com.demo.example.App;
+#       import android.content.Context;
+#       public class NewClassName extends Application {
+#           private final String TAG = "NewClassName";
+#       }' | sed -e '/\(.*\)\.[^.]*$/! s/\bApp\b/NewClassName/g'
+#
+#
+# echo '"import android.app.Application.content;
+# import com.demo.App.example.content;
+# import com.demo.example.App.content;' | sed 's/\(.*\)\.[^.]*$/\1/'
+#
+#
+#echo "import com.demo.example.App; import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[ .]' '{print $(NF-1)}'
+#
+#
+#sed -i -e '/s/\(.*\)\.[^.]*$/\1/! s/\bApp\b/NewClassName/g' YourFile.java
+#
+#
+#
+#
+#last_import=$(tac $YourDirectory | grep -m 1 -oP "import .*?\K\w+")
+#echo "$last_import"
+#
+#last_import=$(tac $YourDirectory | grep -P "import [^;]*Application;")
+#echo "$last_import"
+#grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/^import .*20;$/! s/\bApp\b/NewClassName/g'
+#
+#
+#
+#sed -i '/import .*1;/! s/\bApp\b/NewClassName/g' "$YourDirectory"
+#
+#grep -rl --exclude-dir=dirToExclude "public class App" $YourDirectory | xargs sed -i '/import [^;]*;/! s/\bApp\b/NewClassName/g'
 
 #
 #
