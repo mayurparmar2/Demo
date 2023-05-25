@@ -32,7 +32,9 @@ replace_java_files() {
     #    echo "$itemJava"
      sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
 
-     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
+     str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+     sed -i -e "s/import $str.$file_name_without_extension;/import $str.$random_string;/g" "$itemJava"
+#     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
 #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 }
@@ -59,25 +61,29 @@ for file in $src_files; do
 
 done
 
-
 itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
 str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
 echo "$str"
+sed -i -e "s/import $str.$file_name_without_extension;/import $str.$random_string;/g" "$itemJava"
 
-echo "$(echo "$str" | sed 's|/|.|g')"
-
-
-path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
-echo "${path%/*}"
-echo "$(basename "$path")"
-
-
-path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
-package=$(echo "$path" | sed 's/\//./g')
-package2=$(echo "$package" | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\.\///')
-echo "$package2"
-C:.AndroidProject.GitHubDemo.app.src.main.java.
- | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\///'
+#str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+#sed -i -e "s/import com.demo.App.example;/import com.demo.App.examplenew;/g" "$itemJava"
+#echo "$str"
+#
+#echo "$(echo "$str" | sed 's|/|.|g')"
+#
+#
+#path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#echo "${path%/*}"
+#echo "$(basename "$path")"
+#
+#
+#path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#package=$(echo "$path" | sed 's/\//./g')
+#package2=$(echo "$package" | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\.\///')
+#echo "$package2"
+#C:.AndroidProject.GitHubDemo.app.src.main.java.
+# | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\///'
 #
 ##!/bin/bash
 #str="import android.app.Application;
