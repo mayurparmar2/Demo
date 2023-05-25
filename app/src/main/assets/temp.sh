@@ -14,6 +14,23 @@ check_lists_empty() {
     return 1 # Both lists are not empty
   fi
 }
+#directorieslist=(
+#  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+#)
+##for itemJava in directorieslist/*; do
+##  list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
+##
+##done
+demo="C:/AndroidProject/Test/Demo-master/app/src/main/res/anim"
+for item in "$demo"/*; do
+  current_name_ext=$(basename "$item")
+  file_name_without_extension="${current_name_ext%.*}"
+  list_xml=$(grep -r --include='*.xml' -l '@anim/'$file_name_without_extension'' "$demo")
+  for file in "$item"/*; do
+    echo "file=>$file"
+  done
+  echo "item=>$item"
+done
 
 for dir in "$directory"/*; do
   src_files=$(find "$directory" -type f -name '*.*')
@@ -26,19 +43,29 @@ for dir in "$directory"/*; do
       bir_name="${parts[0]}"
     fi
     for file in "$dir"/*; do
-        current_name_ext=$(basename "$file")
-        extension="${current_name_ext##*.}"
-        file_name_without_extension="${current_name_ext%.*}"
-#        random_string=''$file_name_without_extension'_'$(fun_random_string)''
-        if [[ -f "$file" ]]; then
-          list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
-          list_xml=$(grep -r --include='*.xml' -l '@'$bir_name'/'$file_name_without_extension'' "$main_path")
-          if check_lists_empty "${my_list1[@]}" "${my_list2[@]}"; then
-            echo "$file"
-            rm "$file"
-          fi
-          #          mv "$file" "$dir/$random_string.$extension"
+      current_name_ext=$(basename "$file")
+      extension="${current_name_ext##*.}"
+      file_name_without_extension="${current_name_ext%.*}"
+      #        random_string=''$file_name_without_extension'_'$(fun_random_string)''
+      if [[ -f "$file" ]]; then
+        #        list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+        list_xml=$(grep -r --include='*.xml' -l '@'$bir_name'/'$file_name_without_extension'' "$main_path")
+        for list_xml in list_xml; do
+          list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
+
+        done
+
+        echo "list_java=> $(echo "$list_java" | wc -l)"
+        echo "list_xml=> $(echo "$list_xml" | wc -l)"
+        if [ "${#list_java[@]}" -eq 0 ] && [ "${#list_xml[@]}" -eq 0 ]; then
+          rm "$file"
         fi
+        #          if check_lists_empty "${list_java[@]}" "${list_xml[@]}"; then
+        #            echo "$file"
+        #
+        #          fi
+        #          mv "$file" "$dir/$random_string.$extension"
+      fi
       #--------------------- Calculate the percentage of files processed-------------------------
       ((renamed_directory++))
       # Calculate the percentage of files processed

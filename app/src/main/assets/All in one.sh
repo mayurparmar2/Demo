@@ -87,7 +87,6 @@ delete_files() {
         "$item" == "$dir"/custom_dialog* ||
         "$item" == "$dir"/browser_* ||
         "$item" == "$dir"/select_* ||
-        "$item" == "$dir"/text_view_* ||
         "$item" == "$dir"/bools* ||
         "$item" == "$dir"/integers* ||
         "$item" == "$dir"/plurals* ||
@@ -107,7 +106,7 @@ delete_files() {
         "$item" == "$dir"/firebase_common* ||
         "$item" == "$dir"/mtrl_* ||
         "$item" == "$dir"/*_mtrl_* ||
-        "$item" == "$dir"/*_mtrl ||
+        "$item" == "$dir"/*mtrl ||
         "$item" == "$dir"/btn_checkbox_* ]] \
         ; then
         # Delete the file starting with 'abc'
@@ -171,44 +170,47 @@ for file in "$regexDir"/*; do
   if [[ -f "$file" ]]; then
     # Execute the sed command on each file
     # sed -i s/replacement/000000/g "$file"
-    sed -Ei "s/$pattern1/$replacement/g" "$file"
-    sed -Ei "s/$pattern2/$replacement/g" "$file"
-    sed -Ei "s/$pattern3/$replacement/g" "$file"
-    sed -Ei "s/$pattern4/$replacement/g" "$file"
-    sed -Ei "s/$pattern5/$replacement/g" "$file"
-    sed -Ei "s/$pattern6/$replacement/g" "$file"
-    sed -Ei "s/$pattern7/$replacement/g" "$file"
-    sed -Ei "s/$pattern9/$replacement/g" "$file"
-    sed -Ei "s/$pattern10/$replacement/g" "$file"
-    sed -Ei "s/$pattern11/$replacement/g" "$file"
-    sed -Ei "s/$pattern12/$replacement/g" "$file"
-    sed -Ei "s/$pattern13/$replacement/g" "$file"
-    sed -Ei "s/$pattern14/$replacement/g" "$file"
-    sed -Ei "s/$pattern15/$replacement/g" "$file"
-    sed -Ei "s/$pattern16/$replacement/g" "$file"
-    sed -Ei "s/$pattern17/$replacement/g" "$file"
-    sed -Ei "s/$pattern18/$replacement/g" "$file"
-    sed -Ei "s/$pattern19/$replacement/g" "$file"
-    sed -Ei "s/$pattern20/$replacement/g" "$file"
-    sed -Ei "s/$pattern21/$replacement/g" "$file"
-    sed -Ei "s/$pattern22/$replacement/g" "$file"
-    sed -Ei "s/$pattern23/$replacement/g" "$file"
-    sed -Ei "s/$pattern24/$replacement/g" "$file"
-    sed -Ei "s/$pattern25/$replacement/g" "$file"
-    sed -Ei "s/$pattern26/$replacement/g" "$file"
-    sed -Ei "s/$pattern27/$replacement/g" "$file"
-    sed -Ei "s/$pattern28/$replacement/g" "$file"
-    sed -Ei "s/$pattern29/$replacement/g" "$file"
-    sed -Ei "s/$pattern30/$replacement/g" "$file"
-    sed -Ei "s/$pattern31/$replacement/g" "$file"
-    sed -Ei "s/$pattern32/$replacement/g" "$file"
-    sed -Ei "s/$pattern33/$replacement/g" "$file"
-    sed -Ei "s/$pattern34/$replacement/g" "$file"
-    sed -Ei "s/$pattern35/$replacement/g" "$file"
-    sed -Ei "s/$pattern36/$replacement/g" "$file"
-    sed -Ei "s/$pattern37/$replacement/g" "$file"
-    sed -Ei "s/android:tint=/app:tint=/g" "$file"
-    sed -Ei 's/Of="0"/Of="parent"/g' "$file"
+    sed -i "s/$pattern1/$replacement/g" "$file"
+    sed -i "s/$pattern2/$replacement/g" "$file"
+    sed -i "s/$pattern3/$replacement/g" "$file"
+    sed -i "s/$pattern4/$replacement/g" "$file"
+    sed -i "s/$pattern5/$replacement/g" "$file"
+    sed -i "s/$pattern6/$replacement/g" "$file"
+    sed -i "s/$pattern7/$replacement/g" "$file"
+    sed -i "s/$pattern9/$replacement/g" "$file"
+    sed -i "s/$pattern10/$replacement/g" "$file"
+    sed -i "s/$pattern11/$replacement/g" "$file"
+    sed -i "s/$pattern12/$replacement/g" "$file"
+    sed -i "s/$pattern13/$replacement/g" "$file"
+    sed -i "s/$pattern14/$replacement/g" "$file"
+    sed -i "s/$pattern15/$replacement/g" "$file"
+    sed -i "s/$pattern16/$replacement/g" "$file"
+    sed -i "s/$pattern17/$replacement/g" "$file"
+    sed -i "s/$pattern18/$replacement/g" "$file"
+    sed -i "s/$pattern19/$replacement/g" "$file"
+    sed -i "s/$pattern20/$replacement/g" "$file"
+    sed -i "s/$pattern21/$replacement/g" "$file"
+    sed -i "s/$pattern22/$replacement/g" "$file"
+    sed -i "s/$pattern23/$replacement/g" "$file"
+    sed -i "s/$pattern24/$replacement/g" "$file"
+    sed -i "s/$pattern25/$replacement/g" "$file"
+    sed -i "s/$pattern26/$replacement/g" "$file"
+    sed -i "s/$pattern27/$replacement/g" "$file"
+    sed -i "s/$pattern28/$replacement/g" "$file"
+    sed -i "s/$pattern29/$replacement/g" "$file"
+    sed -i "s/$pattern30/$replacement/g" "$file"
+    sed -i "s/$pattern31/$replacement/g" "$file"
+    sed -i "s/$pattern32/$replacement/g" "$file"
+    sed -i "s/$pattern33/$replacement/g" "$file"
+    sed -i "s/$pattern34/$replacement/g" "$file"
+    sed -i "s/$pattern35/$replacement/g" "$file"
+    sed -i "s/$pattern36/$replacement/g" "$file"
+    sed -i "s/$pattern37/$replacement/g" "$file"
+    sed -i "s/android:tint=/app:tint=/g" "$file"
+    sed -i 's/Of="0"/Of="parent"/g' "$file"
+    sed -i 's/app:tabMode="1"/app:tabMode="fixed"/g' "$file"
+    sed -i 's/app:tabMode="2"/app:tabMode="auto"/g' "$file"
+    sed -i 's/app:tabMode="0"/app:tabMode="scrollable"/g' "$file"
   fi
   ((replace_files++))
   # Calculate the percentage of files processed
