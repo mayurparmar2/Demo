@@ -1,80 +1,144 @@
 #!/bin/bash
 
-#echo "Enter the path of the directory containing the files: "
-#read ProjectName
 ProjectName="Demo-master"
-directory="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
-main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
-check_lists_empty() {
-  local list1=("$1") # Convert first list argument to an array
-  local list2=("$2") # Convert second list argument to an array
-  if [ "${#list1[@]}" -eq 0 ] && [ "${#list2[@]}" -eq 0 ]; then
-    return 0 # One or both lists are empty
-  else
-    return 1 # Both lists are not empty
-  fi
-}
-#directorieslist=(
-#  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
-#)
-##for itemJava in directorieslist/*; do
-##  list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
-##
-##done
-demo="C:/AndroidProject/Test/Demo-master/app/src/main/res/anim"
-for item in "$demo"/*; do
-  current_name_ext=$(basename "$item")
-  file_name_without_extension="${current_name_ext%.*}"
-  list_xml=$(grep -r --include='*.xml' -l '@anim/'$file_name_without_extension'' "$demo")
-  for file in "$item"/*; do
-    echo "file=>$file"
-  done
-  echo "item=>$item"
-done
+# Define the paths to your Android project
 
-for dir in "$directory"/*; do
-  src_files=$(find "$directory" -type f -name '*.*')
-  total_files=$(echo "$src_files" | wc -l)
-  # Check if directory exists
-  if [[ -d "$dir" ]]; then
-    bir_name="$(basename "$dir")"
-    IFS='-' read -ra parts <<<"$bir_name"
-    if [ "${#parts[@]}" -gt 1 ]; then
-      bir_name="${parts[0]}"
+#--------------------working-------------------------
+ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
+JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
+RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
+
+# Function to check if a resource is used
+is_resource_used() {
+    local resource_name="$1"
+    local resource_type="$2"
+
+    # Check Java files
+    local java_usage=$(grep -r -l "R\.$resource_type\.$resource_name" "$JAVA_SRC_PATH")
+    if [ -n "$java_usage" ]; then
+        return 0  # Resource is used in Java files
     fi
-    for file in "$dir"/*; do
-      current_name_ext=$(basename "$file")
-      extension="${current_name_ext##*.}"
-      file_name_without_extension="${current_name_ext%.*}"
-      #        random_string=''$file_name_without_extension'_'$(fun_random_string)''
-      if [[ -f "$file" ]]; then
-        #        list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
-        list_xml=$(grep -r --include='*.xml' -l '@'$bir_name'/'$file_name_without_extension'' "$main_path")
-        for list_xml in list_xml; do
-          list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
 
-        done
+    # Check XML files
+#    local xml_usage=$(grep -r -l "@$resource_type/$resource_name" "$RES_PATH")
+#    if [ -n "$xml_usage" ]; then
+#        return 0  # Resource is used in XML files
+#    fi
 
-        echo "list_java=> $(echo "$list_java" | wc -l)"
-        echo "list_xml=> $(echo "$list_xml" | wc -l)"
-        if [ "${#list_java[@]}" -eq 0 ] && [ "${#list_xml[@]}" -eq 0 ]; then
-          rm "$file"
+    return 1  # Resource is not used
+}
+
+# Loop through all resource files and delete unused ones
+find "$RES_PATH" -type f | while read -r resource_file; do
+    if [[ $resource_file =~ .*/([^/]+)/([^/]+)\.([^/.]+)$ ]]; then
+        resource_type="${BASH_REMATCH[1]}"
+        resource_name="${BASH_REMATCH[2]}"
+        resource_extension="${BASH_REMATCH[3]}"
+
+        if ! is_resource_used "$resource_name" "$resource_type"; then
+            echo "Deleting $resource_file"
+            rm "$resource_file"
         fi
-        #          if check_lists_empty "${list_java[@]}" "${list_xml[@]}"; then
-        #            echo "$file"
-        #
-        #          fi
-        #          mv "$file" "$dir/$random_string.$extension"
-      fi
-      #--------------------- Calculate the percentage of files processed-------------------------
-      ((renamed_directory++))
-      # Calculate the percentage of files processed
-      percentage=$((renamed_directory * 100 / total_files))
-      echo "Progress: $percentage% ($renamed_directory/$total_files files)"
-      #--------------------- Calculate the percentage of files processed-------------------------
-    done
-  fi
+    fi
 done
+#-------------------- Generate a list of used XML files-------------------------
+#used_xml_files=$(grep -roh --include="*.java" "R\.layout\.[a-zA-Z0-9_]\+" "$JAVA_SRC_PATH" | sed 's/R.layout.//')
+## Delete unused XML files
+#find "$RES_PATH" -name '*.xml' | while read -r xml_file; do
+#    xml_file_name=$(basename "$xml_file" .xml)
+#    if ! grep -q "$xml_file_name" <<< "$used_xml_files"; then
+#        echo "Deleting $xml_file"
+#        rm "$xml_file"
+#    fi
+#done
+#---------------------Toast.makeText-------------------------
+#xml_refs=$(find "$JAVA_SRC_PATH" -name '*.java' -exec grep -Eo 'R\.([a-z]+\.)*[a-z]+\.[a-z]+' {} + | awk -F'.' '{print $NF}')
+#
+## Delete unused XML files
+#find "$RES_PATH" -name '*.xml' | while read -r xml_file; do
+#    xml_file_name=$(basename "$xml_file" .xml)
+#    if ! grep -q "$xml_file_name" <<< "$xml_refs"; then
+#        echo "Deleting $xml_file"
+#        rm "$xml_file"
+#    fi
+#done
+#
+
+##echo "Enter the path of the directory containing the files: "
+##read ProjectName
+#ProjectName="Demo-master"
+#directory="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
+#main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
+#check_lists_empty() {
+#  local list1=("$1") # Convert first list argument to an array
+#  local list2=("$2") # Convert second list argument to an array
+#  if [ "${#list1[@]}" -eq 0 ] && [ "${#list2[@]}" -eq 0 ]; then
+#    return 0 # One or both lists are empty
+#  else
+#    return 1 # Both lists are not empty
+#  fi
+#}
+##directorieslist=(
+##  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+##)
+###for itemJava in directorieslist/*; do
+###  list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
+###
+###done
+#demo="C:/AndroidProject/Test/Demo-master/app/src/main/res/anim"
+#for item in "$demo"/*; do
+#  current_name_ext=$(basename "$item")
+#  file_name_without_extension="${current_name_ext%.*}"
+#  list_xml=$(grep -r --include='*.xml' -l '@anim/'$file_name_without_extension'' "$demo")
+#  for file in "$item"/*; do
+#    echo "file=>$file"
+#  done
+#  echo "item=>$item"
+#done
+#
+#for dir in "$directory"/*; do
+#  src_files=$(find "$directory" -type f -name '*.*')
+#  total_files=$(echo "$src_files" | wc -l)
+#  # Check if directory exists
+#  if [[ -d "$dir" ]]; then
+#    bir_name="$(basename "$dir")"
+#    IFS='-' read -ra parts <<<"$bir_name"
+#    if [ "${#parts[@]}" -gt 1 ]; then
+#      bir_name="${parts[0]}"
+#    fi
+#    for file in "$dir"/*; do
+#      current_name_ext=$(basename "$file")
+#      extension="${current_name_ext##*.}"
+#      file_name_without_extension="${current_name_ext%.*}"
+#      #        random_string=''$file_name_without_extension'_'$(fun_random_string)''
+#      if [[ -f "$file" ]]; then
+#        #        list_java=$(grep -r --include='*.java' -l "R.$bir_name.$file_name_without_extension" "$main_path")
+#        list_xml=$(grep -r --include='*.xml' -l '@'$bir_name'/'$file_name_without_extension'' "$main_path")
+#        for list_xml in list_xml; do
+#          list_java=$(grep -r --include='*.java' -l "R.layout.$file_name_without_extension" "$main_path")
+#
+#        done
+#
+#        echo "list_java=> $(echo "$list_java" | wc -l)"
+#        echo "list_xml=> $(echo "$list_xml" | wc -l)"
+#        if [ "${#list_java[@]}" -eq 0 ] && [ "${#list_xml[@]}" -eq 0 ]; then
+#          rm "$file"
+#        fi
+#        #          if check_lists_empty "${list_java[@]}" "${list_xml[@]}"; then
+#        #            echo "$file"
+#        #
+#        #          fi
+#        #          mv "$file" "$dir/$random_string.$extension"
+#      fi
+#      #--------------------- Calculate the percentage of files processed-------------------------
+#      ((renamed_directory++))
+#      # Calculate the percentage of files processed
+#      percentage=$((renamed_directory * 100 / total_files))
+#      echo "Progress: $percentage% ($renamed_directory/$total_files files)"
+#      #--------------------- Calculate the percentage of files processed-------------------------
+#    done
+#  fi
+#done
 
 #---------------------Toast.makeText-------------------------
 #file="C:/AndroidProject/StepCounter/app/src/main/java/pedometer/stepcounter/appcompany/BMI_Calculator_Activity.java"
