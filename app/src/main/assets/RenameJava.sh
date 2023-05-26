@@ -28,60 +28,65 @@ replace_java_name() {
   file_name_without_extension="$2"
   main_path="$3"
   main_file="$4"
-  echo -e "Package =>  $package \n File =>  $main_file To => $random_string" >>name.xml
-#
-#
-#  package="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
-#  list_java2=$(grep -r --include='*.java' -l "\bimport $package.$file_name_without_extension;\b" "$main_path")
-#  for itemJava2 in $list_java2; do
-#    sed -i -e "s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
-#  done
+
+  #
+  #
+  #  package="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+  #  list_java2=$(grep -r --include='*.java' -l "\bimport $package.$file_name_without_extension;\b" "$main_path")
+  #  for itemJava2 in $list_java2; do
+  #    sed -i -e "s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
+  #  done
 
   list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
   for itemJava in $list_java; do
     #    echo "$itemJava"
-    package="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
-    sed -i '/import [^;]*'$package'/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+     sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+
 #    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+    #    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
     #     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
     #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 
-#
-#  list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
-#  for itemJava in $list_java; do
-#    #    echo "$itemJava"
-#    sed -i -e 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
-#    #    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
-#    #     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
-#    #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
-#  done
-#
-#  list_java2=$(grep -r --include='*.java' -l "\bimport $package.$file_name_without_extension;\b" "$main_path")
-#  for itemJava2 in $list_java2; do
-#    sed -i -e "/package [^;]*;/! s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
-#  done
-#
-#  list_xml=$(grep -r --include='*.xml' -l ''$package'.'file_name_without_extension'' "$(dirname "$main_path")")
-#  for itemXml in $list_xml; do
-#    sed -i -e "s/$package\.$file_name_without_extension/$package\.$random_string/g" "$itemXml"
-#    #    sed -i -e 's/<'$package'.'$file_name_without_extension'/<'$package'.'$random_string'/g' "$itemXml"
-#    #    sed -i -e 's/"'$package'.'$file_name_without_extension'"/"'$package'.'$random_string'"/g' "$itemXml"
-#  done
+  #
+  #  list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
+  #  for itemJava in $list_java; do
+  #    #    echo "$itemJava"
+  #    sed -i -e 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+  #    #    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+  #    #     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
+  #    #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+  #  done
+  #
+    package="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+    list_java2=$(grep -r --include='*.java' -l "$package" "$main_path")
+    for itemJava2 in $list_java2; do
+         echo -e "Package =>  $package \n File =>  $itemJava2 To => $random_string" >>name.xml
+#       package="$(echo "${itemJava2%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+       sed -i "s/import $package.$file_name_without_extension/import $package.$random_string/g" "$itemJava2"
+#      sed -i -e "/package [^;]*;/! s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
+    done
+  #
+  #  list_xml=$(grep -r --include='*.xml' -l ''$package'.'file_name_without_extension'' "$(dirname "$main_path")")
+  #  for itemXml in $list_xml; do
+  #    sed -i -e "s/$package\.$file_name_without_extension/$package\.$random_string/g" "$itemXml"
+  #    #    sed -i -e 's/<'$package'.'$file_name_without_extension'/<'$package'.'$random_string'/g' "$itemXml"
+  #    #    sed -i -e 's/"'$package'.'$file_name_without_extension'"/"'$package'.'$random_string'"/g' "$itemXml"
+  #  done
 
 }
-replace_java_import() {
-  random_string="$1"
-  file_name_without_extension="$2"
-  main_path="$3"
-  main_file="$4"
-  echo -e "Package =>  $package \n File =>  $main_file To => $random_string" >>import.xml
-  package="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
-  list_java2=$(grep -r --include='*.java' -l "\bimport $package.$file_name_without_extension;\b" "$main_path")
-  for itemJava2 in $list_java2; do
-    sed -i "s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
-  done
-}
+#replace_java_import() {
+#  random_string="$1"
+#  file_name_without_extension="$2"
+#  main_path="$3"
+#  main_file="$4"
+#  echo -e "Package =>  $package \n File =>  $main_file To => $random_string" >>import.xml
+#  package="$(echo "${main_file%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+#  list_java2=$(grep -r --include='*.java' -l "\bimport $package.$file_name_without_extension;\b" "$main_path")
+#  for itemJava2 in $list_java2; do
+#    sed -i "s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava2"
+#  done
+#}
 
 src_files=$(find "$directory" -type f -name '*.java')
 total_files=$(echo "$src_files" | wc -l)
@@ -93,7 +98,7 @@ for file in $src_files; do
   if [[ -f "$file" ]]; then
     replace_java_name "$random_string" "$file_name_without_extension" "$directory" "$file"
     mv "$file" "$(dirname "$file")/$random_string.$extension"
-    replace_java_import "$random_string" "$file_name_without_extension" "$directory" "$file"
+#    replace_java_import "$random_string" "$file_name_without_extension" "$directory" "$file"
     #    mv "$file" "$dir/$random_string.$extension"
   fi
   #--------------------- Calculate the percentage of files processed-------------------------
@@ -104,17 +109,30 @@ for file in $src_files; do
   #--------------------- Calculate the percentage of files processed-------------------------
 done
 
+#--------------------- Calculate the percentage of files processed-------------------------
 
+
+#itemJava="C:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/activites/AddedCustomExercisesListActivity.java"
+#package="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
+#file_name_without_extension="AddedCustomExercisesListActivity"
+#random_string="AddedCustomExercisesListActivity_new"
+#sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+#sed -i "s/import $package.$file_name_without_extension;/import $package.$random_string;/g" "$itemJava"
+
+
+#--------------------- Calculate the percentage of files processed-------------------------
 
 #Package = >com.demo.exercise_app.Utils
 #File = To = >C:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/Utils/Utils.java >Utils_hkjvyxojms
 #Package = >com.demo.exercise_app
-#
-#file="C:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/Utils/Utils.java"
-#file_name_without_extension="Utils"
-#random_string="random_string"
-#mv "$file" "$(dirname "$file")/$random_string.java"
-#
+#list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
+#for itemJava in $list_java; do
+#  #    echo "$itemJava"
+#done
+
+#    sed -i '/import [^;]*;/! s/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
+#     sed -i -e "s/\.$file_name_without_extension;/\.$random_string;/g" "$itemJava"
+#    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
 #
 #mv "$file" "$new_file"
 
