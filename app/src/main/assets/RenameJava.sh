@@ -52,6 +52,8 @@ replace_java_name() {
 
 
 
+
+
   #
   #  list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
   #  for itemJava in $list_java; do
