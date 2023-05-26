@@ -48,6 +48,10 @@ replace_java_name() {
     #    sed -i 's/\([^"]\|^\)\b'$file_name_without_extension'\b\([^"]\|$\)/\1'$random_string'\2/g' "$itemJava"
   done
 
+
+
+
+
   #
   #  list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
   #  for itemJava in $list_java; do
