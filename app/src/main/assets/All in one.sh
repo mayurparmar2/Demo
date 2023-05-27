@@ -160,7 +160,16 @@ pattern34='<(\w+)\s+[^>]*name="google_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern35='<(\w+)\s+[^>]*name="default_web[^"]*"[^>]*>(.*?)<\/\1>'
 pattern36='<(\w+)\s+[^>]*name="test_mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
 pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
-pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
+pattern38='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
+pattern39='<(\w+)\s+[^>]*name="action_bar_size[^"]*"[^>]*>(.*?)<\/\1>'
+pattern40='<(\w+)\s+[^>]*name="appcompat_dialog_background_inset[^"]*"[^>]*>(.*?)<\/\1>'
+pattern41='<(\w+)\s+[^>]*name="compat_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern42='<(\w+)\s+[^>]*name="default_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern43='<(\w+)\s+[^>]*name="disabled_alpha[^"]*"[^>]*>(.*?)<\/\1>'
+pattern44='<(\w+)\s+[^>]*name="fastscroll_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern45='<(\w+)\s+[^>]*name="highlight_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern46='<(\w+)\s+[^>]*name="hint_[^"]*"[^>]*>(.*?)<\/\1>'
+pattern47='<(\w+)\s+[^>]*name="item_[^"]*"[^>]*>(.*?)<\/\1>'
 replacement=''
 
 file_count=$(find $regexDir -type f -name "*.xml" | grep -c ".*")
@@ -206,6 +215,17 @@ for file in "$regexDir"/*; do
     sed -i "s/$pattern35/$replacement/g" "$file"
     sed -i "s/$pattern36/$replacement/g" "$file"
     sed -i "s/$pattern37/$replacement/g" "$file"
+    sed -i "s/$pattern38/$replacement/g" "$file"
+    sed -i "s/$pattern39/$replacement/g" "$file"
+    sed -i "s/$pattern40/$replacement/g" "$file"
+    sed -i "s/$pattern41/$replacement/g" "$file"
+    sed -i "s/$pattern42/$replacement/g" "$file"
+    sed -i "s/$pattern43/$replacement/g" "$file"
+    sed -i "s/$pattern44/$replacement/g" "$file"
+    sed -i "s/$pattern45/$replacement/g" "$file"
+    sed -i "s/$pattern46/$replacement/g" "$file"
+    sed -i "s/$pattern47/$replacement/g" "$file"
+    
     sed -i "s/android:tint=/app:tint=/g" "$file"
     sed -i 's/Of="0"/Of="parent"/g' "$file"
     sed -i 's/app:tabMode="1"/app:tabMode="fixed"/g' "$file"
