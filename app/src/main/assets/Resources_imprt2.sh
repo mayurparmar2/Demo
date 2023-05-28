@@ -6,37 +6,75 @@ Jadx_RES_PATH="D:/SaveJadx/$ProjectName/resources/res"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
 MAIN="$ANDROID_PROJECT_PATH/app/src/main"
 directorieslist=(
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/color"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/font"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/menu"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/xml"
-    "C:/AndroidProject/Test/$ProjectName/app/src/main/res/raw"
+  "values"
+  "layout"
+  "drawable"
+  "anim"
+  "anim"
+  "color"
+  "font"
+  "menu"
+  "xml"
+  "raw"
 )
-
+copyFile() {
+  local destination_path="$1"
+  local path="$2"
+  #  if [[ -e "$destination_path/$(basename "$path")" ]]; then
+  #    echo "File already exists. Skipping copy operation."
+  #    return
+  #  fi
+  if [ ! -d "$destination_path" ]; then
+    mkdir -p "$destination_path"
+  fi
+  cp "$path" "$destination_path"
+  for type_name in "${directorieslist[@]}"; do
+    fun_child "$type_name" "$path"
+  done
+}
+fun_child() {
+  resource_type="$1"
+  search_path="$2"
+  matches=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path"))
+  if [ -n "${matches[*]}" ]; then
+    for match in "${matches[@]}"; do
+      resource_name=$(echo "$match" | sed -E 's/@'$resource_type'\/([A-Za-z0-9_]+)/\1/')
+      resource_name=$(echo "$resource_name" | awk -F'/' '{print $NF}')
+      path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
+      for path in $path_list; do
+        echo "path =>$path" >>path.xml
+        directory=$(dirname "$path")
+        basename=$(basename "$directory")
+        bir_name=""
+        IFS='-' read -ra parts <<<"$basename"
+        if [ "${#parts[@]}" -gt 1 ]; then
+          bir_name="${parts[0]}"
+        fi
+        if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
+          destination_path="$RES_PATH/$basename"
+          copyFile "$destination_path" "$path"
+        else
+          if [[ $basename != *-* ]]; then
+            destination_path="$RES_PATH/$basename"
+            copyFile "$destination_path" "$path"
+          fi
+        fi
+      done
+    done
+  fi
+}
 fun_main() {
-   pattern="$1"
-
-
-
-  echo "pattern :$pattern"
-
-  for dir in "${directorieslist[@]}"; do
-    resource_type="$(basename "$dir")"
-    IFS='-' read -ra parts <<<"$resource_type"
-    if [ "${#parts[@]}" -gt 1 ]; then
-      resource_type="${parts[0]}"
-    fi
-    matches=null
-    if [[ "$pattern" =~ "xml" ]]; then
-      matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$RES_PATH"))
-    else
-      matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$JAVA_SRC_PATH"))
-    fi
-    # Iterate over the array and extract the resource name using sed
+  pattern="$1"
+  resource_type="$2"
+  search_path="$3"
+  echo "pattern :$1"
+  matches=null
+  if [[ "$pattern" =~ "xml" ]]; then
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path"))
+  else
+    matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path"))
+  fi
+  if [ -n "${matches[*]}" ]; then
     for match in "${matches[@]}"; do
       resource_name=""
       if [[ "$pattern" =~ "xml" ]]; then
@@ -48,6 +86,7 @@ fun_main() {
       echo "$resource_name"
       path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
       for path in $path_list; do
+        echo "path =>$path" >>path.xml
         directory=$(dirname "$path")
         basename=$(basename "$directory")
         bir_name=""
@@ -57,26 +96,20 @@ fun_main() {
         fi
         if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
           destination_path="$RES_PATH/$basename"
-          if [ ! -d "$destination_path" ]; then
-            mkdir -p "$destination_path"
-          fi
-          cp "$path" "$destination_path"
+          copyFile "$destination_path" "$path"
         else
           if [[ $basename != *-* ]]; then
             destination_path="$RES_PATH/$basename"
-            if [ ! -d "$destination_path" ]; then
-              mkdir -p "$destination_path"
-            fi
-            cp "$path" "$destination_path"
+            copyFile "$destination_path" "$path"
           fi
         fi
       done
     done
-  done
-
+  fi
 }
-#fun_main "${directorieslist[@]}" "java"
-fun_main "xml"
+#fun_main "xml" "layout" $RES_PATH
+fun_main "java" "layout" $JAVA_SRC_PATH
+#fun_main "xml"
 #-------------------------------------------------------------------
 #ProjectName="Demo-master"
 #ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
