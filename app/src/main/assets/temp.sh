@@ -1,46 +1,144 @@
 #!/bin/bash
 
 ProjectName="Demo-master"
-# Define the paths to your Android project
-
 #--------------------working-------------------------
+directorieslist=(
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/color"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/font"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/menu"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/raw"
+)
+skip_directory_list=(
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/color"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/font"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/menu"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/xml"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/raw"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable-hdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable-mdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable-xhdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable-xxhdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable-xxxhdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/mipmap-hdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/mipmap-mdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/mipmap-xhdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/mipmap-xxhdpi"
+  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
+)
+
 ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
+#mydi="C:/AndroidProject/Test/$ProjectName/app/src/main/res"
 
-# Function to check if a resource is used
-is_resource_used() {
-    local resource_name="$1"
-    local resource_type="$2"
-
-    # Check Java files
-    local java_usage=$(grep -r -l "R\.$resource_type\.$resource_name" "$JAVA_SRC_PATH")
-    if [ -n "$java_usage" ]; then
-        return 0  # Resource is used in Java files
-    fi
-
-    # Check XML files
-#    local xml_usage=$(grep -r -l "@$resource_type/$resource_name" "$RES_PATH")
-#    if [ -n "$xml_usage" ]; then
-#        return 0  # Resource is used in XML files
-#    fi
-
-    return 1  # Resource is not used
+is_resource_xml() {
+  local resource_name="$1"
+  local resource_type="$2"
+  local result=1
+  # Check Xml files
+  list_xml=$(grep -r --include='*.xml' -l "@$resource_type/$resource_name" "$RES_PATH")
+  if [ -n "$xml_usage" ]; then
+    result=0
+    #    for itemXml in $list_xml; do
+    #
+    ##      echo "@$resource_type/$resource_name => $itemXml" >>xml_file.xml
+    ##      type="$(echo "${main_file%/*}" | sed 's|[^;]*res/||g')"
+    ##      name_ext=$(basename "$file")
+    ##      name="${name_ext%.*}"
+    ##      if is_resource_java "$type" "$name"; then
+    ##        return 0 # Resource is used in XML files
+    ##      fi
+    #    done
+  fi
+  return "$result"
+  # Resource is not used
+}
+is_resource_java() {
+  local resource_name="$1"
+  local resource_type="$2"
+  # Check Java files
+  local java_usage=$(grep -r -l "R\.$resource_type\.$resource_name" "$JAVA_SRC_PATH")
+  if [ -n "$java_usage" ]; then
+    return 0 # Resource is used in Java files
+  fi
+  return 1 # Resource is not used
 }
 
-# Loop through all resource files and delete unused ones
-find "$RES_PATH" -type f | while read -r resource_file; do
-    if [[ $resource_file =~ .*/([^/]+)/([^/]+)\.([^/.]+)$ ]]; then
-        resource_type="${BASH_REMATCH[1]}"
-        resource_name="${BASH_REMATCH[2]}"
-        resource_extension="${BASH_REMATCH[3]}"
-
-        if ! is_resource_used "$resource_name" "$resource_type"; then
-            echo "Deleting $resource_file"
-            rm "$resource_file"
-        fi
+for dir in "$RES_PATH"/*; do
+  # Check if directory exists
+  if [[ -d "$dir" ]]; then
+    if ! [[ " ${skip_directory_list[@]} " =~ " $dir " ]]; then
+      echo "Deleting... $dir"
+      rm -r "$dir"
     fi
+  fi
 done
+
+#unused_resources=()
+for dir in "${directorieslist[@]}"; do
+  resource_type="$(basename "$dir")"
+  IFS='-' read -ra parts <<<"$resource_type"
+  if [ "${#parts[@]}" -gt 1 ]; then
+    resource_type="${parts[0]}"
+  fi
+  for resource_file in "$dir"/*; do
+    resource_name_ext=$(basename "$resource_file")
+    resource_name="${resource_name_ext%.*}"
+    if ! is_resource_java "$resource_name" "$resource_type" && ! is_resource_xml "$resource_name" "$resource_type"; then
+      echo "File unused : $resource_file " >>unused_resources.xml
+      echo "Deleting $resource_file"
+      rm "$resource_file"
+      #      unused_resources+=("$resource_file")
+    fi
+    #
+    #    if ! is_resource_java "$resource_name" "$resource_type"; then
+    #      #      echo "Deleting $resource_file"
+    #      rm "$resource_file"
+    #    fi
+  done
+done
+
+#
+## Function to check if a resource is used
+
+# Loop through all resource files and delete unused ones
+#find "$RES_PATH" -type f | while read -r resource_file; do
+#  if [[ $resource_file =~ .*/([^/]+)/([^/]+)\.([^/.]+)$ ]]; then
+#    resource_type="${BASH_REMATCH[1]}"
+#    resource_name="${BASH_REMATCH[2]}"
+#    resource_extension="${BASH_REMATCH[3]}"
+#
+#    if ! is_resource_used "$resource_name" "$resource_type"; then
+#      echo "Deleting $resource_file"
+#      rm "$resource_file"
+#    fi
+#  fi
+#done
+
+##PROJECT="/path/to/the/project"
+#for file in $(ls $PROJECT/res/drawable -l | awk '{ print $8}' | sed 's/\..\+//g'); do
+#  count=0
+#  for SRCFILE in $(find $PROJECT -name "*.xml" -print 2>/dev/null); do
+#    let "count+=$(grep -c @drawable/$file $SRCFILE)"
+#  done
+#  for SRCFILE in $(find $PROJECT -name "*.java" -print 2>/dev/null); do
+#    let "count+=$(grep -c R.drawable.$file $SRCFILE)"
+#  done
+#  if [ $count -lt 1 ]; then
+#    echo -e "\e[0;31m$file\e[0m not used"
+#  else
+#    echo -e "\e[0;32m$file\e[0m used"
+#  fi
+#done
 #-------------------- Generate a list of used XML files-------------------------
 #used_xml_files=$(grep -roh --include="*.java" "R\.layout\.[a-zA-Z0-9_]\+" "$JAVA_SRC_PATH" | sed 's/R.layout.//')
 ## Delete unused XML files
