@@ -20,6 +20,8 @@ directorieslist=(
 fun_main() {
    pattern="$1"
 
+
+
   echo "pattern :$pattern"
 
   for dir in "${directorieslist[@]}"; do
