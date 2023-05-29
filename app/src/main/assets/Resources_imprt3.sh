@@ -4,7 +4,6 @@ ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
 Jadx_RES_PATH="F:/SaveJadx/$ProjectName/resources/res"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
-MAIN="$ANDROID_PROJECT_PATH/app/src/main"
 value_list=(
   "arrays"
   "attrs"
@@ -31,8 +30,8 @@ copyFile() {
 }
 fun_child() {
   resource_type="$1"
-  search_path="$2"
-  list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  search_file="$2"
+  list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_file" | awk -F'/' '{print $NF}'))
   if [ -n "${list_names[*]}" ]; then
     for resource_name in "${list_names[@]}"; do
       echo "fun_child resource_name : $resource_name"
@@ -61,11 +60,10 @@ fun_child() {
 fun_main() {
   local pattern="$1"
   local resource_type="$2"
-  local search_path="$3"
-  local matches=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  local search_file="$3"
+  local matches=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_file" | awk -F'/' '{print $NF}'))
   if [ -n "${matches[*]}" ]; then
      for resource_name in "${matches[@]}"; do
-          echo "fun_child resource_name : $resource_name"
           path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
           for path in $path_list; do
             directory=$(dirname "$path")
@@ -90,10 +88,20 @@ fun_main() {
 }
 #fun_main "xml" "layout" $RES_PATH
 for type_name in "${value_list[@]}"; do
-  fun_main "java" "$type_name" $JAVA_SRC_PATH
+  fun_main "$type_name" "$RES_PATH/$type_name.xml"
 done
 
 
+style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
+style_block=$(awk -v RS="</style>" -v ORS="</style>" '/name="AppTheme"/ { print $0 }' "$style_file")
+awk -v tag="$style_block" '/<resources>/ && !flag { print; print tag; flag=1; next }1' "$style_file" > /tmp/temp.xml && mv /tmp/temp.xml "$style_file"
+
+if [ -n "$style_block" ]; then
+  echo "Style block found:"
+  echo "$style_block"
+else
+  echo "No style block found."
+fi
 
 #styles_xml_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/layout/activity_main.xml"
 #resource_names_styles=($(grep -Eo '@font/[A-Za-z0-9_]+' "$styles_xml_file" | awk -F'/' '{print $NF}'))
