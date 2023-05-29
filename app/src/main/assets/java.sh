@@ -1,28 +1,50 @@
 #!/bin/bash
-# WifiAutoConnect
-
-# "Enter the path of the directory containing the files: " ProjectName
-echo "Enter the PakageName: "
-read PakageName
+PakageName='typing.test.typing.speed.test.typing.master'
+ProjectName='TypingTest'
 #
-echo "Enter the ProjectName: "
-read ProjectName
-
-#search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
-#rPakageName="import $PakageName.R;"
+#echo "Enter the ProjectName: "
+#read ProjectName
 #
-#PakageName='auto.move.to.sd.card.quick.transfer'
-#ProjectName='AutoMoveSdcard'
+#echo "Enter the PakageName: "
+#read PakageName
+
+if [[ -z "$ProjectName" || -z "$PakageName" ]]; then
+  return
+fi
+
 search_path="C:/AndroidProject/Test/$ProjectName/app/src/main/java"
-java_files=$(find "$search_path" -type f -name '*.java')
+#copyFile() {
+#  local destination_path="$1"
+#  local path="$2"
+
+PakageName_path="$(echo "$PakageName" | sed 's|\.|\/|g')"
+sources="F:/SaveJadx/$ProjectName/sources/$PakageName_path"
+if [ -d "$search_path/$PakageName_path" ]; then
+  #    return
+  rm -r "$search_path/$PakageName_path"
+fi
+if [ ! -d "$sources" ]; then
+  mkdir -p "$sources"
+fi
+if [ ! -d "$search_path/$PakageName_path" ]; then
+  mkdir -p "$search_path/$PakageName_path"
+fi
+cp -r "$sources"/* "$search_path/$PakageName_path"
+delete_file_list=(
+  "$search_path/$PakageName_path/R.java"
+  "$search_path/$PakageName_path/BuildConfig.java"
+)
+for delete_item in "${delete_file_list[@]}"; do
+  echo "$delete_item" >>temp.xml
+  if [ -f "$sources" ]; then
+      rm "$delete_item"
+  fi
+done
+
+java_files=$(find "$search_path/$PakageName_path" -type f -name '*.java')
 total_files=$(echo "$java_files" | wc -l)
 replace_files=0
 percentage=0
-
-delete_file_list=(
-  "R.java"
-  "BuildConfig.java"
-)
 for file in $java_files; do
   sed -i "s/import $PakageName.R;/import com.demo.example.R;/g" "$file"
   sed -i "s/e = e.*?;//g" "$file"
@@ -112,38 +134,67 @@ for file in $java_files; do
     parameter3=${parameter3//[[:space:]]/}
     #  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
-#    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
+    #    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
   fi
   #----------------------Toast.makeText--------------------------
-    matches=()
-     while IFS= read -r line; do
-         matches+=("$line")
-     done < <(grep -o 'Toast\.makeText([^;]*);' "$file")
-     for match in "${matches[@]}"; do
-         echo "$match"
-         # Remove leading and trailing whitespace
-         string=$(echo "$match" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-         # Extract parameters
-         IFS=',' read -r -a params <<< "${string#Toast.makeText(}"
-         context=$(echo "${params[0]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-         message=$(echo "${params[1]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  matches=()
+  while IFS= read -r line; do
+    matches+=("$line")
+  done < <(grep -o 'Toast\.makeText([^;]*);' "$file")
+  for match in "${matches[@]}"; do
+    echo "$match"
+    # Remove leading and trailing whitespace
+    string=$(echo "$match" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    # Extract parameters
+    IFS=',' read -r -a params <<<"${string#Toast.makeText(}"
+    context=$(echo "${params[0]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    message=$(echo "${params[1]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
     #     duration=$(echo "${params[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/)//')
-        sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
-        sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
-     done
-#---------------------- Delete unnecessary files--------------------------
-#  # Delete unnecessary files
-#  name_with_ext=$(basename "$file")
-#  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
-#    rm "$item"
-#  fi
-#--------------------- Calculate the percentage of files processed-------------------------
+    sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
+    sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
+  done
+  #---------------------- Delete unnecessary files--------------------------
+  #  # Delete unnecessary files
+  #  name_with_ext=$(basename "$file")
+  #  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+  #    rm "$item"
+  #  fi
+  #--------------------- Calculate the percentage of files processed-------------------------
   ((replace_files++))
   # Calculate the percentage of files processed
   percentage=$((replace_files * 100 / total_files))
   echo "Progress: $percentage% ($replace_files/$total_files files)"
-#--------------------- Calculate the percentage of files processed-------------------------
+  #--------------------- Calculate the percentage of files processed-------------------------
 done
 
 
 
+
+
+
+
+#source_folder="/path/to/source/folder"
+#destination_folder="/path/to/destination/folder"
+#
+#total_files=$(find "$source_folder" -type f | wc -l)
+#copied_files=0
+#
+#copy_files() {
+#    local source_dir=$1
+#    local dest_dir=$2
+#
+#    for file in "$source_dir"/*; do
+#        if [[ -f "$file" ]]; then
+#            ((copied_files++))
+#            progress=$((copied_files * 100 / total_files))
+#            echo "Copying file: $file [$progress%]"
+#            cp "$file" "$dest_dir"
+#        elif [[ -d "$file" ]]; then
+#            local dir_name=$(basename "$file")
+#            mkdir -p "$dest_dir/$dir_name"
+#            copy_files "$file" "$dest_dir/$dir_name"
+#        fi
+#    done
+#}
+#
+#copy_files "$source_folder" "$destination_folder"

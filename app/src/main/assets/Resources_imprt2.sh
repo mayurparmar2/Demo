@@ -20,10 +20,10 @@ directorieslist=(
 copyFile() {
   local destination_path="$1"
   local path="$2"
-  #  if [[ -e "$destination_path/$(basename "$path")" ]]; then
-  #    echo "File already exists. Skipping copy operation."
-  #    return
-  #  fi
+    if [[ -e "$destination_path/$(basename "$path")" ]]; then
+      echo "File already exists. Skipping copy operation."
+      return
+    fi
   if [ ! -d "$destination_path" ]; then
     mkdir -p "$destination_path"
   fi
