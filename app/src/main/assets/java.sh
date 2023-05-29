@@ -13,7 +13,7 @@ read ProjectName
 #
 #PakageName='auto.move.to.sd.card.quick.transfer'
 #ProjectName='AutoMoveSdcard'
-search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+search_path="C:/AndroidProject/Test/$ProjectName/app/src/main/java"
 java_files=$(find "$search_path" -type f -name '*.java')
 total_files=$(echo "$java_files" | wc -l)
 replace_files=0
