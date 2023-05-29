@@ -94,6 +94,9 @@ done
 
 style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
 style_block=$(awk -v RS="</style>" -v ORS="</style>" '/name="AppTheme"/ { print $0 }' "$style_file")
+
+# Use sed to insert the new tag within the <resources> tag
+sed -i '/<resources>/a '$style_block'' "$style_file"
 awk -v tag="$style_block" '/<resources>/ && !flag { print; print tag; flag=1; next }1' "$style_file" > /tmp/temp.xml && mv /tmp/temp.xml "$style_file"
 
 if [ -n "$style_block" ]; then
@@ -102,6 +105,34 @@ if [ -n "$style_block" ]; then
 else
   echo "No style block found."
 fi
+
+
+
+
+
+
+
+
+# Get the name of the XML file to read.
+xml_file=$1
+
+# Read the contents of the XML file.
+xml_contents=$(cat $xml_file)
+
+# Find the location of the `<resources>` tag.
+resources_index=$(echo $xml_contents | grep -n "<resources>")
+
+# Print the XML declaration and the `<resources>` tag.
+echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+echo "<resources>"
+
+# Print the rest of the XML file.
+echo "$xml_contents" | sed -n "$resources_index,$p"
+
+# Print the closing `</resources>` tag.
+echo "</resources>"
+
+
 
 #styles_xml_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/layout/activity_main.xml"
 #resource_names_styles=($(grep -Eo '@font/[A-Za-z0-9_]+' "$styles_xml_file" | awk -F'/' '{print $NF}'))
