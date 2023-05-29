@@ -30,7 +30,7 @@ copyFile() {
   local destination_path="$1"
   local path="$2"
     if [[ -e "$destination_path/$(basename "$path")" ]]; then
-      echo "File already exists. Skipping copy operation."
+      echo "File already exists.$(basename "$path")"
       return
     fi
   if [ ! -d "$destination_path" ]; then
@@ -44,15 +44,12 @@ copyFile() {
 fun_child() {
   resource_type="$1"
   search_path="$2"
-  #  matches=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path"))
   list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
   if [ -n "${list_names[*]}" ]; then
     for resource_name in "${list_names[@]}"; do
-      #      resource_name=$(echo "$match" | sed -E 's/@'$resource_type'\/([A-Za-z0-9_]+)/\1/')
-      #      resource_name=$(echo "$resource_name" | awk -F'/' '{print $NF}')
+      echo "fun_child resource_name : $resource_name"
       path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
       for path in $path_list; do
-        echo "path =>$path" >>path.xml
         directory=$(dirname "$path")
         basename=$(basename "$directory")
         bir_name=""
@@ -77,7 +74,6 @@ fun_main() {
   pattern="$1"
   resource_type="$2"
   search_path="$3"
-  echo "pattern :$1"
   matches=null
   if [[ "$pattern" =~ "xml" ]]; then
     matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path"))
@@ -93,10 +89,9 @@ fun_main() {
       else
         resource_name=$(echo "$match" | awk -F'.' '{print $NF}')
       fi
-      echo "$resource_name"
+      echo "fun_main resource_name : $resource_name"
       path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
       for path in $path_list; do
-        echo "path =>$path" >>path.xml
         directory=$(dirname "$path")
         basename=$(basename "$directory")
         bir_name=""
