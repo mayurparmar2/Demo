@@ -75,6 +75,23 @@ for type_name in "${value_list[@]}"; do
   fun_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
 
+
+
+
+
+
+
+
+
+directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
+# Use grep with a regular expression to extract the values inside the brackets
+result=$(grep -oP '(?<=ActionBar\s=\s\{).*?(?=\})' "$directory")
+result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
+readarray -t values <<<"$result"
+for value in "${values[@]}"; do
+  echo "$value"
+done
+
 #style_j="F:/SaveJadx/TypingTest/resources/res/values/styles.xml"
 #style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
 #style_block=$(cat "$style_j" | grep -zPo "<style name=\"ToolbarStyle\"[\s\S]*?</style>")
