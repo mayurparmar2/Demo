@@ -66,8 +66,9 @@ fun_main() {
           attrFile=''$Jadx_RES_PATH'/attrs.xml'
           block+="<declare-styleable name=\"$resource_name\">"
           for attr in "${values[@]}"; do
-            block+=$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attr\"[\s\S]*?</attr>")
-            echo "$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attr\"[\s\S]*?</attr>")"
+            attrName=$(echo "$attr" | sed 's/R.attr.//')
+            block+=$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            echo $(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
           done
           block+="</declare-styleable>"
           echo "$block"
