@@ -24,8 +24,9 @@ value_exists() {
   fi
 }
 fun_main() {
-  local resource_type="$1"
-  local search_path="$2"
+  local pattern="$1"
+  local resource_type="$2"
+  local search_path="$3"
   my_val_file=''$RES_PATH'/values/'$resource_type's.xml'
   if [ ! -f "$my_val_file" ]; then
     touch "$my_val_file"
@@ -34,7 +35,13 @@ fun_main() {
   else
     echo "File already exists: $my_val_file"
   fi
-  local matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+
+  local matches=null
+  if [[ "$pattern" =~ "xml" ]]; then
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  else
+    matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
+  fi
   if [ -n "${matches[*]}" ]; then
     echo "$matches"
     for resource_name in "${matches[@]}"; do
@@ -61,7 +68,11 @@ fun_main() {
 }
 #fun_main "xml" "layout" $RES_PATH
 for type_name in "${value_list[@]}"; do
-  fun_main "$type_name" "$MAIN"
+  fun_main "xml" "$type_name" "$MAIN"
+done
+
+for type_name in "${value_list[@]}"; do
+  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
 
 #style_j="F:/SaveJadx/TypingTest/resources/res/values/styles.xml"
