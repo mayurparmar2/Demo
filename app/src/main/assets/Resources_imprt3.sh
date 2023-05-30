@@ -2,137 +2,85 @@
 ProjectName="TypingTest"
 ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
-Jadx_RES_PATH="F:/SaveJadx/$ProjectName/resources/res"
+Jadx_RES_PATH="F:/SaveJadx/TypingTest/resources/res/values"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
+MAIN="$ANDROID_PROJECT_PATH/app/src/main"
 value_list=(
-  "arrays"
-  "attrs"
+  "array"
+  "attr"
   "color"
-  "dimens"
-  "refs"
-  "strings"
-  "styles"
+  "dimen"
+  "ref"
+  "string"
+  "style"
 )
-copyFile() {
-  local destination_path="$1"
-  local path="$2"
-    if [[ -e "$destination_path/$(basename "$path")" ]]; then
-      echo "File already exists.$(basename "$path")"
-      return
-    fi
-  if [ ! -d "$destination_path" ]; then
-    mkdir -p "$destination_path"
-  fi
-  cp "$path" "$destination_path"
-  for type_name in "${directorieslist[@]}"; do
-    fun_child "$type_name" "$path"
-  done
-}
-fun_child() {
-  resource_type="$1"
-  search_file="$2"
-  list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_file" | awk -F'/' '{print $NF}'))
-  if [ -n "${list_names[*]}" ]; then
-    for resource_name in "${list_names[@]}"; do
-      echo "fun_child resource_name : $resource_name"
-      path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
-      for path in $path_list; do
-        directory=$(dirname "$path")
-        basename=$(basename "$directory")
-        bir_name=""
-        IFS='-' read -ra parts <<<"$basename"
-        if [ "${#parts[@]}" -gt 1 ]; then
-          bir_name="${parts[0]}"
-        fi
-        if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
-          destination_path="$RES_PATH/$basename"
-          copyFile "$destination_path" "$path"
-        else
-          if [[ $basename != *-* ]]; then
-            destination_path="$RES_PATH/$basename"
-            copyFile "$destination_path" "$path"
-          fi
-        fi
-      done
-    done
-  fi
-}
 fun_main() {
-  local pattern="$1"
-  local resource_type="$2"
-  local search_file="$3"
-  local matches=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_file" | awk -F'/' '{print $NF}'))
+  local resource_type="$1"
+  local search_path="$2"
+  my_val_file=''$RES_PATH'/values/'$resource_type's.xml'
+  if [ ! -f "$my_val_file" ]; then
+    touch "$my_val_file"
+    echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
+    echo "File created: $my_val_file"
+  else
+    echo "File already exists: $my_val_file"
+  fi
+  local matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
   if [ -n "${matches[*]}" ]; then
-     for resource_name in "${matches[@]}"; do
-          path_list=$(find "$Jadx_RES_PATH" -name "$resource_name.*")
-          for path in $path_list; do
-            directory=$(dirname "$path")
-            basename=$(basename "$directory")
-            bir_name=""
-            IFS='-' read -ra parts <<<"$basename"
-            if [ "${#parts[@]}" -gt 1 ]; then
-              bir_name="${parts[0]}"
-            fi
-            if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
-              destination_path="$RES_PATH/$basename"
-              copyFile "$destination_path" "$path"
-            else
-              if [[ $basename != *-* ]]; then
-                destination_path="$RES_PATH/$basename"
-                copyFile "$destination_path" "$path"
-              fi
-            fi
-          done
-        done
+    echo "$matches"
+    for resource_name in "${matches[@]}"; do
+      block=""
+      echo "resource_name $resource_name"
+      jadx_val_file='F:/SaveJadx/TypingTest/resources/res/values/'$resource_type's.xml'
+            case "$resource_type" in
+            "style")
+              block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
+              ;;
+            *)
+              block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
+              ;;
+            esac
+      C=$(echo $block | sed 's/\//\\\//g')
+      sed -i "/<\/resources>/ s/.*/${C}\n&/" "$my_val_file"
+    done
   fi
 }
 #fun_main "xml" "layout" $RES_PATH
 for type_name in "${value_list[@]}"; do
-  fun_main "$type_name" "$RES_PATH/$type_name.xml"
+  fun_main "$type_name" "$MAIN"
 done
 
 
-style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
-style_block=$(awk -v RS="</style>" -v ORS="</style>" '/name="AppTheme"/ { print $0 }' "$style_file")
-
-# Use sed to insert the new tag within the <resources> tag
-sed -i '/<resources>/a '$style_block'' "$style_file"
-awk -v tag="$style_block" '/<resources>/ && !flag { print; print tag; flag=1; next }1' "$style_file" > /tmp/temp.xml && mv /tmp/temp.xml "$style_file"
-
-if [ -n "$style_block" ]; then
-  echo "Style block found:"
-  echo "$style_block"
-else
-  echo "No style block found."
-fi
 
 
 
 
 
+#style_j="F:/SaveJadx/TypingTest/resources/res/values/styles.xml"
+#style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
+#style_block=$(cat "$style_j" | grep -zPo "<style name=\"ToolbarStyle\"[\s\S]*?</style>")
+#
+#C=$(echo $style_block | sed 's/\//\\\//g')
+#sed -i "/<\/resources>/ s/.*/${C}\n&/" "$style_file"
+#
+#CONTENT="<student>\n<name>NewName</name>\n<id>NewID</id>\n</student>"
+#
+#C=$(echo "$style_block" | sed 's/\//\\\//g')
+#sed -i "/<\/resources>/ s/.*/${C}\n&/" "$style_file"
 
-
-
-# Get the name of the XML file to read.
-xml_file=$1
-
-# Read the contents of the XML file.
-xml_contents=$(cat $xml_file)
-
-# Find the location of the `<resources>` tag.
-resources_index=$(echo $xml_contents | grep -n "<resources>")
-
-# Print the XML declaration and the `<resources>` tag.
-echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-echo "<resources>"
-
-# Print the rest of the XML file.
-echo "$xml_contents" | sed -n "$resources_index,$p"
-
-# Print the closing `</resources>` tag.
-echo "</resources>"
-
-
+#style_block=$(cat "$style_file" | grep -oP "<color name=\"colorAccent\">.*?</color>")
+#style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/colors.xml"
+#style_block=$(cat "$style_file" | grep -oP "<color name=\"colorAccent\">.*?</color>")
+#style_block=$(cat "$style_file" | grep -zPo "<style name=\"AppTheme\"[\s\S]*?</style>")
+#C=$(echo "$style_block" | sed 's/\//\\\//g')
+#sed -i "/<\/resources>/ s/.*/${C}\n&/" "$style_file"
+#
+#if [ -n "$style_block" ]; then
+#  echo "Style block found:"
+#  echo "$style_block"
+#else
+#  echo "No style block found."
+#fi
 
 #styles_xml_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/layout/activity_main.xml"
 #resource_names_styles=($(grep -Eo '@font/[A-Za-z0-9_]+' "$styles_xml_file" | awk -F'/' '{print $NF}'))
