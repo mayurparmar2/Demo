@@ -14,6 +14,15 @@ value_list=(
   "string"
   "style"
 )
+value_exists() {
+  local resource_type="$1"
+  local search_value="$2"
+  if grep -q 'name="'$search_value'"' ''$RES_PATH'/values/'$resource_type's.xml'; then
+    return 0 # String found, return true
+  else
+    return 1 # String not found, return false
+  fi
+}
 fun_main() {
   local resource_type="$1"
   local search_path="$2"
@@ -30,18 +39,23 @@ fun_main() {
     echo "$matches"
     for resource_name in "${matches[@]}"; do
       block=""
+      #      echo "resource_name $resource_name"
       echo "resource_name $resource_name"
-      jadx_val_file='F:/SaveJadx/TypingTest/resources/res/values/'$resource_type's.xml'
-            case "$resource_type" in
-            "style")
-              block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
-              ;;
-            *)
-              block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
-              ;;
-            esac
-      C=$(echo $block | sed 's/\//\\\//g')
-      sed -i "/<\/resources>/ s/.*/${C}\n&/" "$my_val_file"
+      echo "resource_type $resource_type"
+      if ! value_exists "$resource_type" "$resource_name"; then
+        echo "value_exists 0"
+        jadx_val_file=''$Jadx_RES_PATH'/'$resource_type's.xml'
+        case "$resource_type" in
+        "style")
+          block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
+          ;;
+        *)
+          block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
+          ;;
+        esac
+        C=$(echo $block | sed 's/\//\\\//g')
+        sed -i "/<\/resources>/ s/.*/${C}\n&/" "$my_val_file"
+      fi
     done
   fi
 }
@@ -49,12 +63,6 @@ fun_main() {
 for type_name in "${value_list[@]}"; do
   fun_main "$type_name" "$MAIN"
 done
-
-
-
-
-
-
 
 #style_j="F:/SaveJadx/TypingTest/resources/res/values/styles.xml"
 #style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
