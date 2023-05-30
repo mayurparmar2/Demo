@@ -5,7 +5,7 @@ JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
 Jadx_RES_PATH="F:/SaveJadx/TypingTest/resources/res/values"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
 MAIN="$ANDROID_PROJECT_PATH/app/src/main"
-xml_list=(
+value_list=(
   "array"
   "attr"
   "color"
@@ -13,6 +13,7 @@ xml_list=(
   "ref"
   "string"
   "style"
+  "styleable"
 )
 value_exists() {
   local resource_type="$1"
@@ -56,6 +57,21 @@ fun_main() {
         "style")
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
           ;;
+        "styleable")
+          directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
+          # Use grep with a regular expression to extract the values inside the brackets
+          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$directory")
+          result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
+          readarray -t values <<<"$result"
+          attrFile=''$Jadx_RES_PATH'/attrs.xml'
+          block+="<declare-styleable name=\"$resource_name\">"
+          for attr in "${values[@]}"; do
+            block+=$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attr\"[\s\S]*?</attr>")
+            echo "$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attr\"[\s\S]*?</attr>")"
+          done
+          block+="</declare-styleable>"
+          echo "$block"
+          ;;
         *)
           block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
           ;;
@@ -66,31 +82,24 @@ fun_main() {
     done
   fi
 }
-#fun_main "xml" "layout" $RES_PATH
-for type_name in "${value_list[@]}"; do
-  fun_main "xml" "$type_name" "$MAIN"
-done
+##fun_main "xml" "layout" $RES_PATH
+#for type_name in "${value_list[@]}"; do
+#  fun_main "xml" "$type_name" "$MAIN"
+#done
 
-for type_name in "${value_list[@]}"; do
-  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
-done
+#for type_name in "${value_list[@]}"; do
+#  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
+#done
+fun_main "java" "styleable" "$JAVA_SRC_PATH"
 
-
-
-
-
-
-
-
-
-directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
-# Use grep with a regular expression to extract the values inside the brackets
-result=$(grep -oP '(?<=ActionBar\s=\s\{).*?(?=\})' "$directory")
-result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
-readarray -t values <<<"$result"
-for value in "${values[@]}"; do
-  echo "$value"
-done
+#directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
+## Use grep with a regular expression to extract the values inside the brackets
+#result=$(grep -oP '(?<=ActionBar\s=\s\{).*?(?=\})' "$directory")
+#result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
+#readarray -t values <<<"$result"
+#for value in "${values[@]}"; do
+#  echo "$value"
+#done
 
 #style_j="F:/SaveJadx/TypingTest/resources/res/values/styles.xml"
 #style_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/values/styles.xml"
