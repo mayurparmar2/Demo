@@ -77,8 +77,18 @@ fun_main() {
           block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
           ;;
         esac
-        content=$(echo $block | sed 's/\//\\\//g')
-        sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
+        if [[ "$resource_type" =~ "styleable" ]]; then
+          my_attr_file=''$RES_PATH'/values/attrs.xml'
+          if [ ! -f "$my_attr_file" ]; then
+            touch "$my_attr_file"
+            echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_attr_file"
+          fi
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
+        else
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
+        fi
       fi
     done
   fi
