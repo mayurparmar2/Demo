@@ -30,13 +30,11 @@ fun_main() {
   local search_path="$3"
   my_val_file=''$RES_PATH'/values/'$resource_type's.xml'
   if [ ! -f "$my_val_file" ]; then
-    touch "$my_val_file"
-    echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
-    echo "File created: $my_val_file"
-  else
-    echo "File already exists: $my_val_file"
+    if ! [[ "$resource_type" =~ "styleable" ]]; then
+      touch "$my_val_file"
+      echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
+    fi
   fi
-
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
     matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
@@ -79,10 +77,6 @@ fun_main() {
         esac
         if [[ "$resource_type" =~ "styleable" ]]; then
           my_attr_file=''$RES_PATH'/values/attrs.xml'
-          if [ ! -f "$my_attr_file" ]; then
-            touch "$my_attr_file"
-            echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_attr_file"
-          fi
           content=$(echo $block | sed 's/\//\\\//g')
           sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
         else
@@ -93,15 +87,23 @@ fun_main() {
     done
   fi
 }
-##fun_main "xml" "layout" $RES_PATH
-#for type_name in "${value_list[@]}"; do
-#  fun_main "xml" "$type_name" "$MAIN"
-#done
+#fun_main "xml" "layout" $RES_PATH
+for type_name in "${value_list[@]}"; do
+  fun_main "xml" "$type_name" "$MAIN"
+done
+for type_name in "${value_list[@]}"; do
+  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
+done
 
-#for type_name in "${value_list[@]}"; do
-#  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
-#done
-fun_main "java" "styleable" "$JAVA_SRC_PATH"
+
+
+
+
+
+
+
+
+#fun_main "java" "styleable" "$JAVA_SRC_PATH"
 
 #directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
 ## Use grep with a regular expression to extract the values inside the brackets
