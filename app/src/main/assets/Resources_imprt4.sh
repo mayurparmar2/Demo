@@ -1,10 +1,19 @@
 #!/bin/bash
-ProjectName="TypingTest"
-ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
+ProjectName="RecoverDeletedFiles"
+ANDROID_PROJECT_PATH="C:/AndroidProject/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
-Jadx_RES_PATH="F:/SaveJadx/TypingTest/resources/res/values"
+Jadx_RES_PATH="F:/SaveJadx/$ProjectName/resources/res/values"
+Jadx_r_PATH="F:/SaveJadx/$ProjectName/sources/recover/deleted/all/files/photo/video/appcompany"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
 MAIN="$ANDROID_PROJECT_PATH/app/src/main"
+
+if [ -f "$Jadx_r_PATH/R.java" ]; then
+  rm "$Jadx_r_PATH/R.java"
+fi
+if [ -f "$Jadx_r_PATH/BuildConfig.java" ]; then
+  rm "$Jadx_r_PATH/BuildConfig.java"
+fi
+
 value_list=(
   "array"
   "attr"
@@ -38,7 +47,7 @@ fun_value_main() {
   fi
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
-    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    matches=($(grep -rEwo '@'$resource_type'/(?!.*sdp|.*ssp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
   else
     matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
   fi
@@ -57,17 +66,16 @@ fun_value_main() {
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
           ;;
         "styleable")
-          directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
           # Use grep with a regular expression to extract the values inside the brackets
-          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$directory")
+          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$Jadx_r_PATH/R.java")
           result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
           readarray -t values <<<"$result"
           attrFile=''$Jadx_RES_PATH'/attrs.xml'
           block+="<declare-styleable name=\"$resource_name\">"
           for attr in "${values[@]}"; do
             attrName=$(echo "$attr" | sed 's/R.attr.//')
-            block+=$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
-            echo $(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            block+=$(cat "$Jadx_RES_PATH/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            echo $(cat "$Jadx_RES_PATH/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
           done
           block+="</declare-styleable>"
           echo "$block"

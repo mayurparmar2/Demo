@@ -79,7 +79,15 @@ dependencies {
     //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+
+    implementation 'com.airbnb.android:lottie:5.2.0'
+    implementation 'com.airbnb.android:lottie:5.2.0'
+    implementation 'com.github.wwdablu:wZip:1.1.1'
+
+    implementation 'com.squareup.okio:okio:1.0.0'
+    implementation 'io.github.florent37:shapeofview:1.4.7'
+
 
 //    implementation 'com.airbnb.android:lottie:5.2.0'
 //    implementation 'com.codemybrainsout.rating:ratingdialog:2.0.0'

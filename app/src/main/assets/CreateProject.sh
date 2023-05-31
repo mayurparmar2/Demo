@@ -57,6 +57,14 @@ fi
 #fi
 cp -r "$jadx_assets" "$Project_main"
 #cp -r "$jadx_res" "$Project_main"
+
+#----------------------Delete R.java  and Config.java--------------------------
+if [ -f "$Project_java/$PakageName_path/R.java" ]; then
+  rm "$Project_java/$PakageName_path/R.java"
+fi
+if [ -f "$Project_java/$PakageName_path/BuildConfig.java" ]; then
+  rm "$Project_java/$PakageName_path/BuildConfig.java"
+fi
 #-----------------------Find And Copy Resources From Java---------------------------
 directorieslist=(
   "layout"
@@ -174,6 +182,7 @@ if [ ! -d "$appIconDestinationDir" ]; then
   mkdir -p "$appIconDestinationDir"
 fi
 cp "$appIcon" "$appIconDestinationDir"
+
 #-----------------------Find And Copy Values From Java---------------------------
 value_list=(
   "array"

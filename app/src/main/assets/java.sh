@@ -159,11 +159,11 @@ for file in $java_files; do
     sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
   done
   #---------------------- Delete unnecessary files--------------------------
-  #  # Delete unnecessary files
-  #  name_with_ext=$(basename "$file")
-  #  if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
-  #    rm "$item"
-  #  fi
+    # Delete unnecessary files
+#    name_with_ext=$(basename "$file")
+#    if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+#      rm "$item"
+#    fi
   #--------------------- Calculate the percentage of files processed-------------------------
   ((replace_files++))
   # Calculate the percentage of files processed
