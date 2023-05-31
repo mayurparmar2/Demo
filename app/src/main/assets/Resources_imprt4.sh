@@ -24,7 +24,7 @@ value_exists() {
     return 1 # String not found, return false
   fi
 }
-fun_main() {
+fun_value_main() {
   local pattern="$1"
   local resource_type="$2"
   local search_path="$3"
@@ -87,12 +87,12 @@ fun_main() {
     done
   fi
 }
-#fun_main "xml" "layout" $RES_PATH
+#fun_value_main "xml" "layout" $RES_PATH
 for type_name in "${value_list[@]}"; do
-  fun_main "xml" "$type_name" "$MAIN"
+  fun_value_main "xml" "$type_name" "$MAIN"
 done
 for type_name in "${value_list[@]}"; do
-  fun_main "java" "$type_name" "$JAVA_SRC_PATH"
+  fun_value_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
 
 
@@ -103,7 +103,7 @@ done
 
 
 
-#fun_main "java" "styleable" "$JAVA_SRC_PATH"
+#fun_value_main "java" "styleable" "$JAVA_SRC_PATH"
 
 #directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
 ## Use grep with a regular expression to extract the values inside the brackets

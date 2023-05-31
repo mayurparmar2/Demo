@@ -30,10 +30,14 @@ if [ ! -d "$search_path/$PakageName_path" ]; then
   mkdir -p "$search_path/$PakageName_path"
 fi
 cp -r "$sources"/* "$search_path/$PakageName_path"
+
+
+
 delete_file_list=(
   "$search_path/$PakageName_path/R.java"
   "$search_path/$PakageName_path/BuildConfig.java"
 )
+
 for delete_item in "${delete_file_list[@]}"; do
   echo "$delete_item" >>temp.xml
   if [ -f "$sources" ]; then
