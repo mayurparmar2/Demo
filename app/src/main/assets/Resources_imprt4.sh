@@ -96,9 +96,50 @@ for type_name in "${value_list[@]}"; do
   fun_value_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
 
+
+
+#block=$(echo '<attr name="1000">128.00dp</attr>' | grep -zP "<attr name=\"(?!1000sdp|1000mdp)[^\"]*1000[^\"]*\"[\s\S]*?</attr>")
+#echo "$block"
+#
+#resource_name="_80sdp"
+#block=$(echo '<attr name="1000">128.00dp</attr>' | grep -zP "<attr name=\"(?!sdp|mdp)[^\"]*1000[^\"]*\"[\s\S]*?</attr>")
+#echo "$block"
+#
+#(?!sdp|mdp)
+#matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+#matches=($(grep -rEwo '@dimen/(?!sdp|mdp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+#string="1000sdp"
+#
+#if echo "$string" | grep -q "sdp"; then
+#  echo "String contains 'sdp'"
+#else
+#  echo "String does not contain 'sdp'"
+#fi
+#
+#string="1000sdptest"
+#
+#if ! echo "$string" | grep -qE "sdp|mdp"; then
+#fi
+#
+#
+##!/bin/bash
+#
+#string="1000test"
+#
+#if ! echo "$string" | grep -qE "sdp|mdp"; then
+#  echo "String does not contain 'sdp' or 'mdp'"
+#else
+#  echo "String contains 'sdp' or 'mdp'"
+#fi
+#
+
 #fun_value_main "java" "styleable" "$JAVA_SRC_PATH"
 
 #directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
+#!/bin/bash
+
+# XML data
+
 ## Use grep with a regular expression to extract the values inside the brackets
 #result=$(grep -oP '(?<=ActionBar\s=\s\{).*?(?=\})' "$directory")
 #result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')

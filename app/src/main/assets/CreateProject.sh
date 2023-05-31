@@ -207,7 +207,7 @@ fun_value_main() {
   fi
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
-    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    matches=($(grep -rEwo '@'$resource_type'/(?!.*sdp|.*ssp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
   else
     matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
   fi
@@ -225,10 +225,12 @@ fun_value_main() {
         "style")
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
           ;;
+        "array")
+          block=$(cat "$jadx_val_file" | grep -zPo "<array name=\"$resource_name\"[\s\S]*?</array>")
+          ;;
         "styleable")
-          local directory="F:/SaveJadx/WeightLossCalculator/sources/com/despdev/weight_loss_calculator/R.java"
-          # Use grep with a regular expression to extract the values inside the brackets
-          local result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$directory")
+          local jadx_r_file="$sources/R.java"
+          local result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$jadx_r_file")
           local result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
           readarray -t values <<<"$result"
           local attrFile=''$jadx_res_values'/attrs.xml'
@@ -236,7 +238,7 @@ fun_value_main() {
           for attr in "${values[@]}"; do
             attrName=$(echo "$attr" | sed 's/R.attr.//')
             block+=$(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
-            echo $(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            #            echo $(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
           done
           block+="</declare-styleable>"
           #          echo "$block"
