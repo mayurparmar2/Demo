@@ -30,10 +30,11 @@ fun_value_main() {
   local search_path="$3"
   my_val_file=''$RES_PATH'/values/'$resource_type's.xml'
   if [ ! -f "$my_val_file" ]; then
-    if ! [[ "$resource_type" =~ "styleable" ]]; then
-      touch "$my_val_file"
-      echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
+    if [[ "$resource_type" =~ "styleable" ]]; then
+      return
     fi
+    touch "$my_val_file"
+    echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
   fi
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
@@ -94,14 +95,6 @@ done
 for type_name in "${value_list[@]}"; do
   fun_value_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
-
-
-
-
-
-
-
-
 
 #fun_value_main "java" "styleable" "$JAVA_SRC_PATH"
 

@@ -11,6 +11,7 @@ source_dir="C:/AndroidProject/GithubDemo"
 jadx="F:/SaveJadx/$ProjectName"
 jadx_assets="$jadx/resources/assets"
 jadx_res="$jadx/resources/res"
+jadx_res_values="$jadx/resources/res/values"
 if [ ! -d "$jadx" ]; then
   echo "$jadx was not found"
   return
@@ -86,11 +87,11 @@ copyFile() {
 fun_child() {
   local resource_type="$1"
   local search_path="$2"
-  echo "list_names : $resource_type => $search_path" >>xml.xml
+  #  echo "list_names : $resource_type => $search_path" >>xml.xml
   local list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
   if [ -n "${list_names[*]}" ]; then
     for resource_name in "${list_names[@]}"; do
-      echo "fun_child resource_name :$resource_type / $resource_name"
+      #      echo "fun_child resource_name :$resource_type / $resource_name"
       local path_list=$(find "$jadx_res" -name "$resource_name.*")
       for path in $path_list; do
         local directory=$(dirname "$path")
@@ -125,7 +126,7 @@ fun_main() {
   fi
   if [ -n "${matches[*]}" ]; then
     for match in "${matches[@]}"; do
-      echo "fun_main resource_name :$resource_type / $match"
+      #      echo "fun_main resource_name :$resource_type / $match"
       local path_list=$(find "$jadx_res" -name "$match.*")
       for path in $path_list; do
         local directory=$(dirname "$path")
@@ -148,13 +149,25 @@ fun_main() {
     done
   fi
 }
-#fun_main "java" "layout" $Project_java
+total_files=$(echo "$directorieslist" | wc -l)
+replace_files=0
+percentage=0
 for type_name in "${directorieslist[@]}"; do
   fun_main "java" "$type_name" "$Project_java"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 1/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
+total_files=$(echo "$directorieslist" | wc -l)
+replace_files=0
+percentage=0
 for type_name in "${directorieslist[@]}"; do
   fun_main "xml" "$type_name" "$Project_res"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 2/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
+
 appIcon="C:/AndroidProject/GitHubDemo/app/src/main/res/drawable/icon200.png"
 appIconDestinationDir="C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
 if [ ! -d "$appIconDestinationDir" ]; then
@@ -175,7 +188,7 @@ value_list=(
 value_exists() {
   local resource_type="$1"
   local search_value="$2"
-  if grep -q 'name="'$search_value'"' ''$RES_PATH'/values/'$resource_type's.xml'; then
+  if grep -q 'name="'$search_value'"' ''$Project_res'/values/'$resource_type's.xml'; then
     return 0 # String found, return true
   else
     return 1 # String not found, return false
@@ -185,9 +198,9 @@ fun_value_main() {
   local pattern="$1"
   local resource_type="$2"
   local search_path="$3"
-  my_val_file=''$RES_PATH'/values/'$resource_type's.xml'
+  my_val_file=''$Project_res'/values/'$resource_type's.xml'
   if [ ! -f "$my_val_file" ]; then
-    if ! [[ "$resource_type" =~ "styleable" ]]; then
+    if ! [[ "$resource_type" == "styleable" ]]; then
       touch "$my_val_file"
       echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
     fi
@@ -203,11 +216,11 @@ fun_value_main() {
     for resource_name in "${matches[@]}"; do
       local block=""
       #      echo "resource_name $resource_name"
-      echo "resource_name $resource_name"
-      echo "resource_type $resource_type"
+      #      echo "resource_name $resource_name"
+      #      echo "resource_type $resource_type"
       if ! value_exists "$resource_type" "$resource_name"; then
-        echo "value_exists 0"
-        jadx_val_file=''$Jadx_RES_PATH'/'$resource_type's.xml'
+        #        echo "value_exists 0"
+        jadx_val_file=''$jadx_res_values'/'$resource_type's.xml'
         case "$resource_type" in
         "style")
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
@@ -218,22 +231,22 @@ fun_value_main() {
           local result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$directory")
           local result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
           readarray -t values <<<"$result"
-          local attrFile=''$Jadx_RES_PATH'/attrs.xml'
+          local attrFile=''$jadx_res_values'/attrs.xml'
           block+="<declare-styleable name=\"$resource_name\">"
           for attr in "${values[@]}"; do
             attrName=$(echo "$attr" | sed 's/R.attr.//')
-            block+=$(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
-            echo $(cat "F:/SaveJadx/WeightLossCalculator/resources/res/values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            block+=$(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            echo $(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
           done
           block+="</declare-styleable>"
-          echo "$block"
+          #          echo "$block"
           ;;
         *)
           block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
           ;;
         esac
         if [[ "$resource_type" =~ "styleable" ]]; then
-          local my_attr_file=''$RES_PATH'/values/attrs.xml'
+          local my_attr_file=''$Project_res'/values/attrs.xml'
           local content=$(echo $block | sed 's/\//\\\//g')
           sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
         else
@@ -244,10 +257,24 @@ fun_value_main() {
     done
   fi
 }
-#fun_value_main "xml" "layout" $RES_PATH
+
+total_files=$(echo "$value_list" | wc -l)
+replace_files=0
+percentage=0
+#fun_value_main "xml" "layout" $Project_res
 for type_name in "${value_list[@]}"; do
   fun_value_main "xml" "$type_name" "$Project_main"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 3/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
+
+total_files=$(echo "$value_list" | wc -l)
+replace_files=0
+percentage=0
 for type_name in "${value_list[@]}"; do
   fun_value_main "java" "$type_name" "$Project_java"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 3/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
