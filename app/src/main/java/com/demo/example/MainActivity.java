@@ -10,7 +10,6 @@ import com.demo.example.adapter.ViewPagerAdapter;
 import com.demo.example.fragment.HomeFragment;
 import com.demo.example.fragment.SettingFragment;
 import com.google.android.material.tabs.TabLayout;
-
 public class MainActivity extends AppCompatActivity {
     Context context= this;
     private ViewPagerAdapter mViewPagerAdapter;
@@ -20,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.settings_icon,
             R.style.Base_TextAppearance_MaterialComponents_Headline6,
     };
-
-
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);

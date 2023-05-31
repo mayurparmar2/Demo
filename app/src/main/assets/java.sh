@@ -114,6 +114,7 @@ for file in $java_files; do
   sed -i 's/addFlags(2)/addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)/g' "$file"
   sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
   sed -i 's/NotificationCompat\.CATEGORY_ALARM/Context\.ALARM_SERVICE/g' "$file"
+  sed -i 's/SupportMenu.CATEGORY_MASK/0xffff0000/g' "$file"
 
   class_name=$(grep -m 1 "class " "$file" | sed -n 's/.*class \([^ ]*\).*/\1/p')
   holdername=$(cat "$file" | grep -o -P "(?<=extends\sRecyclerView.Adapter<)\w+(?=>)")
