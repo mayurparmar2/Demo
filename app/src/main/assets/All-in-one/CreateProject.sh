@@ -164,7 +164,7 @@ fun_main() {
     done
   fi
 }
-total_files=$(echo "$directorieslist" | wc -l)
+total_files=${#$directorieslist[@]}
 replace_files=0
 percentage=0
 for type_name in "${directorieslist[@]}"; do
@@ -173,7 +173,6 @@ for type_name in "${directorieslist[@]}"; do
   percentage=$((replace_files * 100 / total_files))
   echo "stage 1/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
-total_files=$(echo "$directorieslist" | wc -l)
 replace_files=0
 percentage=0
 for type_name in "${directorieslist[@]}"; do
@@ -276,7 +275,7 @@ fun_value_main() {
   fi
 }
 
-total_files=$(echo "$value_list" | wc -l)
+total_files=${#$value_list[@]}
 replace_files=0
 percentage=0
 #fun_value_main "xml" "layout" $Project_res
@@ -287,7 +286,6 @@ for type_name in "${value_list[@]}"; do
   echo "stage 3/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
 
-total_files=$(echo "$value_list" | wc -l)
 replace_files=0
 percentage=0
 for type_name in "${value_list[@]}"; do
