@@ -393,6 +393,7 @@ for file in $java_files; do
     parameter3=${parameter3//[[:space:]]/}
     #  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 3)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_DEFAULT)/g" "$file"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 4)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_HIGH)/g" "$file"
     #    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
   fi
