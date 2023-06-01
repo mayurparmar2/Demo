@@ -1,5 +1,7 @@
 package com.demo.example.splash;
 
+import static com.demo.example.App.getRequiredPermissions;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,7 +30,6 @@ import java.util.List;
 public class SplashScreen extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private static final String[] REQUIRED_PERMISSIONS = getRequiredPermissions().toArray(new String[0]);
-
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -89,21 +90,7 @@ public class SplashScreen extends AppCompatActivity {
         }
         return true;
     }
-    private static List<String> getRequiredPermissions() {
-        List<String> permissions = new ArrayList<>();
-        permissions.add(Manifest.permission.READ_PHONE_STATE);
-        permissions.add(Manifest.permission.CAMERA);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permissions.add(Manifest.permission.READ_MEDIA_IMAGES);
-            permissions.add(Manifest.permission.READ_MEDIA_VIDEO);
-            permissions.add(Manifest.permission.POST_NOTIFICATIONS);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        }
-        return permissions;
-    }
     private boolean isFirstTime() {
         return sharedPreferences.getBoolean("isFirstTime", true);
     }
