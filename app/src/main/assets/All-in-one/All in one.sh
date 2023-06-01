@@ -5,7 +5,6 @@ echo "Enter the path of the directory containing the files: "
 read ProjectName
 
 mydi="C:/AndroidProject/$ProjectName/app/src/main/res"
-
 # Copy the file
 sourceFile="C:/AndroidProject/GitHubDemo/app/src/main/res/drawable/icon200.png"
 destinationDir="C:/AndroidProject/$ProjectName/app/src/main/res/drawable"

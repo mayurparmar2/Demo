@@ -67,7 +67,7 @@ if [ -f "$Project_java/$PakageName_path/BuildConfig.java" ]; then
 fi
 #-----------------------Find And Copy Resources From Java---------------------------
 
-query_list='(?!.*'
+#query_list='(?!.*'
 directorieslist=(
   "layout"
   "drawable"
@@ -90,9 +90,9 @@ copyFile() {
     mkdir -p "$destination_path"
   fi
   cp "$path" "$destination_path"
-  current_name_ext=$(basename "$path")
-  file_name_without_extension="${current_name_ext%.*}"
-  query_list+=''$file_name_without_extension'|.*'
+#  current_name_ext=$(basename "$path")
+#  file_name_without_extension="${current_name_ext%.*}"
+#  query_list+=''$file_name_without_extension'|.*'
   for type_name in "${directorieslist[@]}"; do
     fun_child "$type_name" "$path"
   done
@@ -101,8 +101,9 @@ fun_child() {
   local resource_type="$1"
   local search_path="$2"
   #  echo "list_names : $resource_type => $search_path" >>xml.xml
-  local list_names=($(grep -Eo '@'$resource_type'/'$query_list'abc_btn_material)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
-  echo 'fun_child query_list : '$query_list'abc_btn_material)'
+#  local list_names=($(grep -Eo '@'$resource_type'/'$query_list'abc_btn_material)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  local list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+#  echo 'fun_child query_list : '$query_list'abc_btn_material)'
   if [ -n "${list_names[*]}" ]; then
     for resource_name in "${list_names[@]}"; do
       #      echo "fun_child resource_name :$resource_type / $resource_name"
