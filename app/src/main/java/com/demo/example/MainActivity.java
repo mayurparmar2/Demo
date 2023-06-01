@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     };
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_my);
         this.viewPager = (ViewPager) findViewById(R.id.flFragment);
         this.mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         this.mViewPagerAdapter.add(new HomeFragment(), "HOME");

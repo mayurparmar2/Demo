@@ -217,9 +217,9 @@ fun_value_main() {
   if [ ! -f "$my_val_file" ]; then
     if ! [[ "$resource_type" == "styleable" ]]; then
       touch "$my_val_file"
-      echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
     fi
   fi
+   echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
     matches=($(grep -rEwo '@'$resource_type'/(?!.*sdp|.*ssp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))

@@ -78,20 +78,23 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation 'com.intuit.sdp:sdp-android:1.0.6'
-    implementation 'com.airbnb.android:lottie:5.2.0'
-    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.8.2'
-    implementation 'com.github.zomato:androidphotofilters:1.0.1'
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
-    implementation 'io.fotoapparat:fotoapparat:2.7.0'
-    implementation 'io.grpc:grpc-all:0.9.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
-    implementation 'com.squareup.okio:okio:1.0.0'
-    implementation 'com.github.permissions-dispatcher:permissionsdispatcher:4.9.2'
 
 
 
+
+
+
+//    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+//    implementation 'com.airbnb.android:lottie:5.2.0'
+//    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.8.2'
+//    implementation 'com.github.zomato:androidphotofilters:1.0.1'
+//    implementation 'de.hdodenhof:circleimageview:3.1.0'
+//    implementation 'io.fotoapparat:fotoapparat:2.7.0'
+//    implementation 'io.grpc:grpc-all:0.9.0'
+//    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
+//    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
+//    implementation 'com.squareup.okio:okio:1.0.0'
+//    implementation 'com.github.permissions-dispatcher:permissionsdispatcher:4.9.2'
 //    implementation 'com.airbnb.android:lottie:5.2.0'
 //    implementation 'com.codemybrainsout.rating:ratingdialog:2.0.0'
 //    implementation 'com.daprlabs.aaron:cardstack:0.3.1-beta0'
