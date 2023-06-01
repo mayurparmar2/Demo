@@ -392,9 +392,11 @@ for file in $java_files; do
     parameter2=${parameter2//[[:space:]]/}
     parameter3=${parameter3//[[:space:]]/}
     #  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 1)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_MIN)/g" "$file"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 3)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_DEFAULT)/g" "$file"
     sed -i "s/new NotificationChannel($parameter1, $parameter2, 4)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_HIGH)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 5)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_MAX)/g" "$file"
     #    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
   fi
   #----------------------Toast.makeText--------------------------
