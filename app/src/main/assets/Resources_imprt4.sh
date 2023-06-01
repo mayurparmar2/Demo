@@ -105,6 +105,27 @@ for type_name in "${value_list[@]}"; do
 done
 
 
+#list='(?!.*'
+#  name=(
+#    "array"
+#    "attr"
+#    "color"
+#    "dimen"
+#    "ref"
+#    "string"
+#    "style"
+#    "styleable"
+#  )
+#for type_name in "${name[@]}"; do
+# list+=''$type_name'|.*'
+#done
+#echo "$list"
+
+
+
+
+list='(?!.*'
+ list+=''$type_name'|.*'
 
 #block=$(echo '<attr name="1000">128.00dp</attr>' | grep -zP "<attr name=\"(?!1000sdp|1000mdp)[^\"]*1000[^\"]*\"[\s\S]*?</attr>")
 #echo "$block"
@@ -203,7 +224,8 @@ done
 #RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
 #MAIN="$ANDROID_PROJECT_PATH/app/src/main"
 #directorieslist=(
-#  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+
+}#  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"

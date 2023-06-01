@@ -112,6 +112,24 @@ if [ ! -d "$appIconDestinationDir" ]; then
 fi
 cp "$appIcon" "$appIconDestinationDir"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #styles_xml_file="C:/AndroidProject/Test/TypingTest/app/src/main/res/layout/activity_main.xml"
 #resource_names_styles=($(grep -Eo '@font/[A-Za-z0-9_]+' "$styles_xml_file" | awk -F'/' '{print $NF}'))
 ## Iterate over resource names in styles.xml
