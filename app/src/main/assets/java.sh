@@ -1,6 +1,6 @@
 #!/bin/bash
-PakageName='typing.test.typing.speed.test.typing.master'
-ProjectName='TypingTest'
+#PakageName='typing.test.typing.speed.test.typing.master'
+ProjectName='RecoverDeletedFiles'
 #
 #echo "Enter the ProjectName: "
 #read ProjectName
@@ -8,43 +8,43 @@ ProjectName='TypingTest'
 #echo "Enter the PakageName: "
 #read PakageName
 
-if [[ -z "$ProjectName" || -z "$PakageName" ]]; then
-  return
-fi
+#if [[ -z "$ProjectName" || -z "$PakageName" ]]; then
+#  return
+#fi
 
-search_path="C:/AndroidProject/Test/$ProjectName/app/src/main/java"
-#copyFile() {
-#  local destination_path="$1"
-#  local path="$2"
-
-PakageName_path="$(echo "$PakageName" | sed 's|\.|\/|g')"
-sources="F:/SaveJadx/$ProjectName/sources/$PakageName_path"
-if [ -d "$search_path/$PakageName_path" ]; then
-  #    return
-  rm -r "$search_path/$PakageName_path"
-fi
-if [ ! -d "$sources" ]; then
-  mkdir -p "$sources"
-fi
-if [ ! -d "$search_path/$PakageName_path" ]; then
-  mkdir -p "$search_path/$PakageName_path"
-fi
-cp -r "$sources"/* "$search_path/$PakageName_path"
-
-
-
-delete_file_list=(
-  "$search_path/$PakageName_path/R.java"
-  "$search_path/$PakageName_path/BuildConfig.java"
-)
-
-for delete_item in "${delete_file_list[@]}"; do
-  echo "$delete_item" >>temp.xml
-  if [ -f "$sources" ]; then
-      rm "$delete_item"
-  fi
-done
-
+search_path="C:/AndroidProject/$ProjectName/app/src/main/java"
+##copyFile() {
+##  local destination_path="$1"
+##  local path="$2"
+#
+#PakageName_path="$(echo "$PakageName" | sed 's|\.|\/|g')"
+#sources="F:/SaveJadx/$ProjectName/sources/$PakageName_path"
+#if [ -d "$search_path/$PakageName_path" ]; then
+#  #    return
+#  rm -r "$search_path/$PakageName_path"
+#fi
+#if [ ! -d "$sources" ]; then
+#  mkdir -p "$sources"
+#fi
+#if [ ! -d "$search_path/$PakageName_path" ]; then
+#  mkdir -p "$search_path/$PakageName_path"
+#fi
+#cp -r "$sources"/* "$search_path/$PakageName_path"
+#
+#
+#
+#delete_file_list=(
+#  "$search_path/$PakageName_path/R.java"
+#  "$search_path/$PakageName_path/BuildConfig.java"
+#)
+#
+#for delete_item in "${delete_file_list[@]}"; do
+#  echo "$delete_item" >>temp.xml
+#  if [ -f "$sources" ]; then
+#      rm "$delete_item"
+#  fi
+#done
+PakageName_path="/recover/deleted/all/files/photo/video/appcompany"
 java_files=$(find "$search_path/$PakageName_path" -type f -name '*.java')
 total_files=$(echo "$java_files" | wc -l)
 replace_files=0
