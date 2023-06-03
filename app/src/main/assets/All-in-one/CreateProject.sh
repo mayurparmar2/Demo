@@ -164,7 +164,7 @@ fun_main() {
     done
   fi
 }
-total_files=${#$directorieslist[@]}
+total_files=$(echo "${directorieslist[@]}" | wc -w)
 replace_files=0
 percentage=0
 for type_name in "${directorieslist[@]}"; do
@@ -274,8 +274,7 @@ fun_value_main() {
     done
   fi
 }
-
-total_files=${#$value_list[@]}
+total_files=$(echo "${value_list[@]}" | wc -w)
 replace_files=0
 percentage=0
 #fun_value_main "xml" "layout" $Project_res

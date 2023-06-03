@@ -16,6 +16,7 @@ directorieslist=(
   "xml"
   "raw"
 )
+
 copyFile() {
   local destination_path="$1"
   local path="$2"
