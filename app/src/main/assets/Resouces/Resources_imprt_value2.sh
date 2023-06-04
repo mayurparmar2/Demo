@@ -47,7 +47,7 @@ fun_value_main() {
   fi
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
-    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    matches=($(grep -rEwo '@'$resource_type'/(?!.*sdp|.*ssp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
     for type_name in "${matches[@]}"; do
       echo "================> $type_name"
     done

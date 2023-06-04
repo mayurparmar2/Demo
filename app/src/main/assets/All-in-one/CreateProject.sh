@@ -193,6 +193,110 @@ fi
 cp "$appIcon" "$appIconDestinationDir"
 
 #-----------------------Find And Copy Values From Java---------------------------
+value_list=(
+  "array"
+  "attr"
+  "color"
+  "dimen"
+  "ref"
+  "string"
+  "style"
+  "styleable"
+)
+value_exists() {
+  local resource_type="$1"
+  local search_value="$2"
+  if grep -q 'name="'$search_value'"' ''$Project_res'/values/'$resource_type's.xml'; then
+    return 0 # String found, return true
+  else
+    return 1 # String not found, return false
+  fi
+}
+fun_value_main() {
+  local pattern="$1"
+  local resource_type="$2"
+  local search_path="$3"
+  my_val_file=''$Project_res'/values/'$resource_type's.xml'
+  if [ ! -f "$my_val_file" ]; then
+    if [[ "$resource_type" =~ "styleable" ]]; then
+      return
+    fi
+    touch "$my_val_file"
+    echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
+  fi
+  local matches=null
+  if [[ "$pattern" =~ "xml" ]]; then
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    for type_name in "${matches[@]}"; do
+      echo "================> $type_name"
+    done
+  else
+    matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
+  fi
+  if [ -n "${matches[*]}" ]; then
+    echo "$matches"
+    for resource_name in "${matches[@]}"; do
+      block=""
+      #      echo "resource_name $resource_name"
+      echo "resource_name $resource_name"
+      echo "resource_type $resource_type"
+      if ! value_exists "$resource_type" "$resource_name"; then
+        echo "value_exists 0"
+        jadx_val_file=''$jadx_res_values'/'$resource_type's.xml'
+        case "$resource_type" in
+        "style")
+          block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
+          echo "$block"
+          ;;
+        "styleable")
+          # Use grep with a regular expression to extract the values inside the brackets
+          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$Jadx_r_PATH/R.java")
+          result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
+          readarray -t values <<<"$result"
+          attrFile=''$jadx_res_values'/attrs.xml'
+          block+="<declare-styleable name=\"$resource_name\">"
+          for attr in "${values[@]}"; do
+            attrName=$(echo "$attr" | sed 's/R.attr.//')
+            block+=$(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            echo $(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+          done
+          block+="</declare-styleable>"
+          echo "$block"
+          ;;
+        *)
+          block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
+          ;;
+        esac
+        if [[ "$resource_type" =~ "styleable" ]]; then
+          my_attr_file=''$Project_res'/values/attrs.xml'
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
+        else
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
+        fi
+      fi
+    done
+  fi
+}
+#fun_value_main "xml" "layout" $Project_res
+for type_name in "${value_list[@]}"; do
+  fun_value_main "xml" "$type_name" "$Project_main"
+done
+for type_name in "${value_list[@]}"; do
+  fun_value_main "java" "$type_name" "$Project_java"
+done
+for type_name in "${value_list[@]}"; do
+  fun_value_main "xml" "$type_name" "$Project_main"
+done
+
+
+
+
+
+
+
+
 #value_list=(
 #  "array"
 #  "attr"
