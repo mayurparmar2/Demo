@@ -1,19 +1,19 @@
 #!/bin/bash
-ProjectName="RecoverDeletedFiles"
+ProjectName="Campass"
 ANDROID_PROJECT_PATH="C:/AndroidProject/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
 Jadx_RES_PATH="F:/SaveJadx/$ProjectName/resources/res/values"
-Jadx_r_PATH="F:/SaveJadx/$ProjectName/sources/recover/deleted/all/files/photo/video/appcompany"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
 MAIN="$ANDROID_PROJECT_PATH/app/src/main"
-
-if [ -f "$Jadx_r_PATH/R.java" ]; then
-  rm "$Jadx_r_PATH/R.java"
+jadx="F:/SaveJadx/$ProjectName"
+manifast="$jadx/resources/AndroidManifest.xml"
+pakagename=$(grep -Eo 'package="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $NF}')
+PakageName_path="$(echo "$pakagename" | sed 's|\.|\/|g')"
+Jadx_r_PATH="$jadx/sources/$PakageName_path"
+if [ -f "$JAVA_SRC_PATH/$PakageName_path/BuildConfig.java" || "$JAVA_SRC_PATH/$PakageName_path/R.java" ]; then
+  rm "$JAVA_SRC_PATH/$PakageName_path/BuildConfig.java"
+  rm "$JAVA_SRC_PATH/$PakageName_path/R.java"
 fi
-if [ -f "$Jadx_r_PATH/BuildConfig.java" ]; then
-  rm "$Jadx_r_PATH/BuildConfig.java"
-fi
-
 value_list=(
   "array"
   "attr"
@@ -47,7 +47,10 @@ fun_value_main() {
   fi
   local matches=null
   if [[ "$pattern" =~ "xml" ]]; then
-    matches=($(grep -rEwo '@'$resource_type'/(?!.*sdp|.*ssp)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    for type_name in "${matches[@]}"; do
+      echo "================> $type_name"
+    done
   else
     matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
   fi
@@ -64,6 +67,7 @@ fun_value_main() {
         case "$resource_type" in
         "style")
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
+          echo "$block"
           ;;
         "styleable")
           # Use grep with a regular expression to extract the values inside the brackets
@@ -103,7 +107,22 @@ done
 for type_name in "${value_list[@]}"; do
   fun_value_main "java" "$type_name" "$JAVA_SRC_PATH"
 done
+for type_name in "${value_list[@]}"; do
+  fun_value_main "xml" "$type_name" "$MAIN"
+done
 
+
+#search_path="F:/SaveJadx/Campass/resources/res/values/colors.xml"
+#
+#
+#search_path="C:/AndroidProject/Campass/app/src/main/res/values/colors.xml"
+#matches=$(grep -oP "<color name=\"colorPrimary\">.*?</color" "$search_path")
+#echo "$matches"
+#
+#matches=($(grep -rEwo '@color/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+#for type_name in "${matches[@]}"; do
+#   echo "$type_name"
+#done
 
 #list='(?!.*'
 #  name=(
@@ -121,11 +140,9 @@ done
 #done
 #echo "$list"
 
-
-
-
-list='(?!.*'
- list+=''$type_name'|.*'
+#
+#list='(?!.*'
+# list+=''$type_name'|.*'
 
 #block=$(echo '<attr name="1000">128.00dp</attr>' | grep -zP "<attr name=\"(?!1000sdp|1000mdp)[^\"]*1000[^\"]*\"[\s\S]*?</attr>")
 #echo "$block"
@@ -225,7 +242,7 @@ list='(?!.*'
 #MAIN="$ANDROID_PROJECT_PATH/app/src/main"
 #directorieslist=(
 
-}#  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+}# "C:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"
 #  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/anim"

@@ -1,6 +1,6 @@
 #!/bin/bash
-ProjectName="TypingTest"
-ANDROID_PROJECT_PATH="C:/AndroidProject/Test/$ProjectName"
+ProjectName="Campass"
+ANDROID_PROJECT_PATH="C:/AndroidProject/$ProjectName"
 JAVA_SRC_PATH="$ANDROID_PROJECT_PATH/app/src/main/java"
 Jadx_RES_PATH="F:/SaveJadx/$ProjectName/resources/res"
 RES_PATH="$ANDROID_PROJECT_PATH/app/src/main/res"
