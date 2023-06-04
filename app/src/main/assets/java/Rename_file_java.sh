@@ -23,6 +23,8 @@ fun_random_string() {
   echo "$random_string"
 }
 
+
+
 replace_java_name() {
   random_string="$1"
   file_name_without_extension="$2"
