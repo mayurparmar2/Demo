@@ -1,8 +1,8 @@
 #!/bin/bash
-#echo "Enter the path of the ProjectName containing the files: "
-#read ProjectName
+echo "Enter the path of the ProjectName containing the files: "
+read ProjectName
 
-ProjectName="Campass"
+#ProjectName="Campass"
 
 #-----------------------Copy Project---------------------------
 Project_java="C:/AndroidProject/$ProjectName/app/src/main/java"
@@ -52,10 +52,10 @@ cp -r "$sources"/* "$Project_java/$PakageName_path"
 #-----------------------Copy Resources Path----------------------------
 
 if [ -d "$Project_main/$jadx_assets" ]; then
-  rm -r "$Project_main/$jadx_assets"
+  rm -rf "$Project_main/$jadx_assets"/*
 fi
 if [ -d "$Project_main/$jadx_res" ]; then
-  rm -r "$Project_main/$jadx_res"
+  rm -rf "$Project_main/$jadx_res"/*
 fi
 cp -r "$jadx_assets" "$Project_main"
 #cp -r "$jadx_res" "$Project_main"
@@ -67,7 +67,6 @@ fi
 if [ -f "$Project_java/$PakageName_path/BuildConfig.java" ]; then
   rm "$Project_java/$PakageName_path/BuildConfig.java"
 fi
-
 #-----------------------Find And Copy Resources From Java---------------------------
 
 #query_list='(?!.*'

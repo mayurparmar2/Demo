@@ -86,6 +86,8 @@ dependencies {
 
 //    implementation 'com.intuit.sdp:sdp-android:1.0.6'
 //    implementation 'com.airbnb.android:lottie:5.2.0'
+//    implementation 'com.daasuu:CountAnimationTextView:0.1.2'
+//    implementation 'com.timqi.sectorprogressview:library:2.0.1'
 //    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.8.2'
 //    implementation 'com.github.zomato:androidphotofilters:1.0.1'
 //    implementation 'de.hdodenhof:circleimageview:3.1.0'
