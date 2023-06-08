@@ -46,10 +46,21 @@ echo "Renaming complete!"
 
 
 
+java -cp C:\Program Files\Android\Android Studio\lib\idea_rt.jar com.intellij.rt.execution.application.AppMain com.intellij.refactoring.rename.RenameProcessor --module app --newName NewName C:\AndroidProject\Campass\app\src\main\java\com\demo\example\MainActivity.java
+
+java -cp C:\Program Files/Android/Android Studio/lib/idea_rt.jar com.intellij.rt.execution.application.AppMain com.intellij.refactoring.rename.RenameProcessor --module app --newName NewName /app/src/main/java/com/demo/example/MainActivity.java
 
 
+mv com/demo/example/MainActivity.java com/demo/example/NewClass.java
 
+C:/AndroidProject/Campass/app/src/main/java/com/demo/example/MainActivity.java
 
+ren app\src\main\java\com\demo\example\MainActivity.java NewFile.java
+./studio.sh --disable-android-plugin --action=refactor --rename C:/AndroidProject/Campass/app/src/main/java/com/demo/example/MainActivity.java NewFile.java
+
+C:/Program Files/Android/Android Studio/bin/sh studio.bat --disable-android-plugin --action=refactor --rename C:/AndroidProject/Campass/app/src/main/java/com/demo/example/MainActivity.java NewFile.java
+
+studio.bat --disable-android-plugin --action=refactor --rename C:/AndroidProject/Campass/app/src/main/java/com/demo/example/MainActivity.java NewFile.java
 #fun_random_string() {
 #  random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 20 | head -n 1)
 #  # Ensure the string doesn't start with a number or uppercase letter

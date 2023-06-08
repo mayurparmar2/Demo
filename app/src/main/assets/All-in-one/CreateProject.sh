@@ -247,9 +247,11 @@ fun_value_main() {
           block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
           echo "$block"
           ;;
+        "array")
+          block=$(grep -zPo "<array name=\"$resource_name\"[\s\S]*?</array>" "$jadx_val_file")
+          ;;
         "styleable")
-          # Use grep with a regular expression to extract the values inside the brackets
-          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$Jadx_r_PATH/R.java")
+          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$sources/R.java")
           result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
           readarray -t values <<<"$result"
           attrFile=''$jadx_res_values'/attrs.xml'
@@ -288,13 +290,6 @@ done
 for type_name in "${value_list[@]}"; do
   fun_value_main "xml" "$type_name" "$Project_main"
 done
-
-
-
-
-
-
-
 
 #value_list=(
 #  "array"
