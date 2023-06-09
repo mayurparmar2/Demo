@@ -251,10 +251,10 @@ fun_value_main() {
           block=$(grep -zPo "<array name=\"$resource_name\"[\s\S]*?</array>" "$jadx_val_file")
           ;;
         "styleable")
+          # Use grep with a regular expression to extract the values inside the brackets
           result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$sources/R.java")
           result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
           readarray -t values <<<"$result"
-          attrFile=''$jadx_res_values'/attrs.xml'
           block+="<declare-styleable name=\"$resource_name\">"
           for attr in "${values[@]}"; do
             attrName=$(echo "$attr" | sed 's/R.attr.//')
@@ -290,7 +290,12 @@ done
 for type_name in "${value_list[@]}"; do
   fun_value_main "xml" "$type_name" "$Project_main"
 done
+# again check
+for type_name in "${directorieslist[@]}"; do
+  fun_main "xml" "$type_name" "$Project_res"
+done
 
+#app:tabMode="0" => app:tabMode="fixed"
 #value_list=(
 #  "array"
 #  "attr"
@@ -411,6 +416,7 @@ replace_files=0
 percentage=0
 for file in $java_files; do
   sed -i "s/import $pakagename.R;/import com.demo.example.R;/g" "$file"
+  sed -i "s/import $pakagename.databinding/import com.demo.example.databinding/g" "$file"
   sed -i "s/e = e.*?;//g" "$file"
   sed -i "s/import com\.android\.billingclient[^;]*;//g" "$file"
   sed -i "s/import com\.google\.common[^;]*;//g" "$file"
