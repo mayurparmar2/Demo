@@ -73,6 +73,7 @@ fi
 directorieslist=(
   "layout"
   "drawable"
+  "mipmap"
   "anim"
   "anim"
   "color"
