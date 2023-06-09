@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "Enter the path of the ProjectName containing the files: "
 read ProjectName
-
 #ProjectName="Campass"
+
 
 #-----------------------Copy Project---------------------------
 Project_java="C:/AndroidProject/$ProjectName/app/src/main/java"
