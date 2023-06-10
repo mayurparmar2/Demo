@@ -293,7 +293,7 @@ for type_name in "${value_list[@]}"; do
 done
 # again check
 for type_name in "${directorieslist[@]}"; do
-  fun_main "xml" "$type_name" "$Project_res"
+  fun_main "xml" "$type_name" "$Project_res'/values"
 done
 
 #app:tabMode="0" => app:tabMode="fixed"
