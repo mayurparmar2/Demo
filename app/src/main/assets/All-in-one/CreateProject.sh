@@ -420,6 +420,7 @@ for file in $java_files; do
   sed -i "s/import $pakagename.databinding/import com.demo.example.databinding/g" "$file"
   sed -i "s/e = e.*?;//g" "$file"
   sed -i "s/import com\.android\.billingclient[^;]*;//g" "$file"
+  sed -i "s/import com\.facebook\.ads[^;]*;//g" "$file"
   sed -i "s/import com\.google\.common[^;]*;//g" "$file"
   sed -i "s/import com\.google\.firebase[^;]*;//g" "$file"
   sed -i "s/import com\.google\.ads[^;]*;//g" "$file"

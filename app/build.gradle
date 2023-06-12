@@ -80,7 +80,12 @@ dependencies {
 
 
 
-
+//    implementation 'com.daprlabs.aaron:cardstack:0.3.1-beta0'
+//    implementation 'com.facebook.shimmer:shimmer:0.1.0'
+//    implementation 'com.airbnb.android:lottie:5.2.0'
+//    implementation 'com.squareup.okio:okio:1.0.0'
+//    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+//    implementation 'se.emilsjolander:stickylistheaders:2.6.0'
 
 
 
