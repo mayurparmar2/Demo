@@ -39,7 +39,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:fontFamily="@font/bold"
-                android:textSize="@dimen/_25sdp"
+                android:textSize="25dp"
                 android:textColor="@color/black"
                 android:text="Permission Required" />
 
@@ -48,12 +48,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginRight="10dp"
                 android:fontFamily="@font/regular"
                 android:gravity="center"
-                android:text="@string/storage_permission_is_required_to_save_the_photo_and_videos_from_social_media_nplease_allow"
+                android:layout_centerHorizontal="true"
+                android:text="@string/storage_permission_allow_str"
                 android:textColor="#757575"
                 android:textSize="16sp" />
 

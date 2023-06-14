@@ -66,7 +66,7 @@
                             android:gravity="center_vertical"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/_20sdp"
+                            android:layout_marginLeft="20dp"
                             android:text="Share"
                             android:layout_weight="0.8"
                             android:fontFamily="@font/regular" />
@@ -74,7 +74,7 @@
                         <ImageView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/_20sdp"
+                            android:layout_marginRight="20dp"
                             android:layout_weight="0.2"
                             android:src="@drawable/icon200"
                             android:padding="14dp"
@@ -86,8 +86,8 @@
                         android:background="@color/colorBackground"
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:layout_marginLeft="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_20sdp" />
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />
                     <LinearLayout
                         android:orientation="horizontal"
                         android:id="@+id/layoutRate"
@@ -101,7 +101,7 @@
                             android:gravity="center_vertical"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/_20sdp"
+                            android:layout_marginLeft="20dp"
                             android:text="Rate"
                             android:layout_weight="0.8"
                             android:fontFamily="@font/regular" />
@@ -109,7 +109,7 @@
                         <ImageView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/_20sdp"
+                            android:layout_marginRight="20dp"
                             android:layout_weight="0.2"
                             android:src="@drawable/icon200"
                             android:padding="14dp"
@@ -121,8 +121,8 @@
                         android:background="@color/colorBackground"
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:layout_marginLeft="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_20sdp" />
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />
                     <LinearLayout
                         android:orientation="horizontal"
                         android:id="@+id/layoutPrivacyPolicy"
@@ -136,7 +136,7 @@
                             android:gravity="center_vertical"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/_20sdp"
+                            android:layout_marginLeft="20dp"
                             android:text="@string/privacy_policy"
                             android:layout_weight="0.8"
                             android:fontFamily="@font/regular" />
@@ -144,7 +144,7 @@
                         <ImageView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/_20sdp"
+                            android:layout_marginRight="20dp"
                             android:layout_weight="0.2"
                             android:src="@drawable/icon200"
                             android:padding="14dp"
