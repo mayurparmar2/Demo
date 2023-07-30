@@ -43,7 +43,9 @@ pakagename=$(grep -Eo 'package="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $N
 version=$(grep -Eo 'versionName="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $NF}')
 echo -e 'Link    : https://play.google.com/store/apps/details?id='$pakagename'\nPackage : '$pakagename' \nversion : '$version'' >"$linkFile"
 #-----------------------Copy Package Path----------------------------
+# pakagename="com.example"
 PakageName_path="$(echo "$pakagename" | sed 's|\.|\/|g')"
+
 sources="$jadx/sources/$PakageName_path"
 if [ ! -d "$Project_java/$PakageName_path" ]; then
   mkdir -p "$Project_java/$PakageName_path"
@@ -288,9 +290,9 @@ done
 for type_name in "${value_list[@]}"; do
   fun_value_main "java" "$type_name" "$Project_java"
 done
-for type_name in "${value_list[@]}"; do
-  fun_value_main "xml" "$type_name" "$Project_main"
-done
+#for type_name in "${value_list[@]}"; do
+#  fun_value_main "xml" "$type_name" "$Project_main"
+#done
 # again check
 for type_name in "${directorieslist[@]}"; do
   fun_main "xml" "$type_name" "$Project_res'/values"
