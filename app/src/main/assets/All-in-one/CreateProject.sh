@@ -485,6 +485,7 @@ for file in $java_files; do
   sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
   sed -i 's/134217728/PendingIntent.FLAG_UPDATE_CURRENT/g' "$file"
   sed -i 's/33554432/PendingIntent.FLAG_MUTABLE/g' "$file"
+  sed -i 's/335544320/Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
   sed -i 's/addFlags(1)/addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)/g' "$file"
   sed -i 's/addFlags(2)/addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)/g' "$file"
   sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
