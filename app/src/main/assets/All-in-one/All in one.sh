@@ -1,276 +1,481 @@
 #!/bin/bash
-
-# "Enter the path of the directory containing the files: " ProjectName
-echo "Enter the path of the directory containing the files: "
+echo "Enter the path of the ProjectName containing the files: "
 read ProjectName
+#ProjectName="Campass"
 
-mydi="C:/AndroidProject/$ProjectName/app/src/main/res"
-# Copy the file
-sourceFile="C:/AndroidProject/GitHubDemo/app/src/main/res/drawable/icon200.png"
-destinationDir="C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
-cp "$sourceFile" "$destinationDir"
-echo "File copied successfully."
 
-# Comment the file
-attrsFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/attrs.xml"
+#-----------------------Copy Project---------------------------
+Project_java="C:/AndroidProject/$ProjectName/app/src/main/java"
+Project_res="C:/AndroidProject/$ProjectName/app/src/main/res"
+Project_main="C:/AndroidProject/$ProjectName/app/src/main"
+Project_dir="C:/AndroidProject/$ProjectName"
+source_dir="C:/AndroidProject/GithubDemo_empty"
+jadx="F:/SaveJadx/$ProjectName"
+jadx_assets="$jadx/resources/assets"
+jadx_res="$jadx/resources/res"
+jadx_res_values="$jadx/resources/res/values"
+if [ ! -d "$jadx" ]; then
+  echo "$jadx was not found"
+  return
+fi
+if [ ! -d "$source_dir" ]; then
+  echo "$source_dir was not found"
+  return
+fi
+if [ ! -d "$source_dir" ]; then
+  echo "$source_dir was not found"
+  return
+fi
+if [ ! -d "C:/AndroidProject" ]; then
+  mkdir -p "C:/AndroidProject was not found"
+fi
+if [ ! -d "$Project_dir" ]; then
+  mkdir -p "$Project_dir"
+fi
+cp -r "$source_dir"/* "$Project_dir"
+#------------------------Create Link----------------------------
+linkFile="$Project_dir/link.txt"
+if [ ! -f "$linkFile" ]; then
+  touch "$linkFile"
+fi
+manifast="$jadx/resources/AndroidManifest.xml"
+pakagename=$(grep -Eo 'package="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $NF}')
+version=$(grep -Eo 'versionName="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $NF}')
+echo -e 'Link    : https://play.google.com/store/apps/details?id='$pakagename'\nPackage : '$pakagename' \nversion : '$version'' >"$linkFile"
+#-----------------------Copy Package Path----------------------------
+# pakagename="com.BestPhotoEditor.HappyBirthdayVideoMaker"
+PakageName_path="$(echo "$pakagename" | sed 's|\.|\/|g')"
 
-# Comment out all attrs
-sed -i 's/<attr/<!--<attr/g; s/<\/attr>/<\/attr>-->/g' "$attrsFile"
-# sed -i 's/^/<!--/; s/$/-->/' "$attrsFile"
+sources="$jadx/sources/$PakageName_path"
+if [ ! -d "$Project_java/$PakageName_path" ]; then
+  mkdir -p "$Project_java/$PakageName_path"
+fi
+cp -r "$sources"/* "$Project_java/$PakageName_path"
+#-----------------------Copy Resources & Assets ----------------------------
 
-echo "Styles in $attrsFile have been commented out."
 
-# List of directories to delete
+# Check is found or Not =====> Resource
+if [ -d "$Project_main/$jadx_res" ]; then
+  rm -rf "$Project_main/$jadx_res"/*
+fi
+
+# Check is found or Not =====> Assets
+if [ -d "$Project_main/$jadx_assets" ]; then
+  rm -rf "$Project_main/$jadx_assets"/*
+fi
+if [ -d "$jadx_assets" ]; then
+    cp -r "$jadx_assets" "$Project_main"
+fi
+
+#cp -r "$jadx_res" "$Project_main"
+rm -rf "$Project_res/values"/*
+
+
+
+
+
+
+#----------------------Delete R.java  and Config.java--------------------------
+if [ -f "$Project_java/$PakageName_path/R.java" ]; then
+  rm "$Project_java/$PakageName_path/R.java"
+fi
+if [ -f "$Project_java/$PakageName_path/BuildConfig.java" ]; then
+  rm "$Project_java/$PakageName_path/BuildConfig.java"
+fi
+#-----------------------Find And Copy Resources From Java---------------------------
+
+#query_list='(?!.*'
 directorieslist=(
-  "C:/AndroidProject/$ProjectName/app/src/main/res/anim"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/color"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/font"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/layout"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/menu"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/xml"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/raw"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/values"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-hdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-mdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xhdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxhdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/drawable-xxxhdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-hdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-mdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xhdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxhdpi"
-  "C:/AndroidProject/$ProjectName/app/src/main/res/mipmap-xxxhdpi"
+  "layout"
+  "drawable"
+  "mipmap"
+  "anim"
+  "anim"
+  "color"
+  "font"
+  "menu"
+  "xml"
+  "raw"
 )
-
-directory_count=$(find $mydi -type d | wc -l)
-replace_files=0
-for dir in "$mydi"/*; do
-  # Check if directory exists
-  if [[ -d "$dir" ]]; then
-    if [[ " ${directorieslist[@]} " =~ " $dir " ]]; then
-      echo "Skipping directory: $dir"
-    else
-      rm -r "$dir"
-    fi
-    ((replace_files++))
-    # Calculate the percentage of files processed
-    percentage=$((replace_files * 100 / directory_count))
-    echo "Deleting Directory Progress: $percentage% ($replace_files/$directory_count Directory)"
-  else
-    echo "Directory not found: $dir"
+copyFile() {
+  local destination_path="$1"
+  local path="$2"
+  if [[ -e "$destination_path/$(basename "$path")" ]]; then
+    echo "File already exists.$(basename "$path")"
+    return
   fi
+  if [ ! -d "$destination_path" ]; then
+    mkdir -p "$destination_path"
+  fi
+  cp "$path" "$destination_path"
+  #  current_name_ext=$(basename "$path")
+  #  file_name_without_extension="${current_name_ext%.*}"
+  #  query_list+=''$file_name_without_extension'|.*'
+  for type_name in "${directorieslist[@]}"; do
+    fun_child "$type_name" "$path"
+  done
+}
+fun_child() {
+  local resource_type="$1"
+  local search_path="$2"
+  #  echo "list_names : $resource_type => $search_path" >>xml.xml
+  #  local list_names=($(grep -Eo '@'$resource_type'/'$query_list'abc_btn_material)[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  local list_names=($(grep -Eo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+
+  #  echo 'fun_child query_list : '$query_list'abc_btn_material)'
+  if [ -n "${list_names[*]}" ]; then
+    for resource_name in "${list_names[@]}"; do
+      #      echo "fun_child resource_name :$resource_type / $resource_name"
+      local path_list=$(find "$jadx_res" -name "$resource_name.*")
+      for path in $path_list; do
+        local directory=$(dirname "$path")
+        local basename=$(basename "$directory")
+        local bir_name=""
+        IFS='-' read -ra parts <<<"$basename"
+        if [ "${#parts[@]}" -gt 1 ]; then
+          bir_name="${parts[0]}"
+        fi
+        if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
+          local destination_path="$Project_res/$basename"
+          copyFile "$destination_path" "$path"
+        else
+          if [[ $basename != *-* ]]; then
+            local destination_path="$Project_res/$basename"
+            copyFile "$destination_path" "$path"
+          fi
+        fi
+      done
+    done
+  fi
+}
+fun_main() {
+  local pattern="$1"
+  local resource_type="$2"
+  local search_path="$3"
+  local matches=null
+  if [[ "$pattern" =~ "xml" ]]; then
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}' | grep -v -E 'sdp$|ssp$'))
+    # matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+  else
+    matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
+  fi
+  if [ -n "${matches[*]}" ]; then
+    for match in "${matches[@]}"; do
+      #      echo "fun_main resource_name :$resource_type / $match"
+      local path_list=$(find "$jadx_res" -name "$match.*")
+      for path in $path_list; do
+        local directory=$(dirname "$path")
+        local basename=$(basename "$directory")
+        local bir_name=""
+        IFS='-' read -ra parts <<<"$basename"
+        if [ "${#parts[@]}" -gt 1 ]; then
+          bir_name="${parts[0]}"
+        fi
+        if [[ $bir_name == *drawable* || $bir_name == *mipmap* ]]; then
+          local destination_path="$Project_res/$basename"
+          copyFile "$destination_path" "$path"
+        else
+          if [[ $basename != *-* ]]; then
+            local destination_path="$Project_res/$basename"
+            copyFile "$destination_path" "$path"
+          fi
+        fi
+      done
+    done
+  fi
+}
+total_files=$(echo "${directorieslist[@]}" | wc -w)
+replace_files=0
+percentage=0
+for type_name in "${directorieslist[@]}"; do
+  fun_main "java" "$type_name" "$Project_java"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 1/4 : Progress: $percentage% ($replace_files/$total_files files)"
+done
+replace_files=0
+percentage=0
+for type_name in "${directorieslist[@]}"; do
+  fun_main "xml" "$type_name" "$Project_res"
+  ((replace_files++))
+  percentage=$((replace_files * 100 / total_files))
+  echo "stage 2/4 : Progress: $percentage% ($replace_files/$total_files files)"
 done
 
-# Function to recursively search and delete files starting with 'abc'
-delete_files() {
-  local dir="$1"
-  delete_files_total=$(find $dir -type f -name "*.xml" | grep -c ".*")
-  # Check if the directory exists
-  if [[ -d "$dir" ]]; then
-    # Iterate through the contents of the directory
-    for item in "$dir"/*; do
-      if [[ -f "$item" && "$item" == "$dir"/abc_* ||
-        "$item" == "$dir"/design_* ||
-        "$item" == "$dir"/common_google* ||
-        "$item" == "$dir"/m3_* ||
-        "$item" == "$dir"/material_* ||
-        "$item" == "$dir"/test_* ||
-        "$item" == "$dir"/btn_radio_to* ||
-        "$item" == "$dir"/admob_* ||
-        "$item" == "$dir"/avd_* ||
-        "$item" == "$dir"/ic_m3_chip* ||
-        "$item" == "$dir"/res_* ||
-        "$item" == "$dir"/test_* ||
-        "$item" == "$dir"/notification_* ||
-        "$item" == "$dir"/custom_dialog* ||
-        "$item" == "$dir"/browser_* ||
-        "$item" == "$dir"/select_* ||
-        "$item" == "$dir"/bools* ||
-        "$item" == "$dir"/integers* ||
-        "$item" == "$dir"/plurals* ||
-        "$item" == "$dir"/public* ||
-        "$item" == "$dir"/standalone_* ||
-        "$item" == "$dir"/splits0* ||
-        "$item" == "$dir"/support_simple_* ||
-        "$item" == "$dir"/drawables* ||
-        "$item" == "$dir"/dp_example* ||
-        "$item" == "$dir"/sdp_example* ||
-        "$item" == "$dir"/tooltip_frame* ||
-        "$item" == "$dir"/fragment_fast_out_* ||
-        "$item" == "$dir"/checkbox_themeable* ||
-        "$item" == "$dir"/radiobutton_themeable* ||
-        "$item" == "$dir"/switch_thumb_* ||
-        "$item" == "$dir"/navigation_empty_* ||
-        "$item" == "$dir"/firebase_common* ||
-        "$item" == "$dir"/mtrl_* ||
-        "$item" == "$dir"/*_mtrl_* ||
-        "$item" == "$dir"/*mtrl ||
-        "$item" == "$dir"/btn_checkbox_* ]] \
-        ; then
-        # Delete the file starting with 'abc'
-        ((delete_files_count++))
-        echo "Deleting file:  ($delete_files_count/$delete_files_total Directory)"
-        rm "$item"
-      elif [[ -d "$item" ]]; then
-        # Recursively call the function for nested directories
-        delete_files "$item"
+appIcon="C:/AndroidProject/GitHubDemo/app/src/main/res/drawable/icon200.png"
+appIconDestinationDir="C:/AndroidProject/Test/$ProjectName/app/src/main/res/drawable"
+if [ ! -d "$appIconDestinationDir" ]; then
+  mkdir -p "$appIconDestinationDir"
+fi
+cp "$appIcon" "$appIconDestinationDir"
+
+#-----------------------Find And Copy Values From Java---------------------------
+value_list=(
+  "array"
+  "attr"
+  "color"
+  "dimen"
+  "string"
+  "style"
+  "styleable"
+)
+value_exists() {
+  local resource_type="$1"
+  local search_value="$2"
+  if grep -q 'name="'$search_value'"' ''$Project_res'/values/'$resource_type's.xml'; then
+    return 0 # String found, return true
+  else
+    return 1 # String not found, return false
+  fi
+}
+fun_value_main() {
+  local pattern="$1"
+  local resource_type="$2"
+  local search_path="$3"
+  my_val_file=''$Project_res'/values/'$resource_type's.xml'
+  if [ ! -f "$my_val_file" ]; then
+    if [[ "$resource_type" =~ "styleable" ]]; then
+      return
+    fi
+    touch "$my_val_file"
+    echo -e "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n</resources>" >"$my_val_file"
+  fi
+  local matches=null
+  if [[ "$pattern" =~ "xml" ]]; then
+    matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}' | grep -v -E 'sdp$|ssp$'))
+    # matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}'))
+    for type_name in "${matches[@]}"; do
+      echo "================> $type_name"
+    done
+  else
+    matches=($(grep -rEwo '\bR\.'$resource_type'\.[A-Za-z0-9_]+\b' "$search_path" | awk -F'.' '{print $NF}'))
+  fi
+  if [ -n "${matches[*]}" ]; then
+    echo "$matches"
+    for resource_name in "${matches[@]}"; do
+      block=""
+      #      echo "resource_name $resource_name"
+      echo "resource_name $resource_name"
+      echo "resource_type $resource_type"
+      if ! value_exists "$resource_type" "$resource_name"; then
+        echo "value_exists 0"
+        jadx_val_file=''$jadx_res_values'/'$resource_type's.xml'
+        case "$resource_type" in
+        "style")
+          block=$(cat "$jadx_val_file" | grep -zPo "<style name=\"$resource_name\"[\s\S]*?</style>")
+          echo "$block"
+          ;;
+        "array")
+          block=$(grep -zPo "<array name=\"$resource_name\"[\s\S]*?</array>" "$jadx_val_file")
+          ;;
+        "styleable")
+          # Use grep with a regular expression to extract the values inside the brackets
+          result=$(grep -oP '(?<='$resource_name'\s=\s\{).*?(?=\})' "$sources/R.java")
+          result=$(echo "$result" | tr -d '[:space:]' | tr ',' '\n')
+          readarray -t values <<<"$result"
+          block+="<declare-styleable name=\"$resource_name\">"
+          for attr in "${values[@]}"; do
+            attrName=$(echo "$attr" | sed 's/R.attr.//')
+            block+=$(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+            echo $(cat "$jadx_res_values/attrs.xml" | grep -zPo "<attr name=\"$attrName\"[\s\S]*?</attr>")
+          done
+          block+="</declare-styleable>"
+          echo "$block"
+          ;;
+        *)
+          block=$(cat "$search_path" | grep -oP "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}>")
+          # block=$(cat "$jadx_val_file" | grep -oF "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}")
+          # block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
+          ;;
+        esac
+        if [[ "$resource_type" =~ "styleable" ]]; then
+          my_attr_file=''$Project_res'/values/attrs.xml'
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
+        else
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
+        fi
       fi
     done
   fi
 }
-delete_files "$mydi"
+#fun_value_main "xml" "layout" $Project_res
+for type_name in "${value_list[@]}"; do
+  fun_value_main "xml" "$type_name" "$Project_main"
+done
+for type_name in "${value_list[@]}"; do
+  fun_value_main "java" "$type_name" "$Project_java"
+done
+#for type_name in "${value_list[@]}"; do
+#  fun_value_main "xml" "$type_name" "$Project_main"
+#done
+# again check
+for type_name in "${directorieslist[@]}"; do
+  fun_main "xml" "$type_name" "$Project_res'/values"
+done
 
-regexDir="C:/AndroidProject/$ProjectName/app/src/main/res/values"
-pattern1='<(\w+)\s+[^>]*name="common_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern2='<(\w+)\s+[^>]*name="m3_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern3='<(\w+)\s+[^>]*name="bright_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern4='<(\w+)\s+[^>]*name="cardview_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern5='<(\w+)\s+[^>]*name="design_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern6='<(\w+)\s+[^>]*name="dim_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern7='<(\w+)\s+[^>]*name="foreground_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern8='<(\w+)\s+[^>]*name="error_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern9='<(\w+)\s+[^>]*name="mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern10='<(\w+)\s+[^>]*name="primary_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern11='<(\w+)\s+[^>]*name="ripple_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern12='<(\w+)\s+[^>]*name="secondary_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern13='<(\w+)\s+[^>]*name="tooltip_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern14='<(\w+)\s+[^>]*name="switch_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern15='<(\w+)\s+[^>]*name="foreground_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern16='<(\w+)\s+[^>]*name="material_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern17='<(\w+)\s+[^>]*name="browser_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern18='<(\w+)\s+[^>]*name="abc_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern19='<(\w+)\s+[^>]*name="error_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern20='<(\w+)\s+[^>]*name="accent_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern21='<(\w+)\s+[^>]*name="ripple_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern22='<(\w+)\s+[^>]*name="androidx_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern23='<(\w+)\s+[^>]*name="offline_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern24='<(\w+)\s+[^>]*name="path_password[^"]*"[^>]*>(.*?)<\/\1>'
-pattern25='<(\w+)\s+[^>]*name="offline_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern26='<(\w+)\s+[^>]*name="fab_transformation[^"]*"[^>]*>(.*?)<\/\1>'
-pattern27='<(\w+)\s+[^>]*name="notification_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern28='<(\w+)\s+[^>]*name="highlighted_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern29='<(\w+)\s+[^>]*name="button_material[^"]*"[^>]*>(.*?)<\/\1>'
-pattern30='<(\w+)\s+[^>]*name="background_material[^"]*"[^>]*>(.*?)<\/\1>'
-pattern31='<(\w+)\s+[^>]*name="background_floating[^"]*"[^>]*>(.*?)<\/\1>'
-pattern32='<(\w+)\s+[^>]*name="highlighted_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern33='<(\w+)\s+[^>]*name="firebase_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern34='<(\w+)\s+[^>]*name="google_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern35='<(\w+)\s+[^>]*name="default_web[^"]*"[^>]*>(.*?)<\/\1>'
-pattern36='<(\w+)\s+[^>]*name="test_mtrl_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern37='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
-pattern38='<(\w+)\s+[^>]*name="test_navigation[^"]*"[^>]*>(.*?)<\/\1>'
-pattern39='<(\w+)\s+[^>]*name="action_bar_size[^"]*"[^>]*>(.*?)<\/\1>'
-pattern40='<(\w+)\s+[^>]*name="appcompat_dialog_background_inset[^"]*"[^>]*>(.*?)<\/\1>'
-pattern41='<(\w+)\s+[^>]*name="compat_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern42='<(\w+)\s+[^>]*name="default_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern43='<(\w+)\s+[^>]*name="disabled_alpha[^"]*"[^>]*>(.*?)<\/\1>'
-pattern44='<(\w+)\s+[^>]*name="fastscroll_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern45='<(\w+)\s+[^>]*name="highlight_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern46='<(\w+)\s+[^>]*name="hint_[^"]*"[^>]*>(.*?)<\/\1>'
-pattern47='<(\w+)\s+[^>]*name="item_[^"]*"[^>]*>(.*?)<\/\1>'
-replacement=''
+#--------------------- Replace java content -------------------------
 
-file_count=$(find $regexDir -type f -name "*.xml" | grep -c ".*")
+java_files=$(find "$Project_java/$PakageName_path" -type f -name '*.java')
+total_files=$(echo "$java_files" | wc -l)
 replace_files=0
-# Loop through all files in the directory
-for file in "$regexDir"/*; do
-  if [[ -f "$file" ]]; then
-    # Execute the sed command on each file
-    # sed -i s/replacement/000000/g "$file"
-    sed -i "s/$pattern1/$replacement/g" "$file"
-    sed -i "s/$pattern2/$replacement/g" "$file"
-    sed -i "s/$pattern3/$replacement/g" "$file"
-    sed -i "s/$pattern4/$replacement/g" "$file"
-    sed -i "s/$pattern5/$replacement/g" "$file"
-    sed -i "s/$pattern6/$replacement/g" "$file"
-    sed -i "s/$pattern7/$replacement/g" "$file"
-    sed -i "s/$pattern9/$replacement/g" "$file"
-    sed -i "s/$pattern10/$replacement/g" "$file"
-    sed -i "s/$pattern11/$replacement/g" "$file"
-    sed -i "s/$pattern12/$replacement/g" "$file"
-    sed -i "s/$pattern13/$replacement/g" "$file"
-    sed -i "s/$pattern14/$replacement/g" "$file"
-    sed -i "s/$pattern15/$replacement/g" "$file"
-    sed -i "s/$pattern16/$replacement/g" "$file"
-    sed -i "s/$pattern17/$replacement/g" "$file"
-    sed -i "s/$pattern18/$replacement/g" "$file"
-    sed -i "s/$pattern19/$replacement/g" "$file"
-    sed -i "s/$pattern20/$replacement/g" "$file"
-    sed -i "s/$pattern21/$replacement/g" "$file"
-    sed -i "s/$pattern22/$replacement/g" "$file"
-    sed -i "s/$pattern23/$replacement/g" "$file"
-    sed -i "s/$pattern24/$replacement/g" "$file"
-    sed -i "s/$pattern25/$replacement/g" "$file"
-    sed -i "s/$pattern26/$replacement/g" "$file"
-    sed -i "s/$pattern27/$replacement/g" "$file"
-    sed -i "s/$pattern28/$replacement/g" "$file"
-    sed -i "s/$pattern29/$replacement/g" "$file"
-    sed -i "s/$pattern30/$replacement/g" "$file"
-    sed -i "s/$pattern31/$replacement/g" "$file"
-    sed -i "s/$pattern32/$replacement/g" "$file"
-    sed -i "s/$pattern33/$replacement/g" "$file"
-    sed -i "s/$pattern34/$replacement/g" "$file"
-    sed -i "s/$pattern35/$replacement/g" "$file"
-    sed -i "s/$pattern36/$replacement/g" "$file"
-    sed -i "s/$pattern37/$replacement/g" "$file"
-    sed -i "s/$pattern38/$replacement/g" "$file"
-    sed -i "s/$pattern39/$replacement/g" "$file"
-    sed -i "s/$pattern40/$replacement/g" "$file"
-    sed -i "s/$pattern41/$replacement/g" "$file"
-    sed -i "s/$pattern42/$replacement/g" "$file"
-    sed -i "s/$pattern43/$replacement/g" "$file"
-    sed -i "s/$pattern44/$replacement/g" "$file"
-    sed -i "s/$pattern45/$replacement/g" "$file"
-    sed -i "s/$pattern46/$replacement/g" "$file"
-    sed -i "s/$pattern47/$replacement/g" "$file"
-    
-    sed -i "s/android:tint=/app:tint=/g" "$file"
-    sed -i 's/Of="0"/Of="parent"/g' "$file"
-    sed -i 's/app:tabMode="1"/app:tabMode="fixed"/g' "$file"
-    sed -i 's/app:tabMode="2"/app:tabMode="auto"/g' "$file"
-    sed -i 's/app:tabMode="0"/app:tabMode="scrollable"/g' "$file"
+percentage=0
+for file in $java_files; do
+  sed -i "s/import $pakagename.R;/import com.demo.example.R;/g" "$file"
+  sed -i "s/import $pakagename.BuildConfig;/import com.demo.example.BuildConfig;/g" "$file"
+  sed -i "s/import $pakagename.databinding/import com.demo.example.databinding/g" "$file"
+  sed -i "s/e = e.*?;//g" "$file"
+  sed -i "s/import com\.android\.billingclient[^;]*;//g" "$file"
+  sed -i "s/import com\.facebook\.ads[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.android\.gms\.measurement[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.common[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.firebase[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.ads[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.android\.gms\.common[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.android\.gms\.ads[^;]*;//g" "$file"
+  sed -i "s/import com\.google\.android\.ads[^;]*;//g" "$file"
+  sed -i "s/import androidx\.constraintlayout[^;]*;//g" "$file"
+  sed -i "s/import androidx\.lifecycle\.ProcessLifecycleOwner[^;]*;//g" "$file"
+  sed -i "s/import androidx\.multidex[^;]*;//g" "$file"
+  sed -i "s/import kotlinx\.coroutines[^;]*;//g" "$file"
+  sed -i 's/1)\.show();/Toast\.LENGTH_LONG)\.show();/g' "$file"
+  sed -i 's/0)\.show();/Toast\.LENGTH_SHORT)\.show();/g' "$file"
+  sed -i 's/getVisibility() != 0/getVisibility() != View.VISIBLE/g' "$file"
+  sed -i 's/setScrollBarStyle(33554432)/setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY)/g' "$file"
+  sed -i 's/? 8 : 0/? View.GONE : View.VISIBLE/g' "$file"
+  sed -i 's/0).show();/Toast.LENGTH_SHORT).show();/g' "$file"
+  sed -i 's/1).show();/Toast.LENGTH_LONG).show();/g' "$file"
+  sed -i 's/getVisibility() != 0/getVisibility() != View.VISIBLE/g' "$file"
+  sed -i 's/setScrollBarStyle(33554432)/setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY)/g' "$file"
+  sed -i 's/? 8 : 0/? View.GONE : View.VISIBLE/g' "$file"
+  sed -i 's/setVisibility(0)/setVisibility(View.VISIBLE)/g' "$file"
+  sed -i 's/setVisibility(4)/setVisibility(View.INVISIBLE)/g' "$file"
+  sed -i 's/setVisibility(8)/setVisibility(View.GONE)/g' "$file"
+  sed -i 's/getSystemService("power")/getSystemService(Context.POWER_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("powerstats")/getSystemService(Context.POWER_STATS_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("recovery")/getSystemService(Context.RECOVERY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("system_update")/getSystemService(Context.SYSTEM_UPDATE_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("window")/getSystemService(Context.WINDOW_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("layout_inflater")/getSystemService(Context.LAYOUT_INFLATER_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("account")/getSystemService(Context.ACCOUNT_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("activity")/getSystemService(Context.ACTIVITY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("alarm")/getSystemService(Context.ALARM_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("notification")/getSystemService(Context.NOTIFICATION_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("accessibility")/getSystemService(Context.ACCESSIBILITY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("keyguard")/getSystemService(Context.KEYGUARD_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("search")/getSystemService(Context.SEARCH_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("storagestats")/getSystemService(Context.STORAGE_STATS_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("vibrator")/getSystemService(Context.VIBRATOR_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("network_stack")/getSystemService(Context.NETWORK_STACK_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("tethering")/getSystemService(Context.TETHERING_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("test_network")/getSystemService(Context.TEST_NETWORK_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("wifi")/getSystemService(Context.WIFI_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("wifiscanner")/getSystemService(Context.WIFI_SCANNING_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("audio")/getSystemService(Context.AUDIO_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("auth")/getSystemService(Context.AUTH_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("fingerprint")/getSystemService(Context.FINGERPRINT_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("input_method")/getSystemService(Context.INPUT_METHOD_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("bluetooth")/getSystemService(Context.BLUETOOTH_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("permission")/getSystemService(Context.PERMISSION_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("camera")/getSystemService(Context.CAMERA_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("sensor")/getSystemService(Context.SENSOR_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("connectivity")/getSystemService(Context.CONNECTIVITY_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("location")/getSystemService(Context.LOCATION_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("clipboard")/getSystemService(Context.CLIPBOARD_SERVICE)/g' "$file"
+  sed -i 's/getSystemService("storage")/getSystemService(Context.STORAGE_SERVICE)/g' "$file"
+  sed -i 's/67108864/Intent.FLAG_ACTIVITY_CLEAR_TOP/g' "$file"
+  sed -i 's/268435456/Intent.FLAG_ACTIVITY_NEW_TASK/g' "$file"
+  sed -i 's/134217728/PendingIntent.FLAG_UPDATE_CURRENT/g' "$file"
+  sed -i 's/33554432/PendingIntent.FLAG_MUTABLE/g' "$file"
+  sed -i 's/addFlags(1)/addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)/g' "$file"
+  sed -i 's/addFlags(2)/addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)/g' "$file"
+  sed -i 's/addFlags(64)/addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)/g' "$file"
+  sed -i 's/NotificationCompat\.CATEGORY_ALARM/Context\.ALARM_SERVICE/g' "$file"
+  sed -i 's/SupportMenu.CATEGORY_MASK/0xffff0000/g' "$file"
+  sed -i 's/import androidx.exifinterface.media.ExifInterface;/import android.media.ExifInterface;/g' "$file"
+  sed -i 's/new LinearLayoutManager(this, 0/new LinearLayoutManager(this, RecyclerView.HORIZONTAL/g' "$file"
+  sed -i 's/new LinearLayoutManager(this, 1/new LinearLayoutManager(this, RecyclerView.VERTICAL/g' "$file"
+
+  class_name=$(grep -m 1 "class " "$file" | sed -n 's/.*class \([^ ]*\).*/\1/p')
+  holdername=$(cat "$file" | grep -o -P "(?<=extends\sRecyclerView.Adapter<)\w+(?=>)")
+  #  echo "Class holdername: $holdername"
+  # Check if the class name is found
+  if [[ -n $class_name && $holdername ]]; then
+    sed -i "s/extends RecyclerView.Adapter<$holdername>/extends RecyclerView.Adapter<$class_name.$holdername>/g" "$file"
   fi
+  #----------------------notification_channel--------------------------
+  notification_channel=$(cat "$file" | grep -o -P "new NotificationChannel\(([^)]+)\)")
+  regex="new NotificationChannel\(([^,]+),\s*([^,]+),\s*([^)]+)\)"
+  if [[ $notification_channel =~ $regex ]]; then
+    parameter1=${BASH_REMATCH[1]}
+    parameter2=${BASH_REMATCH[2]}
+    parameter3=${BASH_REMATCH[3]}
+    parameter1=${parameter1//[[:space:]]/}
+    parameter2=${parameter2//[[:space:]]/}
+    parameter3=${parameter3//[[:space:]]/}
+    #  sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$java_file_path"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 1)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_MIN)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 2)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_LOW)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 3)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_DEFAULT)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 4)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_HIGH)/g" "$file"
+    sed -i "s/new NotificationChannel($parameter1, $parameter2, 5)/new NotificationChannel($parameter1, $parameter2, NotificationManager\.IMPORTANCE_MAX)/g" "$file"
+    #    echo "Parameter 4: new NotificationChannel($parameter1,$parameter2,2)"
+  fi
+  #----------------------Toast.makeText--------------------------
+  matches=()
+  while IFS= read -r line; do
+    matches+=("$line")
+  done < <(grep -o 'Toast\.makeText([^;]*);' "$file")
+  for match in "${matches[@]}"; do
+    echo "$match"
+    # Remove leading and trailing whitespace
+    string=$(echo "$match" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    # Extract parameters
+    IFS=',' read -r -a params <<<"${string#Toast.makeText(}"
+    context=$(echo "${params[0]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    message=$(echo "${params[1]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    #     duration=$(echo "${params[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/)//')
+    sed -i "s/Toast.makeText($context, $message, 0)/Toast.makeText($context, $message, Toast\.LENGTH_SHORT)/g" "$file"
+    sed -i "s/Toast.makeText($context, $message, 1)/Toast.makeText($context, $message, Toast\.LENGTH_LONG)/g" "$file"
+  done
+
+
+
+  
+  #---------------------- Delete unnecessary files--------------------------
+  # Delete unnecessary files
+  #    name_with_ext=$(basename "$file")
+  #    if [[ " ${delete_file_list[@]} " =~ "$name_with_ext" ]]; then
+  #      rm "$item"
+  #    fi
+  #--------------------- Calculate the percentage of files processed-------------------------
   ((replace_files++))
   # Calculate the percentage of files processed
-  percentage=$((replace_files * 100 / file_count))
-  echo "replace file Progress: $percentage% ($replace_files/$file_count replaced)"
+  percentage=$((replace_files * 100 / total_files))
+  echo "Progress: $percentage% ($replace_files/$total_files files)"
+  #--------------------- Calculate the percentage of files processed-------------------------
 done
-
-
-dirAll="C:/AndroidProject/$ProjectName/app/src/main"
-list_xml_java=$(find "$dirAll" -type f \( -name "*.xml" -o -name "*.java" \))
-my_style_list=()
-for fileXmlJava in $list_xml_java; do
-  # Print the file path
-  style_name=$(grep -oP '="@style/\K[^"]+' $fileXmlJava)
+#--------------------- Calculate the percentage of files processed-------------------------
+ # C:\AndroidProject\ColorSplashEffect\app\src\main\res'\values
 
 
 
-  # Check if the string is not empty
-  if [[ -n "$style_name" ]]; then
-     is_duplicate=0
-     # Check if the string is equal to any existing element in the list
-     for item in "${my_style_list[@]}"; do
-       if [[ "$item" == "$style_name" ]]; then
-         # Set the flag if the string is a duplicate
-         is_duplicate=1
-         break
-       fi
-     done
-     # Add the string to the list if it is not a duplicate
-     if [[ $is_duplicate -eq 0 ]]; then
-       echo "$style_name"
-       item_str=${style_name//[[:space:]]/}
-#       modified_string=$(echo "$item_str" | sed 's/\./\\./g')
-       my_style_list+=("$item_str")
-     fi
-  fi
-done
-# Comment out all styles
-stylesFile="C:/AndroidProject/$ProjectName/app/src/main/res/values/styles.xml"
-commented_string=$(cat "$stylesFile" | awk '/<style name="'"$(IFS="|"; echo "${my_style_list[*]}")"'"/,/<\/style>/{print; next}{print "<!--" $0 "-->"}')
-echo -e "$commented_string" > "$stylesFile"
-sed -i 's/<!--<?xml version="1.0" encoding="utf-8"?>-->/<?xml version="1.0" encoding="utf-8"?>/' "$stylesFile"
-sed -i 's/<!--<resources>-->/<resources>/' "$stylesFile"
-sed -i 's/<!--<\/resources>-->/<\/resources>/' "$stylesFile"
+# search_path="C:/AndroidProject/VCFContectBackup/app/src/main/res/layout/activity_info.xml"
+# resource_type="dimen"
+
+# # Use grep to find matches and filter those that don't end with "sdp"
+# # matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}' | grep -v 'sdp$|ssp$'))
+# matches=($(grep -rEwo '@'$resource_type'/[A-Za-z0-9_]+' "$search_path" | awk -F'/' '{print $NF}' | grep -v -E 'sdp$|ssp$'))
+
+
+
+
+# search_path="C:/AndroidProject/UsbOtgFileManager/app/src/main/res/values/strings.xml"
+# resource_type="string"
+# resource_name="mode_selected_count"
+
+# block=$(cat "$search_path" | grep -oP "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}>")
+# echo "$block"
