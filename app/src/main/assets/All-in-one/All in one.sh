@@ -283,7 +283,7 @@ fun_value_main() {
           echo "$block"
           ;;
         *)
-          block=$(cat "$search_path" | grep -oP "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}>")
+          block=$(cat "$jadx_val_file" | grep -oP "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}>")
           # block=$(cat "$jadx_val_file" | grep -oF "<${resource_type} name=\"${resource_name}\">.*?</${resource_type}")
           # block=$(cat "$jadx_val_file" | grep -oP "<$resource_type name=\"$resource_name\">.*?</$resource_type>")
           ;;
