@@ -8,6 +8,7 @@ read ProjectName
 Project_java="C:/AndroidProject/$ProjectName/app/src/main/java"
 Project_res="C:/AndroidProject/$ProjectName/app/src/main/res"
 Project_main="C:/AndroidProject/$ProjectName/app/src/main"
+Project_manifast="$Project_main/AndroidManifest.xml"
 Project_dir="C:/AndroidProject/$ProjectName"
 source_dir="C:/AndroidProject/GithubDemo_empty"
 jadx="F:/SaveJadx/$ProjectName"
@@ -43,7 +44,7 @@ pakagename=$(grep -Eo 'package="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $N
 version=$(grep -Eo 'versionName="[a-z0-9_\.]+' "$manifast" | awk -F'"' '{print $NF}')
 echo -e 'Link    : https://play.google.com/store/apps/details?id='$pakagename'\nPackage : '$pakagename' \nversion : '$version'' >"$linkFile"
 #-----------------------Copy Package Path----------------------------
-# pakagename="edge"
+# pakagename="com.boombox.speed"
 PakageName_path="$(echo "$pakagename" | sed 's|\.|\/|g')"
 
 sources="$jadx/sources/$PakageName_path"
@@ -82,6 +83,15 @@ fi
 if [ -f "$Project_java/$PakageName_path/BuildConfig.java" ]; then
   rm "$Project_java/$PakageName_path/BuildConfig.java"
 fi
+#-----------------------Find And Copy Resources From Java---------------------------
+
+label_p1=$(grep -oP '(?<=android:label=").*?(?=")' "$manifast")
+name_p1=$(grep -oP '(?<=android:name=").*?(?=")' "$manifast")
+theme_p1=$(grep -oP '(?<=android:theme=").*?(?=")' "$manifast")
+sed -i "s/android:label=\"[^\"]*\"/android:label=\"$label_p1\"/" "$Project_manifast"
+sed -i "s/android:name=\"[^\"]*\"/android:name=\"$name_p1\"/" "$Project_manifast"
+sed -i "s/android:theme=\"[^\"]*\"/android:theme=\"$theme_p1\"/" "$Project_manifast"
+
 #-----------------------Find And Copy Resources From Java---------------------------
 
 #query_list='(?!.*'
@@ -288,18 +298,20 @@ fun_value_main() {
           block=$(cat "$jadx_val_file" | grep -oP "<${resource_type} name=\"${resource_name}\">\s*.*?\s*</${resource_type}>")
           ;;
         esac
+        
         if [[ "$resource_type" =~ "styleable" ]]; then
           my_attr_file=''$Project_res'/values/attrs.xml'
           content=$(echo $block | sed 's/\//\\\//g')
           sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_attr_file"
-        else
-          escaped_block=$(echo "$block" | sed 's/\//\\\//g')
+
+        elif [[ "$resource_type" =~ "string" ]]; then
+           escaped_block=$(echo "$block" | sed 's/\//\\\//g')
           escaped_block=$(echo "$escaped_block" | sed 's/&/\\&/g')
           escaped_block=$(echo "$escaped_block" | sed 's/\\n/\\\\n/g')
           sed -i "/<\/resources>/ s/.*/${escaped_block}\n&/" "$my_val_file"
-          
-          # content=$(echo $block | sed 's/\//\\\//g')
-          # sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
+        else  
+          content=$(echo $block | sed 's/\//\\\//g')
+          sed -i "/<\/resources>/ s/.*/${content}\n&/" "$my_val_file"
         fi
       fi
     done
