@@ -1,6 +1,7 @@
 #!/bin/bash
-echo "Enter the path of the directory containing the files: "
-read ProjectName
+#echo "Enter the path of the directory containing the files: "
+#read ProjectName
+ProjectName="PhotoMixerV117"
 
 renamed_directory=0
 percentage=0
