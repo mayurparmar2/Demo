@@ -4,13 +4,14 @@
 
   # cd "C:\Users\parma\OneDrive\Desktop\MyDemos\RenameFilesDemo\app\src\main\assets\"
   # ./NewFile2024.sh
-
 #echo "Enter the path of the directory containing the files: "
 #read ProjectName
 ProjectName="PhotoMixerV117"
 renamed_directory=0
 percentage=0
 directory="F:/AndroidProject/Test/$ProjectName/app/src/main/java"
+layout_directory="F:/AndroidProject/Test/$ProjectName/app/src/main/res/layout"
+manifest_file="F:/AndroidProject/Test/$ProjectName/app/src/main/AndroidManifest.xml"
 #main_path="F:/AndroidProject/Test/$ProjectName/app/src/main"
 directorieslist=(
   "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/arrays.xml"
@@ -54,23 +55,28 @@ replace_java_name() {
 
 
 
-src_files=$(find "$directory" -type f -name '*.java')
+src_files=$(find "$directory" -type f -name '*.*')
 total_files=$(echo "$src_files" | wc -l)
 
 for file in $src_files; do
   current_name_ext=$(basename "$file")
   extension="${current_name_ext##*.}"
   file_name_without_extension="${current_name_ext%.*}"
-  random_string=''$file_name_without_extension'_max'
+  random_string=''$file_name_without_extension'_'$(fun_random_string)''
   if [[ -f "$file" ]]; then
 #    replace_java_name "$random_string" "$file_name_without_extension" "$directory" "$file"
 
-   echo "file : $file"
+#   echo "file : $file"
     mv "$(dirname "$file")/$file_name_without_extension.java" "$(dirname "$file")/$random_string.$extension"
+    mv "$(dirname "$file")/$file_name_without_extension.kt" "$(dirname "$file")/$random_string.$extension"
 
-    echo "old_class_name => $file_name_without_extension, new_class_name=> $random_string"
+#    echo "old_class_name => $file_name_without_extension, new_class_name=> $random_string"
 
-    grep -rl --include \*.java "$file_name_without_extension" "$directory" | xargs sed -i "s/\b$file_name_without_extension\b/$random_string/g"
+#    grep -rl --include \*.java "$file_name_without_extension" "$directory" | xargs sed -i "s/\b$file_name_without_extension\b/$random_string/g"
+    grep -rl --include \*.java --include \*.kt --include \*.xml "$file_name_without_extension" "$layout_directory" "$directory" "$manifest_file" | xargs sed -i "s/\b$file_name_without_extension\b/$random_string/g"
+#    grep -rl --include \*.xml  "$file_name_without_extension" "$layout_directory" "$manifest_file" | xargs sed -i "s/\b$file_name_without_extension\b/$random_string/g"
+
+#    grep -rl --include \*.java --include \*.kt --include \*.xml "$old_class_name" "$directory_path" "$manifest_file" | xargs sed -i "s/\b$old_class_name\b/$new_class_name/g"
   fi
   #--------------------- Calculate the percentage of files processed-------------------------
   ((renamed_directory++))
