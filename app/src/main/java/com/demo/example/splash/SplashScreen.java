@@ -20,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.demo.example.MainActivity;
+import com.demo.example.NewClassName;
 import com.demo.example.R;
 
 
@@ -71,7 +71,7 @@ public class SplashScreen extends AppCompatActivity {
                 editor.putBoolean("isFirstTime", false);
                 editor.apply();
             } else {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, NewClassName.class));
                 finish();
 
             }

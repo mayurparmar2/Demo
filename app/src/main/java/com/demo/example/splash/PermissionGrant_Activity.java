@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.demo.example.MainActivity;
+import com.demo.example.NewClassName;
 import com.demo.example.R;
 
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class PermissionGrant_Activity extends AppCompatActivity {
             editor.apply();
             finish();
         }else {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, NewClassName.class));
             finish();
         }
     }

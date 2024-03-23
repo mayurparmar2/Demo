@@ -2,7 +2,7 @@ package com.demo.example.splash;
 
 import android.content.Intent;
 
-import com.demo.example.MainActivity;
+import com.demo.example.NewClassName;
 import com.demo.example.adapter.CommonAdapter;
 import com.demo.example.base.baseActivity;
 
@@ -36,7 +36,7 @@ public class FiveActivity extends baseActivity {
     }
 
     private void launchNextScreen() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, NewClassName.class));
         finish();
     }
 

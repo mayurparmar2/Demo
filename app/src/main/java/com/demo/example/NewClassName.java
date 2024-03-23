@@ -10,7 +10,7 @@ import com.demo.example.adapter.ViewPagerAdapter;
 import com.demo.example.fragment.HomeFragment;
 import com.demo.example.fragment.SettingFragment;
 import com.google.android.material.tabs.TabLayout;
-public class MainActivity extends AppCompatActivity {
+public class NewClassName extends AppCompatActivity {
     Context context= this;
     private ViewPagerAdapter mViewPagerAdapter;
     private ViewPager viewPager;

@@ -1,18 +1,18 @@
 #!/bin/bash
 #echo "Enter the path of the directory containing the files: "
 #read ProjectName
-ProjectName="HomeWorkout"
+ProjectName="PhotoMixerV117"
 renamed_directory=0
 percentage=0
-directory="C:/AndroidProject/Test/$ProjectName/app/src/main/java"
-#main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
+directory="F:/AndroidProject/Test/$ProjectName/app/src/main/java"
+#main_path="F:/AndroidProject/Test/$ProjectName/app/src/main"
 directorieslist=(
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/arrays.xml"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/attrs.xml"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/colors.xml"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/dimens.xml"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/strings.xml"
-  "C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/arrays.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/attrs.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/colors.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/dimens.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/strings.xml"
+  "F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
 )
 fun_random_string() {
   random_string=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
@@ -100,6 +100,7 @@ replace_java_name() {
 
 src_files=$(find "$directory" -type f -name '*.java')
 total_files=$(echo "$src_files" | wc -l)
+
 for file in $src_files; do
   current_name_ext=$(basename "$file")
   extension="${current_name_ext##*.}"
@@ -122,7 +123,7 @@ done
 #--------------------- Calculate the percentage of files processed-------------------------
 
 
-#itemJava="C:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/activites/AddedCustomExercisesListActivity.java"
+#itemJava="F:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/activites/AddedCustomExercisesListActivity.java"
 #package="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
 #file_name_without_extension="AddedCustomExercisesListActivity"
 #random_string="AddedCustomExercisesListActivity_new"
@@ -133,7 +134,7 @@ done
 #--------------------- Calculate the percentage of files processed-------------------------
 
 #Package = >com.demo.exercise_app.Utils
-#File = To = >C:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/Utils/Utils.java >Utils_hkjvyxojms
+#File = To = >F:/AndroidProject/Test/HomeWorkout/app/src/main/java/com/demo/exercise_app/Utils/Utils.java >Utils_hkjvyxojms
 #Package = >com.demo.exercise_app
 #list_java=$(grep -r --include='*.java' -l "\b$file_name_without_extension\b" "$main_path")
 #for itemJava in $list_java; do
@@ -146,7 +147,7 @@ done
 #
 #mv "$file" "$new_file"
 
-#main_path="C:/AndroidProject/Test/HomeWorkout/app/src/main/java"
+#main_path="F:/AndroidProject/Test/HomeWorkout/app/src/main/java"
 #package="com.demo.exercise_app.Utils.CalenderView"
 #file_name_without_extension="CalendarGridView"
 #random_string="NewCalendarGridView"
@@ -155,14 +156,14 @@ done
 #  sed -i -e "s/$package\.$file_name_without_extension/$package\.$random_string/g" "$itemXml"
 #done
 #
-#main_file="C:/AndroidProject/Test/HomeWorkout/app/src/main/res/layout/calendar_view_grid.xml"
+#main_file="F:/AndroidProject/Test/HomeWorkout/app/src/main/res/layout/calendar_view_grid.xml"
 #echo "$(dirname "$main_file")"
 #
 #sed -i -e 's/<'$package'.'$file_name_without_extension'/<'$package'.'$random_string'/g' "$itemXml"
 #
 #sed -i -e 's/"'$package'.'$file_name_without_extension'"/"'$package'.'$random_string'"/g' "$itemXml"
 
-#itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#itemJava="F:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
 #str="$(echo "${itemJava%/*}" | sed 's|[^;]*/app/src/main/java/||g' | sed 's|/|.|g')"
 #
 #sed -i -e "s/import $str.App;/import $str.new;/g" "$itemJava"
@@ -175,17 +176,17 @@ done
 #echo "$(echo "$str" | sed 's|/|.|g')"
 #
 #
-#path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#path="F:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
 #echo "${path%/*}"
 #echo "$(basename "$path")"
 #
 #
-#path="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#path="F:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
 #package=$(echo "$path" | sed 's/\//./g')
-#package2=$(echo "$package" | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\.\///')
+#package2=$(echo "$package" | sed 's/F:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\.\///')
 #echo "$package2"
-#C:.AndroidProject.GitHubDemo.app.src.main.java.
-# | sed 's/C:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\///'
+#F:.AndroidProject.GitHubDemo.app.src.main.java.
+# | sed 's/F:\.AndroidProject\.GitHubDemo\.app\.src\.main\.java\///'
 #
 ##!/bin/bash
 #str="import android.app.Application;
@@ -231,7 +232,7 @@ done
 #      import android.content.Context;" | grep -o '[^ ]*;' | awk -F'[.]' '{print $(NF-1)}'
 #
 #
-#itemJava="C:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
+#itemJava="F:/AndroidProject/GitHubDemo/app/src/main/java/com/demo/example/App.java"
 #substring=$(cat "$itemJava" | sed -e 's/import [^;]*Application;\.//')
 #echo "$substring"
 #
@@ -360,10 +361,10 @@ done
 
 #"s/R\.$bir_name\.$file_name_without_extension\([^_]\)/R.$bir_name.$random_string\1/g"
 #R.drawable.direct_download
-#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
+#itemJava="F:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/twitter_module/ui/Activity_Twitter.java"
 #bir_name="drawable"
 #file_name_without_extension="background_bottom_sheet"
-#  main_path="C:/AndroidProject/Test/$ProjectName/app/src/main"
+#  main_path="F:/AndroidProject/Test/$ProjectName/app/src/main"
 #  list_xml=$(grep -r --include='*.xml' -l '>@'$bir_name'/'$file_name_without_extension'<' "$main_path")
 #  for itemXml in $list_xml; do
 #    sed -i "s,>$pattern<,>$replacement<,g" "$itemXml"
@@ -418,7 +419,7 @@ done
 #
 #sed -i "s/$pattern/$riplace\1/g" "$itemJava"
 #
-#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
+#itemJava="F:/AndroidProject/Test/$ProjectName/app/src/main/res/values/styles.xml"
 #bir_name="drawable"
 #file_name_without_extension="background"
 #random_string="new_background_bottom_sheet"
@@ -444,8 +445,8 @@ done
 #done
 
 #sed -i "s/R\.drawable\.direct_download/R.drawable.direct_download_new/g" "$itemJava"
-#C:\AndroidProject\Test\$ProjectName\app\src\main\java\com\demo\videodownloader\adapter
-#itemJava="C:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
+#F:\AndroidProject\Test\$ProjectName\app\src\main\java\com\demo\videodownloader\adapter
+#itemJava="F:/AndroidProject/Test/$ProjectName/app/src/main/java/com/demo/videodownloader/adapter/Downloader_StoriesofInstagram_Adapter.java"
 #sed -i '0,/itemsof/{s/\R\.layout\.itemsof_whatsapp_statuses_view\b/random_string/}' "$itemJava"
 #sed -i '0,/items/{s/\bitems\b/random_string/}' filename
 #
